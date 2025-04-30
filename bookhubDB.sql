@@ -24,29 +24,39 @@ CREATE TABLE IF NOT EXISTS `employee`(
     employee_birth DATE NOT NULL,
     employee_email VARCHAR(255) NOT NULL,
     is_approved BOOLEAN,
-    FOREIGN KEY (employee_position_id) REFERENCES employee_position(employee_position_id),
-    FOREIGN KEY (branch_id) REFERENCES branch(branch_id)
+    FOREIGN KEY (employee_position_id) 
+		REFERENCES employee_position(employee_position_id),
+    FOREIGN KEY (branch_id) 
+		REFERENCES branch(branch_id)
 );
 CREATE TABLE IF NOT EXISTS `employee_signup_approval_log` (
    employee_signup_approval_id INT PRIMARY KEY AUTO_INCREMENT,
    employee_id INT NOT NULL, -- 외래키?
    authorizer_id INT NOT NULL, -- 외래키?
-   is_approved ENUM("PENDING", "APPROVED", "DENIED") NOT NULL,
+   is_approved VARCHAR(25) NOT NULL,
    apply_time_at DATETIME NOT NULL,
-   FOREIGN KEY(employee_id) REFERENCES employee(employee_id),
-   FOREIGN KEY(authorizer_id) REFERENCES employee(employee_id)   
+   FOREIGN KEY(employee_id) 
+		REFERENCES employee(employee_id),
+   FOREIGN KEY(authorizer_id) 
+		REFERENCES employee(employee_id),
+   CONSTRAINT chk_status CHECK (is_approved IN ('PENDING', 'APPROVED', 'DENIED'))
 );
 
 CREATE TABLE  IF NOT EXISTS`employee_change_log` (
    change_log_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
    employee_id INT NOT NULL,
-   process_type ENUM("POSITION_CHANGE", "BRANCH_CHANGE") NOT NULL,
+   process_type VARCHAR(25) NOT NULL,
    previous_position_id INT,  -- 외래키?
    previous_branch_id INT, -- 외래키?
    change_log_at DATETIME NOT NULL,
-	FOREIGN KEY (employee_id) REFERENCES employee(employee_id),
-    FOREIGN KEY (previous_position_id) REFERENCES employee_position(employee_position_id),
-    FOREIGN KEY (previous_branch_id) REFERENCES branch(branch_id)
+	FOREIGN KEY (employee_id)
+		REFERENCES employee(employee_id),
+    FOREIGN KEY (previous_position_id)
+		REFERENCES employee_position(employee_position_id),
+    FOREIGN KEY (previous_branch_id)
+		REFERENCES branch(branch_id),
+    CONSTRAINT chk_process_type
+		CHECK (process_type IN ('POSITION_CHANGE', 'BRANCH_CHANGE'))
     
 );
 
@@ -54,8 +64,11 @@ CREATE TABLE IF NOT EXISTS `employee_exit_log` (
    exit_log_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
    employee_id INT NOT NULL,
    exit_at DATETIME NOT NULL,
-   exit_reason ENUM('VOLUNTEER', 'FORCED', 'TERMINATED') NOT NULL,
-    FOREIGN KEY (employee_id) REFERENCES employee(employee_id)
+   exit_reason VARCHAR(25) NOT NULL,
+    FOREIGN KEY (employee_id)
+		REFERENCES employee(employee_id),
+    CONSTRAINT chk_exit_reason
+		CHECK (exit_reason IN ('VOLUNTEER', 'FORCED', 'TERMINATED'))
 );
 
 
@@ -71,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `second_book_category`(
     first_book_category_id INT NOT NULL,
     second_book_category_name VARCHAR(255) NOT NULL,
     FOREIGN KEY(first_book_category_id) 
-    REFERENCES first_book_category(first_book_category_id)
+		REFERENCES first_book_category(first_book_category_id)
 );
 
 CREATE TABLE IF NOT EXISTS `author`(
@@ -91,9 +104,12 @@ CREATE TABLE IF NOT EXISTS `book` (
     publisher_id INT NOT NULL,
     book_title VARCHAR(255) NOT NULL,
     book_pub_year YEAR NOT NULL,
-    FOREIGN KEY (first_book_category_id) REFERENCES first_book_category(first_book_category_id),
-    FOREIGN KEY (author_id) REFERENCES author(author_id),
-    FOREIGN KEY (publisher_id) REFERENCES publisher(publisher_id)
+    FOREIGN KEY (first_book_category_id)
+		REFERENCES first_book_category(first_book_category_id),
+    FOREIGN KEY (author_id)
+		REFERENCES author(author_id),
+    FOREIGN KEY (publisher_id)
+		REFERENCES publisher(publisher_id)
 );
 
 CREATE TABLE IF NOT EXISTS `book_info` (
@@ -103,7 +119,8 @@ CREATE TABLE IF NOT EXISTS `book_info` (
     book_price INT NOT NULL,
     book_display_location VARCHAR(255),
     book_print_date DATETIME NOT NULL,
-    FOREIGN KEY (book_isbn) REFERENCES book(book_isbn)
+    FOREIGN KEY (book_isbn)
+		REFERENCES book(book_isbn)
 );
 
 CREATE TABLE IF NOT EXISTS `stock` (
@@ -111,8 +128,10 @@ CREATE TABLE IF NOT EXISTS `stock` (
     branch_id INT NOT NULL,
     book_amount INT NOT NULL,
     book_is_stock BOOLEAN NOT NULL,
-    FOREIGN KEY (book_info_id) REFERENCES book_info(book_info_id),
-    FOREIGN KEY (branch_id) REFERENCES branch(branch_id)
+    FOREIGN KEY (book_info_id)
+		REFERENCES book_info(book_info_id),
+    FOREIGN KEY (branch_id)
+		REFERENCES branch(branch_id)
 );
 
 
@@ -125,9 +144,9 @@ CREATE TABLE IF NOT EXISTS `discount_policy`(
     end_date DATE,
     total_price_achieve INT,
     FOREIGN KEY(second_book_category_id) 
-    REFERENCES second_book_category(second_book_category_id),
+		REFERENCES second_book_category(second_book_category_id),
     FOREIGN KEY(book_isbn)
-    REFERENCES book(book_isbn)
+		REFERENCES book(book_isbn)
 
 );
 
@@ -183,9 +202,12 @@ CREATE TABLE IF NOT EXISTS `customer_order` (
     publisher_id INT NOT NULL,
     customer_order_amount INT NOT NULL,
     customer_order_date_at DATETIME NOT NULL,
-    FOREIGN KEY (branch_id) REFERENCES branch(branch_id),
-    FOREIGN KEY (policy_id) REFERENCES discount_policy(policy_id),
-    FOREIGN KEY (book_isbn) REFERENCES book(book_isbn)
+    FOREIGN KEY (branch_id)
+		REFERENCES branch(branch_id),
+    FOREIGN KEY (policy_id)
+		REFERENCES discount_policy(policy_id),
+    FOREIGN KEY (book_isbn)
+		REFERENCES book(book_isbn)
 );
 
 CREATE TABLE IF NOT EXISTS `book_log` (
@@ -195,18 +217,20 @@ CREATE TABLE IF NOT EXISTS `book_log` (
     branch_id INT,
     policy_id INT,
     book_isbn VARCHAR(255) NOT NULL,
-    log_type ENUM("PRINT_NUMBER", "PRICE_CHANGE", "DISPLAY_LOCATION", "DISCOUNT_RATE") NOT NULL,
+    log_type VARCHAR(25) NOT NULL,
     previous_print_number INT,
     previous_price INT,
     previous_display_location VARCHAR(255),
     previous_discount_rate INT,
     changed_at DATETIME NOT NULL,
     FOREIGN KEY (employee_id)
-        REFERENCES employee (employee_id),
+		REFERENCES employee (employee_id),
 	FOREIGN KEY (book_info_id)
 		REFERENCES book_info (book_info_id),
 	FOREIGN KEY (branch_id)
-        REFERENCES branch (branch_id),
+		REFERENCES branch (branch_id),
 	FOREIGN KEY (policy_id)
-        REFERENCES discount_policy (policy_id)
+		REFERENCES discount_policy (policy_id),
+    CONSTRAINT chk_log_type
+		CHECK (log_type IN ('PRINT_NUMBER', 'PRICE_CHANGE', 'DISPLAY_LOCATION', 'DISCOUNT_RATE'))
 );
