@@ -16,13 +16,13 @@ CREATE TABLE IF NOT EXISTS `employee`(
 	employee_id INT PRIMARY KEY AUTO_INCREMENT,
     employee_position_id INT NOT NULL,
     branch_id INT NOT NULL,
-    employee_number INT NOT NULL,
-    employee_login_id VARCHAR(255) NOT NULL,
+    employee_number INT NOT NULL UNIQUE,
+    employee_login_id VARCHAR(255) NOT NULL UNIQUE,
     employee_password VARCHAR(255) NOT NULL,
     employee_name VARCHAR(255) NOT NULL,
-    employee_phone_number VARCHAR(255) NOT NULL,
+    employee_phone_number VARCHAR(255) NOT NULL UNIQUE,
     employee_birth DATE NOT NULL,
-    employee_email VARCHAR(255) NOT NULL,
+    employee_email VARCHAR(255) NOT NULL UNIQUE,
     is_approved BOOLEAN,
     FOREIGN KEY (employee_position_id) 
 		REFERENCES employee_position(employee_position_id),
@@ -232,5 +232,37 @@ CREATE TABLE IF NOT EXISTS `book_log` (
 	FOREIGN KEY (policy_id)
 		REFERENCES discount_policy (policy_id),
     CONSTRAINT chk_log_type
-		CHECK (log_type IN ('PRINT_NUMBER', 'PRICE_CHANGE', 'DISPLAY_LOCATION', 'DISCOUNT_RATE'))
+		CHECK (log_type IN ('CREATE','PRINT_NUMBER', 'PRICE_CHANGE', 'DISPLAY_LOCATION', 'DISCOUNT_RATE','DELETE'))
 );
+
+CREATE TABLE IF NOT EXISTS `alert`(
+alart_id INT AUTO_INCREMENT
+-- 알람 PK
+-- 사원PK(FK) - 누가 보냈는지 _send
+-- 사원PK(FK)  - 누구한테 보내는지_arrive
+-- 어떤 알림을 보냈는지 (ENUM>
+-- 로그인승인/ 수령승인/ 발주승인 )
+-- 날짜(생성)
+-- 날짜 (완료해야하는 날짜)
+#승인알람
+#
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
