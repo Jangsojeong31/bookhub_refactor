@@ -90,42 +90,49 @@ CREATE TABLE IF NOT EXISTS `employee_exit_logs` (
 -- ===============================
 
 ##### [카테고리 보류] #####
-CREATE TABLE IF NOT EXISTS `first_book_category`(
-    first_book_category_id INT AUTO_INCREMENT PRIMARY KEY,
-    first_book_category_name VARCHAR(255) NOT NULL
+-- CREATE TABLE IF NOT EXISTS `first_book_category`(
+--     first_book_category_id INT AUTO_INCREMENT PRIMARY KEY,
+--     first_book_category_name VARCHAR(255) NOT NULL
+-- );
+
+-- CREATE TABLE IF NOT EXISTS `second_book_category`(
+--     second_book_category_id INT AUTO_INCREMENT PRIMARY KEY,
+--     first_book_category_id INT NOT NULL,
+--     second_book_category_name VARCHAR(255) NOT NULL,
+--     FOREIGN KEY(first_book_category_id) 
+-- 		REFERENCES first_book_category(first_book_category_id)
+-- );
+
+CREATE TABLE IF NOT EXISTS `book_categories` (
+    category_id INT AUTO_INCREMENT PRIMARY KEY,
+    parent_category_id INT DEFAULT NULL,
+    category_name VARCHAR(255) NOT NULL,
+    FOREIGN KEY (parent_category_id) REFERENCES book_categories (category_id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS `second_book_category`(
-    second_book_category_id INT AUTO_INCREMENT PRIMARY KEY,
-    first_book_category_id INT NOT NULL,
-    second_book_category_name VARCHAR(255) NOT NULL,
-    FOREIGN KEY(first_book_category_id) 
-		REFERENCES first_book_category(first_book_category_id)
-);
-
-CREATE TABLE IF NOT EXISTS `author`(
+CREATE TABLE IF NOT EXISTS `authors`(
     author_id INT AUTO_INCREMENT PRIMARY KEY,
     author_name VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS `publisher` (
+CREATE TABLE IF NOT EXISTS `publishers` (
     publisher_id INT AUTO_INCREMENT PRIMARY KEY,
     publisher_name VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS `book` (
+CREATE TABLE IF NOT EXISTS `books` (
     book_isbn VARCHAR(255) PRIMARY KEY,
-    first_book_category_id INT NOT NULL,
+    category_id INT NOT NULL,
     author_id INT NOT NULL,
     publisher_id INT NOT NULL,
     book_title VARCHAR(255) NOT NULL,
     book_pub_year YEAR NOT NULL,
-    FOREIGN KEY (first_book_category_id)
-		REFERENCES first_book_category(first_book_category_id),
+    FOREIGN KEY (category_id)
+		REFERENCES book_categories (category_id),
     FOREIGN KEY (author_id)
-		REFERENCES author(author_id),
+		REFERENCES authors(author_id),
     FOREIGN KEY (publisher_id)
-		REFERENCES publisher(publisher_id)
+		REFERENCES publishers(publisher_id)
 );
 
 CREATE TABLE IF NOT EXISTS `book_info` (
@@ -136,13 +143,13 @@ CREATE TABLE IF NOT EXISTS `book_info` (
     book_display_location VARCHAR(255),
     book_print_date DATETIME NOT NULL,
     FOREIGN KEY (book_isbn)
-		REFERENCES book(book_isbn)
+		REFERENCES books(book_isbn)
 );
 
 -- ===============================
 -- 5. Inventory Management (재고 관리)
 -- ===============================
-CREATE TABLE IF NOT EXISTS `stock` (
+CREATE TABLE IF NOT EXISTS `stocks` (
     book_info_id INT NOT NULL,
     branch_id INT NOT NULL,
     book_amount INT NOT NULL,
@@ -157,30 +164,29 @@ CREATE TABLE IF NOT EXISTS `stock` (
 -- 6. Discount and Policy Management (할인 및 정책 관리)
 -- ===============================
 
-CREATE TABLE IF NOT EXISTS `discount_policy`(
+CREATE TABLE IF NOT EXISTS `discount_policies`(
     policy_id INT AUTO_INCREMENT PRIMARY KEY,
     book_isbn VARCHAR(255) NOT NULL,
-    second_book_category_id INT NOT NULL,
+    category_id INT NOT NULL,
     discount_percent INT NOT NULL,
     start_date DATE,
     end_date DATE,
     total_price_achieve INT,
-    FOREIGN KEY(second_book_category_id) 
-		REFERENCES second_book_category(second_book_category_id),
+    FOREIGN KEY(category_id) 
+		REFERENCES book_categories(category_id),
     FOREIGN KEY(book_isbn)
-		REFERENCES book(book_isbn)
-
+		REFERENCES books(book_isbn)
 );
 
 -- ===============================
 -- 7. Order Management (발주 및 주문 관리)
 -- ===============================
-CREATE TABLE IF NOT EXISTS `purchase_order` (
+CREATE TABLE IF NOT EXISTS `purchase_orders` (
     purchase_order_id INT AUTO_INCREMENT PRIMARY KEY,
     branch_id INT NOT NULL,
     book_isbn VARCHAR(255) NOT NULL,
     employee_id INT NOT NULL,
-    first_book_category_id INT NOT NULL,
+    category_id INT NOT NULL,
     author_id INT NOT NULL,
     publisher_id INT NOT NULL,
     purchase_order_amount INT NOT NULL,
@@ -188,12 +194,12 @@ CREATE TABLE IF NOT EXISTS `purchase_order` (
     FOREIGN KEY (branch_id)
         REFERENCES branches (branch_id),
     FOREIGN KEY (book_isbn)
-        REFERENCES book (book_isbn),
+        REFERENCES books (book_isbn),
     FOREIGN KEY (employee_id)
         REFERENCES employees (employee_id)
 );
 
-CREATE TABLE IF NOT EXISTS `purchase_order_approval` (
+CREATE TABLE IF NOT EXISTS `purchase_order_approvals` (
     purchase_order_approval_id INT AUTO_INCREMENT PRIMARY KEY,
     employee_id INT NOT NULL,
     purchase_order_id INT NOT NULL,
@@ -202,10 +208,10 @@ CREATE TABLE IF NOT EXISTS `purchase_order_approval` (
     FOREIGN KEY (employee_id)
         REFERENCES employees (employee_id),
     FOREIGN KEY (purchase_order_id)
-        REFERENCES purchase_order (purchase_order_id)
+        REFERENCES purchase_orders (purchase_order_id)
 );
 
-CREATE TABLE IF NOT EXISTS `book_reception_approval` (
+CREATE TABLE IF NOT EXISTS `book_reception_approvals` (
     book_reception_approval_id INT AUTO_INCREMENT PRIMARY KEY,
     employee_id INT NOT NULL,
     branch_id INT NOT NULL,
@@ -215,10 +221,10 @@ CREATE TABLE IF NOT EXISTS `book_reception_approval` (
     FOREIGN KEY (employee_id)
         REFERENCES employees (employee_id),
     FOREIGN KEY (purchase_order_approval_id)
-        REFERENCES purchase_order_approval (purchase_order_approval_id)
+        REFERENCES purchase_order_approvals (purchase_order_approval_id)
 );
 
-CREATE TABLE IF NOT EXISTS `customer_order` (
+CREATE TABLE IF NOT EXISTS `customer_orders` (
     customer_order_id INT AUTO_INCREMENT PRIMARY KEY,
     branch_id INT NOT NULL,
     book_isbn VARCHAR(255) NOT NULL,
@@ -230,15 +236,15 @@ CREATE TABLE IF NOT EXISTS `customer_order` (
     FOREIGN KEY (branch_id)
 		REFERENCES branches (branch_id),
     FOREIGN KEY (policy_id)
-		REFERENCES discount_policy(policy_id),
+		REFERENCES discount_policies (policy_id),
     FOREIGN KEY (book_isbn)
-		REFERENCES book(book_isbn)
+		REFERENCES books(book_isbn)
 );
 
 -- ===============================
 -- 8. Logs and Alerts (로그 및 알림 관리)
 -- ===============================
-CREATE TABLE IF NOT EXISTS `book_log` (
+CREATE TABLE IF NOT EXISTS `book_logs` (
     booklog_id INT AUTO_INCREMENT PRIMARY KEY,
     employee_id INT NOT NULL,
     book_info_id INT NOT NULL,
@@ -258,7 +264,7 @@ CREATE TABLE IF NOT EXISTS `book_log` (
 	FOREIGN KEY (branch_id)
 		REFERENCES branches (branch_id),
 	FOREIGN KEY (policy_id)
-		REFERENCES discount_policy (policy_id),
+		REFERENCES discount_policies (policy_id),
     CONSTRAINT chk_log_type
 		CHECK (log_type IN ('CREATE','PRINT_NUMBER', 'PRICE_CHANGE', 'DISPLAY_LOCATION', 'DISCOUNT_RATE','DELETE'))
 );
