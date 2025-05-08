@@ -254,9 +254,7 @@ CREATE TABLE IF NOT EXISTS `book_logs` (
     policy_id INT,
     book_isbn VARCHAR(255) NOT NULL,
     log_type VARCHAR(25) NOT NULL,
-    previous_print_number INT,
     previous_price INT,
-    previous_display_location VARCHAR(255),
     previous_discount_rate INT,
     changed_at DATETIME NOT NULL,
     FOREIGN KEY (employee_id)
