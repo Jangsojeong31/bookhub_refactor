@@ -126,6 +126,7 @@ CREATE TABLE IF NOT EXISTS `books` (
     author_id INT NOT NULL,
     publisher_id INT NOT NULL,
     book_title VARCHAR(255) NOT NULL,
+    book_price INT NOT NULL,
     book_pub_year YEAR NOT NULL,
     FOREIGN KEY (category_id)
 		REFERENCES book_categories (category_id),
@@ -135,27 +136,28 @@ CREATE TABLE IF NOT EXISTS `books` (
 		REFERENCES publishers(publisher_id)
 );
 
-CREATE TABLE IF NOT EXISTS `book_info` (
-    book_info_id INT AUTO_INCREMENT PRIMARY KEY,
-    book_isbn VARCHAR(255) NOT NULL,
-    book_print_number INT NOT NULL,
-    book_price INT NOT NULL,
-    book_display_location VARCHAR(255),
-    book_print_date DATETIME NOT NULL,
-    FOREIGN KEY (book_isbn)
-		REFERENCES books(book_isbn)
+
+CREATE TABLE IF NOT EXISTS `book_display_location` (
+    location_id INT AUTO_INCREMENT PRIMARY KEY,
+    branch_id INT NOT NULL,
+    floor VARCHAR(255) NOT NULL,
+    hall VARCHAR(255) NOT NULL,
+    section INT NOT NULL,
+    book_shelf BOOLEAN,
+    book_display_table BOOLEAN
+    # 두 개 일치하지 않아야 하므로 제약조건을 넣어야 한다.
 );
 
 -- ===============================
 -- 5. Inventory Management (재고 관리)
 -- ===============================
 CREATE TABLE IF NOT EXISTS `stocks` (
-    book_info_id INT NOT NULL,
+	book_isbn VARCHAR(255) NOT NULL,
     branch_id INT NOT NULL,
     book_amount INT NOT NULL,
     book_is_stock BOOLEAN NOT NULL,
-    FOREIGN KEY (book_info_id)
-		REFERENCES book_info(book_info_id),
+    FOREIGN KEY (book_isbn)
+		REFERENCES books(book_isbn),
     FOREIGN KEY (branch_id)
 		REFERENCES branches(branch_id)
 );
@@ -247,7 +249,7 @@ CREATE TABLE IF NOT EXISTS `customer_orders` (
 CREATE TABLE IF NOT EXISTS `book_logs` (
     booklog_id INT AUTO_INCREMENT PRIMARY KEY,
     employee_id INT NOT NULL,
-    book_info_id INT NOT NULL,
+    book_isbn INT NOT NULL,
     branch_id INT,
     policy_id INT,
     book_isbn VARCHAR(255) NOT NULL,
@@ -259,8 +261,8 @@ CREATE TABLE IF NOT EXISTS `book_logs` (
     changed_at DATETIME NOT NULL,
     FOREIGN KEY (employee_id)
 		REFERENCES employees (employee_id),
-	FOREIGN KEY (book_info_id)
-		REFERENCES book_info (book_info_id),
+	FOREIGN KEY (book_isbn)
+		REFERENCES books (book_isbn),
 	FOREIGN KEY (branch_id)
 		REFERENCES branches (branch_id),
 	FOREIGN KEY (policy_id)
