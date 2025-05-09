@@ -12,7 +12,7 @@ USE `bookhub_db`;
 -- 2. Branches and Employees
 -- ===========================
 CREATE TABLE IF NOT EXISTS branches (
-    branch_id INT AUTO_INCREMENT PRIMARY KEY,
+    branch_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     branch_name VARCHAR(255) NOT NULL,
     -- branch_location VARCHAR(255) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -20,14 +20,14 @@ CREATE TABLE IF NOT EXISTS branches (
 );
 
 CREATE TABLE IF NOT EXISTS employee_positions (
-    position_id INT AUTO_INCREMENT PRIMARY KEY,
+    position_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     position_name VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS employees (
-    employee_id INT AUTO_INCREMENT PRIMARY KEY,
-    position_id INT NOT NULL,
-    branch_id INT NOT NULL,
+    employee_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    position_id BIGINT NOT NULL,
+    branch_id BIGINT NOT NULL,
     employee_number VARCHAR(20) NOT NULL UNIQUE,
     login_id VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
@@ -46,9 +46,9 @@ CREATE TABLE IF NOT EXISTS employees (
 -- 3. Employee Change Logs and Approval Logs
 -- ====================================
 CREATE TABLE IF NOT EXISTS `employee_signup_approvals` (
-    approval_id INT AUTO_INCREMENT PRIMARY KEY,
-    employee_id INT NOT NULL,
-    authorizer_id INT NOT NULL,
+    approval_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    employee_id BIGINT NOT NULL,
+    authorizer_id BIGINT NOT NULL,
     status ENUM('PENDING', 'APPROVED', 'DENIED') DEFAULT 'PENDING',
     applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     approved_at TIMESTAMP NULL,
@@ -58,11 +58,11 @@ CREATE TABLE IF NOT EXISTS `employee_signup_approvals` (
 );
 
 CREATE TABLE IF NOT EXISTS `employee_change_logs` (
-   log_id INT AUTO_INCREMENT PRIMARY KEY,
-   employee_id INT NOT NULL,
+   log_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+   employee_id BIGINT NOT NULL,
    change_type VARCHAR(25) NOT NULL,
-   previous_position_id INT DEFAULT NULL,
-   previous_branch_id INT DEFAULT NULL,
+   previous_position_id BIGINT DEFAULT NULL,
+   previous_branch_id BIGINT DEFAULT NULL,
    changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
    FOREIGN KEY (employee_id)
       REFERENCES employees(employee_id),
@@ -75,8 +75,8 @@ CREATE TABLE IF NOT EXISTS `employee_change_logs` (
 );
 
 CREATE TABLE IF NOT EXISTS `employee_exit_logs` (
-    exit_id INT AUTO_INCREMENT PRIMARY KEY,
-    employee_id INT NOT NULL,
+    exit_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    employee_id BIGINT NOT NULL,
     exit_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     exit_reason VARCHAR(25) NOT NULL,
     FOREIGN KEY (employee_id)
@@ -104,27 +104,27 @@ CREATE TABLE IF NOT EXISTS `employee_exit_logs` (
 -- );
 
 CREATE TABLE IF NOT EXISTS `book_categories` (
-    category_id INT AUTO_INCREMENT PRIMARY KEY,
-    parent_category_id INT DEFAULT NULL,
+    category_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    parent_category_id BIGINT DEFAULT NULL,
     category_name VARCHAR(255) NOT NULL,
     FOREIGN KEY (parent_category_id) REFERENCES book_categories (category_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS `authors`(
-    author_id INT AUTO_INCREMENT PRIMARY KEY,
+    author_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     author_name VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `publishers` (
-    publisher_id INT AUTO_INCREMENT PRIMARY KEY,
+    publisher_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     publisher_name VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `books` (
     book_isbn VARCHAR(255) PRIMARY KEY,
-    category_id INT NOT NULL,
-    author_id INT NOT NULL,
-    publisher_id INT NOT NULL,
+    category_id BIGINT NOT NULL,
+    author_id BIGINT NOT NULL,
+    publisher_id BIGINT NOT NULL,
     book_title VARCHAR(255) NOT NULL,
     book_price INT NOT NULL,
     book_pub_year YEAR NOT NULL,
@@ -139,8 +139,8 @@ CREATE TABLE IF NOT EXISTS `books` (
 );
 
 CREATE TABLE IF NOT EXISTS `book_display_locations` (
-    location_id INT AUTO_INCREMENT PRIMARY KEY,
-    branch_id INT NOT NULL,
+    location_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    branch_id BIGINT NOT NULL,
     book_isbn VARCHAR(255) NOT NULL,
     floor VARCHAR(50) NOT NULL,
     hall VARCHAR(50) NOT NULL,
@@ -160,9 +160,9 @@ CREATE TABLE IF NOT EXISTS `book_display_locations` (
 -- 5. Inventory Management (재고 관리)
 -- ===============================
 CREATE TABLE IF NOT EXISTS stocks (
-    stock_id INT AUTO_INCREMENT PRIMARY KEY,
+    stock_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     book_isbn VARCHAR(255) NOT NULL,
-    branch_id INT NOT NULL,
+    branch_id BIGINT NOT NULL,
     book_amount INT NOT NULL,
     is_stock BOOLEAN NOT NULL DEFAULT TRUE,
     FOREIGN KEY (book_isbn) REFERENCES books(book_isbn),
@@ -170,12 +170,12 @@ CREATE TABLE IF NOT EXISTS stocks (
 );
 
 CREATE TABLE IF NOT EXISTS `stock_logs` (
-    log_id INT AUTO_INCREMENT PRIMARY KEY,
+    log_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     book_isbn VARCHAR(255) NOT NULL,
-    branch_id INT NOT NULL,
+    branch_id BIGINT NOT NULL,
     action_type ENUM('IN', 'OUT', 'MOVE', 'LOSS') NOT NULL,
     amount INT NOT NULL,
-    employee_id INT NOT NULL,
+    employee_id BIGINT NOT NULL,
     action_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     description TEXT,
     FOREIGN KEY (book_isbn) REFERENCES books(book_isbn),
@@ -189,9 +189,9 @@ CREATE TABLE IF NOT EXISTS `stock_logs` (
 -- ===============================
 
 CREATE TABLE IF NOT EXISTS `discount_policies`(
-    policy_id INT AUTO_INCREMENT PRIMARY KEY,
+    policy_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     book_isbn VARCHAR(255) NOT NULL,
-    category_id INT NOT NULL,
+    category_id BIGINT NOT NULL,
     discount_percent INT NOT NULL,
     start_date DATE,
     end_date DATE,
@@ -206,10 +206,10 @@ CREATE TABLE IF NOT EXISTS `discount_policies`(
 -- 7. Order Management (발주 및 주문 관리)
 -- ===============================
 CREATE TABLE IF NOT EXISTS `purchase_orders` (
-    purchase_order_id INT AUTO_INCREMENT PRIMARY KEY,
-    branch_id INT NOT NULL,
+    purchase_order_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    branch_id BIGINT NOT NULL,
     book_isbn VARCHAR(255) NOT NULL,
-    employee_id INT NOT NULL,
+    employee_id BIGINT NOT NULL,
     purchase_order_amount INT NOT NULL,
     purchase_order_date_at DATETIME NOT NULL,
     FOREIGN KEY (branch_id)
@@ -221,9 +221,9 @@ CREATE TABLE IF NOT EXISTS `purchase_orders` (
 );
 
 CREATE TABLE IF NOT EXISTS `purchase_order_approvals` (
-    purchase_order_approval_id INT AUTO_INCREMENT PRIMARY KEY,
-    employee_id INT NOT NULL,
-    purchase_order_id INT NOT NULL,
+    purchase_order_approval_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    employee_id BIGINT NOT NULL,
+    purchase_order_id BIGINT NOT NULL,
     is_approved BOOLEAN NOT NULL,
     approved_date_at DATETIME NOT NULL,
     FOREIGN KEY (employee_id)
@@ -233,23 +233,25 @@ CREATE TABLE IF NOT EXISTS `purchase_order_approvals` (
 );
 
 CREATE TABLE IF NOT EXISTS `book_reception_approvals` (
-    book_reception_approval_id INT AUTO_INCREMENT PRIMARY KEY,
-    employee_id INT NOT NULL,
-    branch_id INT NOT NULL,
-    purchase_order_approval_id INT NOT NULL,
+    book_reception_approval_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    employee_id BIGINT NOT NULL,
+    branch_id BIGINT NOT NULL,
+    purchase_order_approval_id BIGINT NOT NULL,
     is_reception_approved BOOLEAN NOT NULL,
     reception_date_at DATETIME NOT NULL,
     FOREIGN KEY (employee_id)
         REFERENCES employees (employee_id),
+	FOREIGN KEY (branch_id)
+		REFERENCES branches (branch_id),
     FOREIGN KEY (purchase_order_approval_id)
         REFERENCES purchase_order_approvals (purchase_order_approval_id)
 );
 
 CREATE TABLE IF NOT EXISTS `customer_orders` (
-    customer_order_id INT AUTO_INCREMENT PRIMARY KEY,
-    branch_id INT NOT NULL,
+    customer_order_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    branch_id BIGINT NOT NULL,
     book_isbn VARCHAR(255) NOT NULL,
-    policy_id INT NOT NULL,
+    policy_id BIGINT NOT NULL,
     customer_order_amount INT NOT NULL,
     customer_order_date_at DATETIME NOT NULL,
     FOREIGN KEY (branch_id)
@@ -264,10 +266,10 @@ CREATE TABLE IF NOT EXISTS `customer_orders` (
 -- 8. Logs and Alerts (로그 및 알림 관리)
 -- ===============================
 CREATE TABLE IF NOT EXISTS `book_logs` (
-    book_log_id INT AUTO_INCREMENT PRIMARY KEY,
-    employee_id INT NOT NULL,
-    branch_id INT,
-    policy_id INT,
+    book_log_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    employee_id BIGINT NOT NULL,
+    branch_id BIGINT,
+    policy_id BIGINT,
     book_isbn VARCHAR(255) NOT NULL,
     log_type VARCHAR(25) NOT NULL,
     previous_price INT,
@@ -286,8 +288,8 @@ CREATE TABLE IF NOT EXISTS `book_logs` (
 );
 
 CREATE TABLE IF NOT EXISTS alerts (
-    alert_id INT AUTO_INCREMENT PRIMARY KEY,
-    employee_id INT NOT NULL,
+    alert_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    employee_id BIGINT NOT NULL,
     alert_type ENUM('SIGNUP_APPROVAL', 'STOCK_WARNING', 'REQUEST', 'NOTICE') NOT NULL,
     # 로그인 승인 , 재고관련 알람, (발주/수령/주문)요청, 이벤트등록시 확인알람(공지사항 같은 느낌)
     message TEXT NOT NULL,
