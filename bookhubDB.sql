@@ -67,7 +67,11 @@ CREATE TABLE IF NOT EXISTS `employee_change_logs` (
    log_id BIGINT AUTO_INCREMENT PRIMARY KEY,
    employee_id BIGINT NOT NULL,
    change_type VARCHAR(25) NOT NULL,
+<<<<<<< HEAD
    previous_authority_id BIGINT DEFAULT NULL,
+=======
+   previous_position_id BIGINT DEFAULT NULL,
+>>>>>>> 22d1c7652eac3a8e65ea0d1741a4f2795aa5e541
    previous_branch_id BIGINT DEFAULT NULL,
    changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
    FOREIGN KEY (employee_id)
