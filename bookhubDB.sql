@@ -272,6 +272,13 @@ CREATE TABLE IF NOT EXISTS `customer_orders` (
       REFERENCES books(book_isbn)
 );
 
+CREATE TABLE IF NOT EXISTS `refund_orders` (
+    refund_order_id BIGINT NOT NULL,
+    customer_order_id BIGINT NOT NULL,
+    FOREIGN KEY (customer_order_id)
+        REFERENCES customer_orders (customer_order_id)
+);
+
 -- ===============================
 -- 8. Logs and Alerts (로그 및 알림 관리)
 -- ===============================
