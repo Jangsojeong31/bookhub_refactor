@@ -14,7 +14,7 @@ USE `bookhub_db`;
 CREATE TABLE IF NOT EXISTS branches (
     branch_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     branch_name VARCHAR(255) NOT NULL,
-    branch_location VARCHAR(255) DEFAULT NULL, # 주석 해제 (지역명만 사용할 것인지, 주소 체계를 모두 사용할 것인지)
+    branch_location VARCHAR(255) NOT NULL, # 주소
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
