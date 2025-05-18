@@ -37,11 +37,12 @@ CREATE TABLE IF NOT EXISTS `positions` (
     position_name VARCHAR(255) NOT NULL
 ); 
 
+
 CREATE TABLE IF NOT EXISTS `employees` (
     employee_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     branch_id BIGINT NOT NULL,
     position_id BIGINT NOT NULL, # 직급 추가
-    employee_number VARCHAR(20) NOT NULL UNIQUE,
+    employee_number VARCHAR(20) NOT NULL UNIQUE, 
     login_id VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
@@ -51,6 +52,7 @@ CREATE TABLE IF NOT EXISTS `employees` (
     is_approved ENUM('PENDING', 'APPROVED', 'DENIED') DEFAULT 'PENDING',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    status Enum('EMPLOYED', 'EXITED'),   -- 추가함 
     FOREIGN KEY (branch_id) REFERENCES branches (branch_id) ON DELETE CASCADE,
     FOREIGN KEY (position_id) REFERENCES positions (position_id) ON DELETE CASCADE
 );
@@ -66,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `employees` (
 # 권한을 직원과 다대다 구분을 사용할 것인지
 # : 한 명의 직원이 여러 개의 권한 사용이 가능
 CREATE TABLE IF NOT EXISTS `employee_auth` (
-   employee_id BIGINT NOT NULL,
+    employee_id BIGINT NOT NULL,
     authority_id BIGINT NOT NULL,
     PRIMARY KEY (employee_id, authority_id),
     CONSTRAINT fk_employee FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE,
@@ -80,12 +82,14 @@ CREATE TABLE IF NOT EXISTS `employee_signup_approvals` (
     approval_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     employee_id BIGINT NOT NULL,
     authorizer_id BIGINT NOT NULL,
-    status ENUM('PENDING', 'APPROVED', 'DENIED') DEFAULT 'PENDING',
+    status VARCHAR(255) NOT NULL,
     applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    approved_at TIMESTAMP NULL, # PENDING과 DENIED 시 NULL로 둘 것인지 (거절된 경우 거절한 권한자에 대한 메모와 시기 작성은?)
+    approved_denied_at TIMESTAMP NULL, # PENDING과 DENIED 시 NULL로 둘 것인지 (거절된 경우 거절한 권한자에 대한 메모와 시기 작성은?)
+    -- 이름 변경함 : PENDING 시 NULL로 두고, DENIED 시에는 시간을 기록하면 될 것 같습니다.
+    denied_reason VARCHAR(255), -- 수정함: 거절 이유
     FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE,
-    FOREIGN KEY (authorizer_id) REFERENCES employees(employee_id) ON DELETE CASCADE
-    -- , CONSTRAINT chk_status CHECK (status IN ('PENDING', 'APPROVED', 'DENIED'))
+    FOREIGN KEY (authorizer_id) REFERENCES employees(employee_id) ON DELETE CASCADE,
+	CONSTRAINT chk_status CHECK (status IN ('PENDING', 'APPROVED', 'DENIED'))
 );
 
 CREATE TABLE IF NOT EXISTS `employee_change_logs` (
@@ -119,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `employee_exit_logs` (
     FOREIGN KEY (employee_id)
       REFERENCES employees(employee_id),
     CONSTRAINT chk_exit_reason
-      CHECK (exit_reason IN ('VOLUNTEER', 'FORCED', 'TERMINATED')) # 
+      CHECK (exit_reason IN ('VOLUNTEER', 'FORCED', 'TERMINATED')) 
 );
 # 익명화: status = 'EXITED'이고 exit_at >= 3년 전인 경우 트리거 또는 배치 처리로 자동화 가능
 
@@ -167,8 +171,11 @@ CREATE TABLE IF NOT EXISTS `books` (
     publisher_id BIGINT NOT NULL,
     book_title VARCHAR(255) NOT NULL,
     book_price INT NOT NULL,
-    book_pub_year YEAR NOT NULL, # published_date DATE 로 변경 (정확한 날짜를 파악)
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    published_date DATE NOT NULL, # published_date DATE 로 변경 (정확한 날짜를 파악  -- 변경 완료
+    cover_url VARCHAR(255) NOT NULL, # 책 이미지 - VARCHAR 인지 애매함
+    page_count VARCHAR(255) NOT NULL, # 책 페이지
+    language VARCHAR(255) NOT NULL, # 책 원본 나라 표시
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id)
       REFERENCES book_categories (category_id),
@@ -186,17 +193,16 @@ CREATE TABLE IF NOT EXISTS `book_display_locations` (
     floor VARCHAR(50) NOT NULL,
     hall VARCHAR(50) NOT NULL,
     section VARCHAR(50) NOT NULL,
-    -- is_shelf BOOLEAN DEFAULT TRUE,
---     is_table BOOLEAN DEFAULT FALSE,
-   display_type VARCHAR(50) NOT NULL,
+    display_type VARCHAR(50) NOT NULL,
+    display_note TEXT NOT NULL, -- 위치에 대한 부연 설명
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (branch_id) REFERENCES branches(branch_id),
     FOREIGN KEY (book_isbn) REFERENCES books(book_isbn),
-   CONSTRAINT chk_display_type
-      CHECK (display_type IN ('BOOKSHELF','DISPLAYTABLE'))
+    CONSTRAINT chk_display_type
+		CHECK (display_type IN ('BOOKSHELF','DISPLAYTABLE'))
 );
-# display_note (설명용) 추가 가능
+# display_note (설명용) 추가 가능 - 완료!
 
 -- ===============================
 -- 5. Inventory Management (재고 관리)
@@ -206,10 +212,11 @@ CREATE TABLE IF NOT EXISTS stocks (
     book_isbn VARCHAR(255) NOT NULL,
     branch_id BIGINT NOT NULL,
     book_amount INT NOT NULL,
-    is_stock BOOLEAN NOT NULL DEFAULT TRUE,
+    stock_status VARCHAR(255) NOT NULL,
     FOREIGN KEY (book_isbn) REFERENCES books(book_isbn),
-    FOREIGN KEY (branch_id) REFERENCES branches(branch_id)
-    
+    FOREIGN KEY (branch_id) REFERENCES branches(branch_id),
+    CONSTRAINT chk_stock_status
+		CHECK (stock_status IN ('IN_STOCK', 'OUT_OF_STOCK', 'RESERVED'))
     # book_amouont(수량)와 is_stock(재고 유무 표시) 필드의 각 의미
     # book_amount가 수량이라면
     # : stock_status ENUM('IN_STOCK', 'OUT_OF_STOCK', 'RESERVED') 등으로 대체 가능
@@ -223,15 +230,17 @@ CREATE TABLE IF NOT EXISTS `stock_logs` (
     book_isbn VARCHAR(255) NOT NULL,
     branch_id BIGINT NOT NULL,
     action_type ENUM('IN', 'OUT', 'MOVE', 'LOSS') NOT NULL,
+    target_branch_id BIGINT NOT NULL,
     amount INT NOT NULL,
     employee_id BIGINT NOT NULL,
     action_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     description TEXT,
     FOREIGN KEY (book_isbn) REFERENCES books(book_isbn),
     FOREIGN KEY (branch_id) REFERENCES branches(branch_id),
+    FOREIGN KEY (target_branch_id) REFERENCES branches(target_branch_id),
     FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
     # target_branch_id
-    # : 이동되는 지점의 ID
+    # : 이동되는 지점의 ID -- 완료 
 );
 
 
@@ -245,17 +254,22 @@ CREATE TABLE IF NOT EXISTS `discount_policies`(
     # 책별 또는 카테고리별로만 할인이 가능하다면
     # , 둘 중 하나로만 필수로 설정
     # : check 제약조건 사용
-    book_isbn VARCHAR(255) NOT NULL, # NULL 허용으로 수정
-    category_id BIGINT NOT NULL, # NULL 허용으로 수정
+    book_isbn VARCHAR(255) DEFAULT NULL, # NULL 허용으로 수정
+    category_id BIGINT DEFAULT NULL, # NULL 허용으로 수정
     
     discount_percent INT NOT NULL,
     start_date DATE,
     end_date DATE,
     total_price_achieve INT,
     FOREIGN KEY(category_id) 
-      REFERENCES book_categories(category_id),
+		REFERENCES book_categories(category_id),
     FOREIGN KEY(book_isbn)
-      REFERENCES books(book_isbn)
+		REFERENCES books(book_isbn),
+	CONSTRAINT chk_book_or_category
+		CHECK (
+			(book_isbn IS NOT NULL AND category_id IS NULL)
+		OR
+			(book_isbn IS NULL AND category_id IS NOT NULL))  -- 추가
 );
 
 -- ===============================
@@ -267,17 +281,18 @@ CREATE TABLE IF NOT EXISTS `purchase_orders` (
     book_isbn VARCHAR(255) NOT NULL,
     employee_id BIGINT NOT NULL,
     purchase_order_amount INT NOT NULL,
+    purchase_order_status VARCHAR(50) NOT NULL,
     purchase_order_date_at DATETIME NOT NULL,
     FOREIGN KEY (branch_id)
         REFERENCES branches (branch_id),
     FOREIGN KEY (book_isbn)
         REFERENCES books (book_isbn),
     FOREIGN KEY (employee_id)
-        REFERENCES employees (employee_id)
-        
-   # 발주 상태 추가
-    # : purchase_order_status ENUM('REQEUSTED', 'APPROVED', 'REJECTED')
+        REFERENCES employees (employee_id),
+    CONSTRAINT chk_purchase_order_status
+      CHECK (purchase_order_status IN ('REQEUSTED', 'APPROVED', 'REJECTED'))
 );
+
 
 CREATE TABLE IF NOT EXISTS `purchase_order_approvals` (
     purchase_order_approval_id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -308,36 +323,44 @@ CREATE TABLE IF NOT EXISTS `book_reception_approvals` (
 
 # 테이블 전체 구성 변경 필요
 # : order 테이블 (총괄하는 테이블 - 구매 번호, 총 금액, 구매자, 총 구매 수량, 구매 날짜 등)
-# : order_detail 테이블 (order_id를 참조하여 구매한 각각의 제품을 연결 - 각 제품별 할인 유무 policy 확인)
+# : order_detail 테이블 (order_id를 참조하여 구매한 각각의 제품을 연결 - 각 제품별 할인 유무 policy 확인
 CREATE TABLE IF NOT EXISTS `customer_orders` (
-    customer_order_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    branch_id BIGINT NOT NULL,
-    book_isbn VARCHAR(255) NOT NULL,
-    policy_id BIGINT NOT NULL, 
-    # >> 할인된 책의 구매인지 여부
-    # : 필드명 수정
-    # : 필수 값인지 여부 확인 (반드시 정책을 승인해야만 구매가 가능하다면 저장 불필요)
-    
-    customer_order_amount INT NOT NULL,
-    customer_order_date_at DATETIME NOT NULL,
-    FOREIGN KEY (branch_id)
-      REFERENCES branches (branch_id),
-    FOREIGN KEY (policy_id)
-      REFERENCES discount_policies (policy_id),
-    FOREIGN KEY (book_isbn)
-      REFERENCES books(book_isbn)
+    customer_order_id BIGINT AUTO_INCREMENT PRIMARY KEY, 
+    ## 구매자 테이블 구현 해야 함
+    customer_order_total_amount INT NOT NULL,
+    customer_order_total_price INT NOT NULL,
+    customer_order_date_at DATETIME NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS `refund_orders` (
-   # PK 값 설정? 
-    refund_order_id BIGINT NOT NULL,
-    customer_order_id BIGINT NOT NULL,
-    FOREIGN KEY (customer_order_id)
-        REFERENCES customer_orders (customer_order_id)
-        
-   # refund_date (환불 일시)
-    # refund_reason (환불 사유): ENUM OR CHECK 제약조건
+CREATE TABLE IF NOT EXISTS `customer_orders_detail` (
+    customer_orders_detail_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+	customer_order_id BIGINT NOT NULL, 
+	book_isbn VARCHAR(255) NOT NULL,
+	branch_id BIGINT NOT NULL,
+    amount BIGINT not null,
+    price BIGINT not null,
+	applied_policy_id BIGINT, #정가일수도 있으므로 NOT NULL 제거함
+	FOREIGN KEY (customer_order_id)
+		REFERENCES customer_orders (customer_order_id),
+	FOREIGN KEY (applied_policy_id)
+		REFERENCES discount_policies (policy_id),
+    FOREIGN KEY (book_isbn)
+        REFERENCES books(book_isbn)
 );
+
+
+#PK 값 설정 및 환불일시 환불사유(제품 결함,  재결제예정, 단순변심, 기타) 추가함
+CREATE TABLE IF NOT EXISTS `refund_orders` (
+    refund_order_id BIGINT AUTO_INCREMENT PRIMARY KEY, 
+    order_id BIGINT NOT NULL,
+    refund_date_at DATETIME NOT NULL,
+    refund_reason VARCHAR(255),
+    FOREIGN KEY (order_id)
+        REFERENCES orders (order_id),
+    CONSTRAINT chk_refund_reason
+      CHECK (refund_reason IN ('DEFECTIVE_PRODUCT', 'REPAYMENT_PLANNED', 'CHANGE_OF_MIND', 'OTHER'))
+);
+
 
 -- ===============================
 -- 8. Logs and Alerts (로그 및 알림 관리)
@@ -347,11 +370,11 @@ CREATE TABLE IF NOT EXISTS `book_logs` (
     employee_id BIGINT NOT NULL,
     branch_id BIGINT,
     policy_id BIGINT,
-    book_isbn VARCHAR(255) NOT NULL, 
+    book_isbn VARCHAR(255) NOT NULL,
+    book_title VARCHAR(255) NOT NULL, 
     # book_title도 추가하면(반정규화) join 줄이기 가능
     # : 속도 향상 + 단순한 로그 조회 가능
     # > 책 제목이 바뀌면 로그의 book_title은 과거 값으로 남음
-    
     log_type VARCHAR(25) NOT NULL,
     previous_price INT,
     previous_discount_rate INT,
@@ -367,6 +390,8 @@ CREATE TABLE IF NOT EXISTS `book_logs` (
     CONSTRAINT chk_log_type
       CHECK (log_type IN ('CREATE', 'PRICE_CHANGE', 'DISPLAY_LOCATION', 'DISCOUNT_RATE','DELETE'))
 );
+
+
 
 CREATE TABLE IF NOT EXISTS alerts (
     alert_id BIGINT AUTO_INCREMENT PRIMARY KEY,
