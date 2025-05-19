@@ -240,7 +240,7 @@ CREATE TABLE IF NOT EXISTS `stock_logs` (
     description TEXT,
     FOREIGN KEY (book_isbn) REFERENCES books(book_isbn),
     FOREIGN KEY (branch_id) REFERENCES branches(branch_id),
-    FOREIGN KEY (target_branch_id) REFERENCES branches(target_branch_id),
+    FOREIGN KEY (target_branch_id) REFERENCES branches(branch_id),
     FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
     # target_branch_id
     # : 이동되는 지점의 ID -- 완료 
@@ -359,7 +359,7 @@ CREATE TABLE IF NOT EXISTS `refund_orders` (
     refund_date_at DATETIME NOT NULL,
     refund_reason VARCHAR(255),
     FOREIGN KEY (order_id)
-        REFERENCES orders (order_id),
+        REFERENCES customer_orders (customer_order_id),
     CONSTRAINT chk_refund_reason
       CHECK (refund_reason IN ('DEFECTIVE_PRODUCT', 'REPAYMENT_PLANNED', 'CHANGE_OF_MIND', 'OTHER'))
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
