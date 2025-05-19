@@ -245,20 +245,22 @@ CREATE TABLE IF NOT EXISTS `discount_policies`(
     policy_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     book_isbn VARCHAR(255) DEFAULT NULL,
     category_id BIGINT DEFAULT NULL,
-    
+    total_price_achieve INT DEFAULT NULL,
     discount_percent INT NOT NULL,
     start_date DATE,
     end_date DATE,
-    total_price_achieve INT,
+    
     FOREIGN KEY(category_id) 
       REFERENCES book_categories(category_id),
     FOREIGN KEY(book_isbn)
       REFERENCES books(book_isbn),
    CONSTRAINT chk_book_or_category
       CHECK (
-         (book_isbn IS NOT NULL AND category_id IS NULL)
+         (book_isbn IS NOT NULL AND category_id IS NULL AND total_price_achieve IS NULL )
       OR
-         (book_isbn IS NULL AND category_id IS NOT NULL))  -- 추가
+         (book_isbn IS NULL AND category_id IS NOT NULL AND total_price_achieve IS NULL)
+	  OR
+         (book_isbn IS NULL AND category_id IS NULL AND total_price_achieve IS NOT NULL))  -- 추가
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- ===============================
