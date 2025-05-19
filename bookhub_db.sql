@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS `employees` (
     employee_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     branch_id BIGINT NOT NULL,
     position_id BIGINT NOT NULL, # 직급 추가
+	authority_id BIGINT NOT NULL,
     employee_number VARCHAR(20) NOT NULL UNIQUE, 
     login_id VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
@@ -57,6 +58,7 @@ CREATE TABLE IF NOT EXISTS `employees` (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     status Enum('EMPLOYED', 'EXITED'),
     FOREIGN KEY (branch_id) REFERENCES branches (branch_id) ON DELETE CASCADE,
+    FOREIGN KEY (authority_id) REFERENCES authorities (authority_id) ON DELETE CASCADE,
     FOREIGN KEY (position_id) REFERENCES positions (position_id) ON DELETE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 # === 퇴사자 개인 정보 관리 (보존기간: 한국 기준 일반 권고)
@@ -72,13 +74,6 @@ CREATE TABLE IF NOT EXISTS `employees` (
 # 권한을 직원과 다대다 구분을 사용할 것인지
 # : 한 명의 직원이 여러 개의 권한 사용이 가능
 # 본사 관리자, 지점 관리자, 직원
-CREATE TABLE IF NOT EXISTS `employee_auth` (
-    employee_id BIGINT NOT NULL,
-    authority_id BIGINT NOT NULL,
-    PRIMARY KEY (employee_id, authority_id),
-    CONSTRAINT fk_employee FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE,
-    CONSTRAINT fk_auth FOREIGN KEY (authority_id) REFERENCES authorities(authority_id) ON DELETE CASCADE
-)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- ====================================
 -- 3. Employee Change Logs and Approval Logs
