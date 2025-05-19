@@ -5,7 +5,10 @@
 -- ====================================
 -- 1. Database and Schema Setup
 -- ====================================
-CREATE DATABASE IF NOT EXISTS `bookhub_db`;
+CREATE DATABASE IF NOT EXISTS `bookhub_db` 
+CHARACTER SET utf8mb4 
+COLLATE utf8mb4_unicode_ci;
+
 USE `bookhub_db`;
 
 -- ===========================
@@ -17,7 +20,7 @@ CREATE TABLE IF NOT EXISTS branches (
     branch_location VARCHAR(255) NOT NULL, # 주소
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 # authorities 테이블
 # : 권한(Authority)
@@ -26,7 +29,7 @@ CREATE TABLE IF NOT EXISTS branches (
 CREATE TABLE IF NOT EXISTS `authorities` (
     authority_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     authority_name VARCHAR(255) NOT NULL UNIQUE # UNIQUE 제약 조건 추가(중복 권한명 방지)
-);
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 # positions 테이블 추가
 # : 직급(Position)
@@ -35,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `authorities` (
 CREATE TABLE IF NOT EXISTS `positions` (
     position_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     position_name VARCHAR(255) NOT NULL
-); 
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 
 CREATE TABLE IF NOT EXISTS `employees` (
@@ -55,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `employees` (
     status Enum('EMPLOYED', 'EXITED'),   -- 추가함 
     FOREIGN KEY (branch_id) REFERENCES branches (branch_id) ON DELETE CASCADE,
     FOREIGN KEY (position_id) REFERENCES positions (position_id) ON DELETE CASCADE
-);
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 # cf) 퇴사자 구분 하고 있는지: status Enum('EMPLOYED', 'EXITED') 
 # === 퇴사자 개인 정보 관리 (보존기간: 한국 기준 일반 권고)
 # 인사기록, 계약서 (3 ~ 5년)
@@ -73,7 +76,7 @@ CREATE TABLE IF NOT EXISTS `employee_auth` (
     PRIMARY KEY (employee_id, authority_id),
     CONSTRAINT fk_employee FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE,
     CONSTRAINT fk_auth FOREIGN KEY (authority_id) REFERENCES authorities(authority_id) ON DELETE CASCADE
-);
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- ====================================
 -- 3. Employee Change Logs and Approval Logs
@@ -90,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `employee_signup_approvals` (
     FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE,
     FOREIGN KEY (authorizer_id) REFERENCES employees(employee_id) ON DELETE CASCADE,
 	CONSTRAINT chk_status CHECK (status IN ('PENDING', 'APPROVED', 'DENIED'))
-);
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `employee_change_logs` (
    log_id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -111,7 +114,7 @@ CREATE TABLE IF NOT EXISTS `employee_change_logs` (
     CONSTRAINT chk_process_type
       CHECK (change_type IN ('POSITION_CHANGE', 'AUTHORITY_CHANGE', 'BRANCH_CHANGE'))
       # : 직급 변경 추가로 change_type 확장
-);
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 # 퇴사 테이블
 # : 퇴사 직원
@@ -124,7 +127,7 @@ CREATE TABLE IF NOT EXISTS `employee_exit_logs` (
       REFERENCES employees(employee_id),
     CONSTRAINT chk_exit_reason
       CHECK (exit_reason IN ('VOLUNTEER', 'FORCED', 'TERMINATED')) 
-);
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 # 익명화: status = 'EXITED'이고 exit_at >= 3년 전인 경우 트리거 또는 배치 처리로 자동화 가능
 
 -- ===============================
@@ -152,17 +155,17 @@ CREATE TABLE IF NOT EXISTS `book_categories` (
     parent_category_id BIGINT DEFAULT NULL,
     category_name VARCHAR(255) NOT NULL,
     FOREIGN KEY (parent_category_id) REFERENCES book_categories (category_id) ON DELETE CASCADE
-);
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `authors`(
     author_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     author_name VARCHAR(255) NOT NULL
-);
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `publishers` (
     publisher_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     publisher_name VARCHAR(255) NOT NULL
-);
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `books` (
     book_isbn VARCHAR(255) PRIMARY KEY,
@@ -183,7 +186,7 @@ CREATE TABLE IF NOT EXISTS `books` (
       REFERENCES authors(author_id),
     FOREIGN KEY (publisher_id)
       REFERENCES publishers(publisher_id)
-);
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 # book_description(책 설명), cover_url(책 표지 이미지), page_count, language 등 추가 가능
 
 CREATE TABLE IF NOT EXISTS `book_display_locations` (
@@ -201,7 +204,7 @@ CREATE TABLE IF NOT EXISTS `book_display_locations` (
     FOREIGN KEY (book_isbn) REFERENCES books(book_isbn),
     CONSTRAINT chk_display_type
 		CHECK (display_type IN ('BOOKSHELF','DISPLAYTABLE'))
-);
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 # display_note (설명용) 추가 가능 - 완료!
 
 -- ===============================
@@ -223,7 +226,7 @@ CREATE TABLE IF NOT EXISTS stocks (
     # : 책 수량에 따라 is_stock값이 변함
     #      >> book_amount가 0이면, is_stock = false 와 동일 (중복되는 필드)
     #      >> ERP에는 수량이 중요하기 때문에 book_amount 만으로 충분
-);
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `stock_logs` (
     log_id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -241,7 +244,7 @@ CREATE TABLE IF NOT EXISTS `stock_logs` (
     FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
     # target_branch_id
     # : 이동되는 지점의 ID -- 완료 
-);
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 
 -- ===============================
@@ -270,7 +273,7 @@ CREATE TABLE IF NOT EXISTS `discount_policies`(
 			(book_isbn IS NOT NULL AND category_id IS NULL)
 		OR
 			(book_isbn IS NULL AND category_id IS NOT NULL))  -- 추가
-);
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- ===============================
 -- 7. Order Management (발주 및 주문 관리)
@@ -291,7 +294,7 @@ CREATE TABLE IF NOT EXISTS `purchase_orders` (
         REFERENCES employees (employee_id),
     CONSTRAINT chk_purchase_order_status
       CHECK (purchase_order_status IN ('REQEUSTED', 'APPROVED', 'REJECTED'))
-);
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 
 CREATE TABLE IF NOT EXISTS `purchase_order_approvals` (
@@ -304,7 +307,7 @@ CREATE TABLE IF NOT EXISTS `purchase_order_approvals` (
         REFERENCES employees (employee_id),
     FOREIGN KEY (purchase_order_id)
         REFERENCES purchase_orders (purchase_order_id)
-);
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `book_reception_approvals` (
     book_reception_approval_id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -319,7 +322,7 @@ CREATE TABLE IF NOT EXISTS `book_reception_approvals` (
       REFERENCES branches (branch_id),
     FOREIGN KEY (purchase_order_approval_id)
         REFERENCES purchase_order_approvals (purchase_order_approval_id)
-);
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 # 테이블 전체 구성 변경 필요
 # : order 테이블 (총괄하는 테이블 - 구매 번호, 총 금액, 구매자, 총 구매 수량, 구매 날짜 등)
@@ -330,7 +333,7 @@ CREATE TABLE IF NOT EXISTS `customer_orders` (
     customer_order_total_amount INT NOT NULL,
     customer_order_total_price INT NOT NULL,
     customer_order_date_at DATETIME NOT NULL
-);
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `customer_orders_detail` (
     customer_orders_detail_id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -346,7 +349,7 @@ CREATE TABLE IF NOT EXISTS `customer_orders_detail` (
 		REFERENCES discount_policies (policy_id),
     FOREIGN KEY (book_isbn)
         REFERENCES books(book_isbn)
-);
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 
 #PK 값 설정 및 환불일시 환불사유(제품 결함,  재결제예정, 단순변심, 기타) 추가함
@@ -359,7 +362,7 @@ CREATE TABLE IF NOT EXISTS `refund_orders` (
         REFERENCES orders (order_id),
     CONSTRAINT chk_refund_reason
       CHECK (refund_reason IN ('DEFECTIVE_PRODUCT', 'REPAYMENT_PLANNED', 'CHANGE_OF_MIND', 'OTHER'))
-);
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 
 -- ===============================
@@ -389,7 +392,7 @@ CREATE TABLE IF NOT EXISTS `book_logs` (
       REFERENCES discount_policies (policy_id),
     CONSTRAINT chk_log_type
       CHECK (log_type IN ('CREATE', 'PRICE_CHANGE', 'DISPLAY_LOCATION', 'DISCOUNT_RATE','DELETE'))
-);
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 
 
@@ -407,7 +410,7 @@ CREATE TABLE IF NOT EXISTS alerts (
     is_read BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE
-);
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 # 메시지 내용만으로는 어떤 알림이 어떤 '책', '발주서', '정책'과 관련되어 있는지 불분명
 # : target_type   알림이 연결된 대상 테이블 타입 (BOOK, PURCHASE_ORDER 등)
 # : target_id   해당 대상의 기본 키 값 (book_isbn, purchase_order_id, policy_id 등과 매칭)
