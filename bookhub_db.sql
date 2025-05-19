@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS branches (
 # authorities 테이블
 # : 권한(Authority)
 # : 로그인 후 접근 권한, 기능 수행 제어 등 보안 목적
-# : USER, ADMIN, MANAGER 등
+# : STAFF, ADMIN, MANAGER 등
 CREATE TABLE IF NOT EXISTS `authorities` (
     authority_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     authority_name VARCHAR(255) NOT NULL UNIQUE # UNIQUE 제약 조건 추가(중복 권한명 방지)
@@ -44,8 +44,8 @@ CREATE TABLE IF NOT EXISTS `positions` (
 CREATE TABLE IF NOT EXISTS `employees` (
     employee_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     branch_id BIGINT NOT NULL,
-    position_id BIGINT NOT NULL, # 직급 추가
-	authority_id BIGINT NOT NULL,
+    position_id BIGINT NOT NULL DEFAULT 1, # 직급 추가
+	authority_id BIGINT NOT NULL DEFAULT 1,
     employee_number VARCHAR(20) NOT NULL UNIQUE, 
     login_id VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
