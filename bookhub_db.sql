@@ -200,11 +200,8 @@ CREATE TABLE IF NOT EXISTS `stocks` (
     book_isbn VARCHAR(255) NOT NULL,
     branch_id BIGINT NOT NULL,
     book_amount INT NOT NULL,
-    stock_status VARCHAR(255) NOT NULL,
     FOREIGN KEY (book_isbn) REFERENCES books(book_isbn),
-    FOREIGN KEY (branch_id) REFERENCES branches(branch_id),
-    CONSTRAINT chk_stock_status
-      CHECK (stock_status IN ('IN_STOCK', 'OUT_OF_STOCK', 'RESERVED'))
+    FOREIGN KEY (branch_id) REFERENCES branches(branch_id)
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `stock_logs` (
