@@ -14,7 +14,7 @@ USE `bookhub_db`;
 -- ===========================
 -- 2. Branches and Employees
 -- ===========================
-CREATE TABLE IF NOT EXISTS branches (
+CREATE TABLE IF NOT EXISTS `branches` (
     branch_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     branch_name VARCHAR(255) NOT NULL,
     branch_location VARCHAR(255) NOT NULL, # 주소
@@ -131,26 +131,15 @@ CREATE TABLE IF NOT EXISTS `employee_exit_logs` (
 -- 4. Book Categories, Authors, Publishers
 -- ===============================
 
-##### [카테고리 보류] #####
--- CREATE TABLE IF NOT EXISTS `first_book_category`(
---     first_book_category_id INT AUTO_INCREMENT PRIMARY KEY,
---     first_book_category_name VARCHAR(255) NOT NULL
--- );
-
--- CREATE TABLE IF NOT EXISTS `second_book_category`(
---     second_book_category_id INT AUTO_INCREMENT PRIMARY KEY,
---     first_book_category_id INT NOT NULL,
---     second_book_category_name VARCHAR(255) NOT NULL,
---     FOREIGN KEY(first_book_category_id) 
---       REFERENCES first_book_category(first_book_category_id)
--- );
-
 # 카테고리 (계층 구조)
 # : category_level (1차, 2차 등) 추가 고려
 CREATE TABLE IF NOT EXISTS `book_categories` (
     category_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     parent_category_id BIGINT DEFAULT NULL,
     category_name VARCHAR(255) NOT NULL,
+    category_level INT NOT NULL DEFAULT 1, -- 1: 대분류, 2: 소분류 등...
+    category_order INT DEFAULT 0, -- 카테고리 정렬 우선순위
+    is_active BOOLEAN DEFAULT TRUE, -- 비활성 카테고리 제외 필터용 (삭제 대신 / 보존성 유지)
     FOREIGN KEY (parent_category_id) REFERENCES book_categories (category_id) ON DELETE CASCADE
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -206,7 +195,7 @@ CREATE TABLE IF NOT EXISTS `book_display_locations` (
 -- ===============================
 -- 5. Inventory Management (재고 관리)
 -- ===============================
-CREATE TABLE IF NOT EXISTS stocks (
+CREATE TABLE IF NOT EXISTS `stocks` (
     stock_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     book_isbn VARCHAR(255) NOT NULL,
     branch_id BIGINT NOT NULL,
@@ -311,7 +300,7 @@ CREATE TABLE IF NOT EXISTS `book_reception_approvals` (
         REFERENCES purchase_order_approvals (purchase_order_approval_id)
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS customer(
+CREATE TABLE IF NOT EXISTS `customer`(
    customer_id BIGINT AUTO_INCREMENT PRIMARY KEY, 
     customer_name VARCHAR(255),
     customer_email VARCHAR(255),
@@ -339,7 +328,7 @@ CREATE TABLE IF NOT EXISTS `customer_orders_detail` (
    branch_id BIGINT NOT NULL,
     amount BIGINT not null,
     price BIGINT not null,
-   applied_policy_id BIGINT, #정가일수도 있으므로 NOT NULL 제거함
+   applied_policy_id BIGINT,
    FOREIGN KEY (customer_order_id)
       REFERENCES customer_orders (customer_order_id),
    FOREIGN KEY (applied_policy_id)
@@ -385,7 +374,7 @@ CREATE TABLE IF NOT EXISTS `book_logs` (
       CHECK (log_type IN ('CREATE', 'PRICE_CHANGE', 'DISPLAY_LOCATION', 'DISCOUNT_RATE','DELETE'))
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS alerts (
+CREATE TABLE IF NOT EXISTS `alerts` (
     alert_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     employee_id BIGINT NOT NULL,
     alert_type ENUM('SIGNUP_APPROVAL', 'STOCK_WARNING', 'REQUEST', 'NOTICE') NOT NULL,
