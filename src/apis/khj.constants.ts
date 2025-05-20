@@ -1,5 +1,9 @@
 const API_DOMAIN = "http://localhost:8080";
 
+const ADMIN = 'admin';
+const MANAGER = 'manager';
+const COMMON = 'common';
+
 //! 1) 인증 관련 요청 URL
 const AUTH_MODULE_URL = `${API_DOMAIN}/api/v1/auth`;
 
@@ -18,7 +22,7 @@ const PASSWORD_CHANGE_URL = `${AUTH_MODULE_URL}/password-change`;
 
 
 //! 2) ADMIN 관련 요청 URL
-const ADMIN_MODULE_URL = `${API_DOMAIN}/api/v1/admin`;
+const ADMIN_MODULE_URL = `${API_DOMAIN}/api/v1/${ADMIN}`;
 
 //? 지점 관련 기능
 const BRANCH_MODULE_URL = `${ADMIN_MODULE_URL}/ branches`;
