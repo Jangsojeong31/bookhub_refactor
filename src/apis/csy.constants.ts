@@ -48,22 +48,22 @@ const DELETE_LOCATION_URL = (LocationId: number) => `${LOCATION_URL_MANAGER}/${L
 
 // & 3. discount_policies
 // 베이스 URL
-const EVENT_URL_ADMIN = `${API_DOMAIN}/api/v1/${ADMIN}/events`;
+const POLICY_URL_ADMIN = `${API_DOMAIN}/api/v1/${ADMIN}/policies`;
 
 // 1) 이벤트 생성
-const POST_EVENT_URL = `${EVENT_URL_ADMIN}`;
+const POST_POLICY_URL = `${POLICY_URL_ADMIN}`;
 
 //2) 이벤트 전체 조회
-const GET_ALL_EVENTS_URL = `${EVENT_URL_ADMIN}`;
+const GET_ALL_POLICIES_URL = `${POLICY_URL_ADMIN}`;
 
 //3) 이벤트 단건 조회
-const GET_EVENT_URL = (EventId : number) => `${EVENT_URL_ADMIN}/${EventId}`;
+const GET_POLICY_URL = (PolicyId : number) => `${POLICY_URL_ADMIN}/${PolicyId}`;
 
 //4) 이벤트 수정
-const PUT_EVENT_URL = (EventId : number) => `${EVENT_URL_ADMIN}/${EventId}`;
+const PUT_POLICY_URL = (PolicyId : number) => `${POLICY_URL_ADMIN}/${PolicyId}`;
 
 //5) 이벤트 삭제
-const DELETE_EVENT_URL = (EventId : number) => `${EVENT_URL_ADMIN}/${EventId}`;
+const DELETE_POLICY_URL = (PolicyId : number) => `${POLICY_URL_ADMIN}/${PolicyId}`;
 
 
 

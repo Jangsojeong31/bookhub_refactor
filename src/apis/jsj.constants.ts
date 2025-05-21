@@ -27,28 +27,7 @@ const PUT_AUTHOR_URL = (authorId: number) => `${AUTHOR_MODULE_URL}/${authorId}`;
 const DELETE_AUTHOR_URL = (authorId: number) => `${AUTHOR_MODULE_URL}/${authorId}`;
 
 
-
-// & 2. publishers
-// 베이스 URL
-const PUBLISHER_MODULE_URL = `${API_DOMAIN}/api/v1/${ADMIN}/publishers`;
-
-// 1) 출판사 등록
-const POST_PUBLISHER_URL = `${PUBLISHER_MODULE_URL}`;
-
-// 2) 출판사 전체 조회
-const GET_ALL_PUBLISHER_URL = `${PUBLISHER_MODULE_URL}`;
-
-// 3) 출판사 단건 조회
-const GET_PUBLISHER_URL = (publisherId: number) => `${PUBLISHER_MODULE_URL}/${publisherId}`;
-
-// 4) 출판사 수정
-const PUT_PUBLISHER_URL = (publisherId: number) => `${PUBLISHER_MODULE_URL}/${publisherId}`;
-
-// 5) 출판사 삭제
-const DELETE_PUBLISHER_URL = (publisherId: number) => `${PUBLISHER_MODULE_URL}/${publisherId}`;
-
-
-// & 3. purchase_orders
+// & 2. purchase_orders
 // 베이스 URL
 const PURCHASE_ORDER_MODULE_URL_MANAGER = `${API_DOMAIN}/api/v1/${MANAGER}/purchase-orders`;
 const PURCHASE_ORDER_MODULE_URL_ADMIN = `${API_DOMAIN}/api/v1/${ADMIN}/purchase-orders`;
@@ -72,7 +51,7 @@ const DELETE_PURCHASE_ORDER_URL = (purchaseOrderId: number) => `${PURCHASE_ORDER
 const PUT_PURCHASE_ORDER_STATUS_URL = (purchaseOrderId: number) => `${PURCHASE_ORDER_MODULE_URL_ADMIN}/status/${purchaseOrderId}`;
 
 
-// & 4. purchase_order_approvals
+// & 3. purchase_order_approvals
 // 베이스 URL
 const PURCHASE_APPROVAL_MODULE_URL = `${API_DOMAIN}/api/v1/${ADMIN}/purchase-approvals`;
 
