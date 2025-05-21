@@ -229,8 +229,11 @@ CREATE TABLE IF NOT EXISTS `stock_logs` (
 
 CREATE TABLE IF NOT EXISTS `discount_policies`(
     policy_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    policy_title VARCHAR(255) NOT NULL,
+    policy_description TEXT,
     book_isbn VARCHAR(255) DEFAULT NULL,
     category_id BIGINT DEFAULT NULL,
+    
     total_price_achieve INT DEFAULT NULL,
     discount_percent INT NOT NULL,
     start_date DATE,
@@ -287,7 +290,7 @@ CREATE TABLE IF NOT EXISTS `book_reception_approvals` (
     employee_id BIGINT NOT NULL,
     branch_id BIGINT NOT NULL,
     purchase_order_approval_id BIGINT NOT NULL,
-    is_reception_approved BOOLEAN NOT NULL,
+    is_reception_approved BOOLEAN NOT NULL DEFAULT FALSE,
     reception_date_at DATETIME NOT NULL,
     FOREIGN KEY (employee_id)
         REFERENCES employees (employee_id),
