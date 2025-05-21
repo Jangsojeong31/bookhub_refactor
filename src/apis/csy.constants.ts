@@ -1,4 +1,4 @@
-// csy.constants.ts
+// jsj.constants.ts
 // # URL 상수 정의
 
 const API_DOMAIN = 'http://localhost:8080';
@@ -80,7 +80,7 @@ const GET_BESTSELLER_WEEKLY_URL = (startDate: Date, endDate: Date) => `${CUSTOME
 // 1) 월간 베스트셀러 조회
 const GET_BESTSELLER_MONTHLY_URL = (startDate: Date, endDate: Date) => `${CUSTOMER_ORDER_MODULE_URL_ADMIN}/monthly?startDate=${startDate}&endDate=${endDate}`;
 
-// 1) 연간 베스트셀러 조회
+// 1) 연연간 베스트셀러 조회
 const GET_BESTSELLER_YEARLY_URL = (startDate: Date, endDate: Date) => `${CUSTOMER_ORDER_MODULE_URL_ADMIN}/yearly?startDate=${startDate}&endDate=${endDate}`;
 
 // 3) 할인항목별 판매데이터 조회
