@@ -374,21 +374,30 @@ CREATE TABLE IF NOT EXISTS `book_logs` (
       CHECK (log_type IN ('CREATE', 'PRICE_CHANGE', 'DISPLAY_LOCATION', 'DISCOUNT_RATE','DELETE'))
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `alerts` (
+CREATE TABLE IF NOT EXISTS alerts (
     alert_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    employee_id BIGINT NOT NULL,
-    alert_type ENUM('SIGNUP_APPROVAL', 'STOCK_WARNING', 'REQUEST', 'NOTICE') NOT NULL,
-    # 로그인 승인 , 재고관련 알람, (발주/수령/주문)요청, 이벤트등록시 확인알람(공지사항 같은 느낌)
-    message TEXT NOT NULL,
-    #발주 수령 주문 각각 메시지를 다르게 할지 vs enum으로 다 등록시킬지
+    employee_id BIGINT NOT NULL, -- 알림 수신자
+    # <<alert_type>>    <tg_table> <tg_pk> <tg_isbn>  <msg>
+    # 'SIGNUP_APPROVAL' | 'NONE' | 'NULL' | 'NULL' | message("신규 직원 가입 승인 요청이 도착하였습니다.")
+    # 'STOCK_WARNING'   | 'BOOK' | 'NULL' | '4729' | message("책[책제목] 재고가 5권 이하 입니다.")
+# 'PURCHASE_REQUEST'| 'PURCHASE_ORDER' | 102 | 'NULL' | message("지점 A에서 [책제목] 발주 요청이 있습니다.")
+# 'DISCOUNT_POLICY' | 'DISCOUNT_POLICY' | 54 | 'NULL' | message("[책제목]에 대한 할인 정책이 새로 적용되었습니다.")
+    alert_type VARCHAR(255),
+    message TEXT NOT NULL, -- UI에 노출할 메시지
+    target_table VARCHAR(255), -- 관련 테이블
+    target_pk BIGINT DEFAULT NULL, -- 타겟 테이블의 기본키
+    target_isbn VARCHAR(255) DEFAULT NULL, -- 타겟이 책일 경우 isbn 사용
     
-   target_type ENUM('BOOK', 'PURCHASE_ORDER', 'DISCOUNT', 'CATEGORY', 'REVIEW') DEFAULT NULL,
-   target_id BIGINT DEFAULT NULL,
-  
-    is_read BOOLEAN DEFAULT FALSE,
+    is_read BOOLEAN DEFAULT FALSE, -- 읽음 여부
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE
+    
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE,
+    CONSTRAINT chk_alert_type
+      CHECK (alert_type IN ('SIGNUP_APPROVAL', 'SIGNUP_APPROVAL_SUCCESS', 'CHANGE_PERMISSION_APPROVAL', 'CHANGE_PERMISSION_SUCCESS',
+      'STOCK_LOW', 'STOCK_OUT', 'PURCHASE_REQUESTED', 'PURCHASE_APPROVED', 'BOOK_RECEIVED', 'BOOK_RECEIVED_SUCCESS', 'NOTICE')),
+      CONSTRAINT chk_target_table
+      CHECK (target_table IN ('BOOK', 'EMPLOYEES', 'PURCHASE_ORDERS', 'PURCHASE_APPROVALS','BOOK_RECEPTION_APPROVALS', 'DISCOUNT_POLICIES'))
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 # 메시지 내용만으로는 어떤 알림이 어떤 '책', '발주서', '정책'과 관련되어 있는지 불분명
-# : target_type   알림이 연결된 대상 테이블 타입 (BOOK, PURCHASE_ORDER 등)
+# : target_table   알림이 연결된 대상 테이블 타입 (BOOK, PURCHASE_ORDER 등)
 # : target_id   해당 대상의 기본 키 값 (book_isbn, purchase_order_id, policy_id 등과 매칭)
