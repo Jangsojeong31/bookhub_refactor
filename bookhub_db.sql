@@ -16,7 +16,7 @@ USE `bookhub_db`;
 -- ===========================
 CREATE TABLE IF NOT EXISTS `branches` (
     branch_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    branch_name VARCHAR(255) NOT NULL,
+    branch_name VARCHAR(255) NOT NULL UNIQUE,
     branch_location VARCHAR(255) NOT NULL, # 주소
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `authorities` (
 # : EX) 사원, 대리, 과장, 부장, "점장" 등
 CREATE TABLE IF NOT EXISTS `positions` (
     position_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    position_name VARCHAR(255) NOT NULL
+    position_name VARCHAR(255) NOT NULL UNIQUE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 
@@ -360,7 +360,6 @@ CREATE TABLE IF NOT EXISTS `book_logs` (
     branch_id BIGINT,
     policy_id BIGINT,
     book_isbn VARCHAR(255) NOT NULL,
-    book_title VARCHAR(255) NOT NULL, 
     log_type VARCHAR(25) NOT NULL,
     previous_price INT,
     previous_discount_rate INT,
