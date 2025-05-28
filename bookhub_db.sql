@@ -270,7 +270,7 @@ CREATE TABLE IF NOT EXISTS `purchase_orders` (
     FOREIGN KEY (employee_id)
         REFERENCES employees (employee_id),
     CONSTRAINT chk_purchase_order_status
-      CHECK (purchase_order_status IN ('REQEUSTED', 'APPROVED', 'REJECTED'))
+      CHECK (purchase_order_status IN ('REQUESTED', 'APPROVED', 'REJECTED'))
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `purchase_order_approvals` (
