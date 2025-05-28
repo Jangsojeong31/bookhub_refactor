@@ -147,7 +147,7 @@ CREATE TABLE IF NOT EXISTS `discount_policies`(
     end_date DATE DEFAULT NULL,
     
    CONSTRAINT chk_policy_type
-      CHECK (policy_type IN ('BOOKDISCOUNT','CATEGORYDISCOUNT','TOTALPRICEDISCOUNT'))
+      CHECK (policy_type IN ('BOOK_DISCOUNT','CATEGORY_DISCOUNT','TOTAL_PRICE_DISCOUNT'))
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 
@@ -221,7 +221,7 @@ CREATE TABLE IF NOT EXISTS `book_display_locations` (
     FOREIGN KEY (branch_id) REFERENCES branches(branch_id),
     FOREIGN KEY (book_isbn) REFERENCES books(book_isbn),
     CONSTRAINT chk_display_type
-      CHECK (display_type IN ('BOOKSHELF','DISPLAYTABLE'))
+      CHECK (display_type IN ('BOOK_SHELF','DISPLAY_TABLE'))
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 
