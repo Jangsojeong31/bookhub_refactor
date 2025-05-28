@@ -95,6 +95,7 @@ CREATE TABLE IF NOT EXISTS `employee_signup_approvals` (
 CREATE TABLE IF NOT EXISTS `employee_change_logs` (
    log_id BIGINT AUTO_INCREMENT PRIMARY KEY,
    employee_id BIGINT NOT NULL,
+   authorizer_id BIGINT NOT NULL,
    change_type VARCHAR(25) NOT NULL,
    
    previous_authority_id BIGINT DEFAULT NULL, # 권한 변경
@@ -102,8 +103,10 @@ CREATE TABLE IF NOT EXISTS `employee_change_logs` (
    previous_branch_id BIGINT DEFAULT NULL, # 지점 변경
    
    changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-   FOREIGN KEY (employee_id)
-      REFERENCES employees(employee_id),
+	FOREIGN KEY (employee_id)
+      REFERENCES employees(employee_id),  
+	FOREIGN KEY (employee_id)
+      REFERENCES employees(authorizer_id),
     FOREIGN KEY (previous_authority_id)
       REFERENCES authorities(authority_id),
     FOREIGN KEY (previous_branch_id)
