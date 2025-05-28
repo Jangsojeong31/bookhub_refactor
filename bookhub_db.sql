@@ -5,11 +5,12 @@
 -- ====================================
 -- 1. Database and Schema Setup
 -- ====================================
+drop database `bookhub_db` ;
 CREATE DATABASE IF NOT EXISTS `bookhub_db` 
 CHARACTER SET utf8mb4 
 COLLATE utf8mb4_unicode_ci;
-
 USE `bookhub_db`;
+
 
 -- ===========================
 -- 2. Branches and Employees
@@ -57,9 +58,9 @@ CREATE TABLE IF NOT EXISTS `employees` (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     status Enum('EMPLOYED', 'EXITED'),
-    FOREIGN KEY (branch_id) REFERENCES branches (branch_id) ON DELETE CASCADE,
-    FOREIGN KEY (authority_id) REFERENCES authorities (authority_id) ON DELETE CASCADE,
-    FOREIGN KEY (position_id) REFERENCES positions (position_id) ON DELETE CASCADE
+    FOREIGN KEY (branch_id) REFERENCES branches (branch_id),
+    FOREIGN KEY (authority_id) REFERENCES authorities (authority_id),
+    FOREIGN KEY (position_id) REFERENCES positions (position_id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 # === 퇴사자 개인 정보 관리 (보존기간: 한국 기준 일반 권고)
 # 인사기록, 계약서 (3 ~ 5년)
@@ -74,6 +75,7 @@ CREATE TABLE IF NOT EXISTS `employees` (
 # 권한을 직원과 다대다 구분을 사용할 것인지
 # : 한 명의 직원이 여러 개의 권한 사용이 가능
 # 본사 관리자, 지점 관리자, 직원
+
 
 -- ====================================
 -- 3. Employee Change Logs and Approval Logs
@@ -105,8 +107,8 @@ CREATE TABLE IF NOT EXISTS `employee_change_logs` (
    changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY (employee_id)
       REFERENCES employees(employee_id),  
-	FOREIGN KEY (employee_id)
-      REFERENCES employees(authorizer_id),
+	FOREIGN KEY (authorizer_id)
+      REFERENCES employees(employee_id),
     FOREIGN KEY (previous_authority_id)
       REFERENCES authorities(authority_id),
     FOREIGN KEY (previous_branch_id)
@@ -130,8 +132,28 @@ CREATE TABLE IF NOT EXISTS `employee_exit_logs` (
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 # 익명화: status = 'EXITED'이고 exit_at >= 3년 전인 경우 트리거 또는 배치 처리로 자동화 가능
 
+
 -- ===============================
--- 4. Book Categories, Authors, Publishers
+-- 4. Discount and Policy Management (할인 및 정책 관리)
+-- ===============================
+CREATE TABLE IF NOT EXISTS `discount_policies`(
+    policy_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    policy_title VARCHAR(255) NOT NULL,
+    policy_description TEXT,
+    policy_type VARCHAR(255) NOT NULL,
+    
+    total_price_achieve INT DEFAULT NULL,
+    discount_percent INT NOT NULL,
+    start_date DATE,
+    end_date DATE,
+    
+   CONSTRAINT chk_policy_type
+      CHECK (policy_type IN ('BOOKDISCOUNT','CATEGORYDISCOUNT','TOTALPRICEDISCOUNT'))
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+
+-- ===============================
+-- 5. Book Categories, Authors, Publishers
 -- ===============================
 
 # 카테고리 (계층 구조)
@@ -143,7 +165,11 @@ CREATE TABLE IF NOT EXISTS `book_categories` (
     category_level INT NOT NULL DEFAULT 1, -- 1: 대분류, 2: 소분류 등...
     category_order INT DEFAULT 0, -- 카테고리 정렬 우선순위
     is_active BOOLEAN DEFAULT TRUE, -- 비활성 카테고리 제외 필터용 (삭제 대신 / 보존성 유지)
-    FOREIGN KEY (parent_category_id) REFERENCES book_categories (category_id) ON DELETE CASCADE
+    discount_policy_id BIGINT,
+    FOREIGN KEY (parent_category_id)
+		REFERENCES book_categories (category_id) ON DELETE CASCADE,
+	FOREIGN KEY (discount_policy_id)
+		REFERENCES discount_policies (policy_id) 
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `authors`(
@@ -168,14 +194,17 @@ CREATE TABLE IF NOT EXISTS `books` (
     page_count VARCHAR(255) NOT NULL, # 책 페이지
     language VARCHAR(255) NOT NULL, # 책 원본 나라 표시
     description TEXT,
-   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    discount_policy_id BIGINT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id)
       REFERENCES book_categories (category_id),
     FOREIGN KEY (author_id)
       REFERENCES authors(author_id),
     FOREIGN KEY (publisher_id)
-      REFERENCES publishers(publisher_id)
+      REFERENCES publishers(publisher_id),
+	FOREIGN KEY (discount_policy_id)
+	  REFERENCES discount_policies (policy_id) 
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `book_display_locations` (
@@ -195,8 +224,9 @@ CREATE TABLE IF NOT EXISTS `book_display_locations` (
       CHECK (display_type IN ('BOOKSHELF','DISPLAYTABLE'))
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+
 -- ===============================
--- 5. Inventory Management (재고 관리)
+-- 6. Inventory Management (재고 관리)
 -- ===============================
 CREATE TABLE IF NOT EXISTS `stocks` (
     stock_id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -225,35 +255,6 @@ CREATE TABLE IF NOT EXISTS `stock_logs` (
       CHECK (action_type IN ('IN', 'OUT', 'MOVE', 'LOSS'))
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-
--- ===============================
--- 6. Discount and Policy Management (할인 및 정책 관리)
--- ===============================
-
-CREATE TABLE IF NOT EXISTS `discount_policies`(
-    policy_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    policy_title VARCHAR(255) NOT NULL,
-    policy_description TEXT,
-    book_isbn VARCHAR(255) DEFAULT NULL,
-    category_id BIGINT DEFAULT NULL,
-    
-    total_price_achieve INT DEFAULT NULL,
-    discount_percent INT NOT NULL,
-    start_date DATE,
-    end_date DATE,
-    
-    FOREIGN KEY(category_id) 
-      REFERENCES book_categories(category_id),
-    FOREIGN KEY(book_isbn)
-      REFERENCES books(book_isbn),
-   CONSTRAINT chk_book_or_category
-      CHECK (
-         (book_isbn IS NOT NULL AND category_id IS NULL AND total_price_achieve IS NULL )
-      OR
-         (book_isbn IS NULL AND category_id IS NOT NULL AND total_price_achieve IS NULL)
-	  OR
-         (book_isbn IS NULL AND category_id IS NULL AND total_price_achieve IS NOT NULL))  -- 추가
-)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- ===============================
 -- 7. Order Management (발주 및 주문 관리)
@@ -304,11 +305,11 @@ CREATE TABLE IF NOT EXISTS `book_reception_approvals` (
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `customer`(
-   customer_id BIGINT AUTO_INCREMENT PRIMARY KEY, 
-    customer_name VARCHAR(255),
-    customer_email VARCHAR(255),
-    customer_phone_number VARCHAR(255),
-    customer_address VARCHAR(255),
+    customer_id BIGINT AUTO_INCREMENT PRIMARY KEY, 
+    customer_name VARCHAR(255) NOT NULL,
+    customer_email VARCHAR(255) NOT NULL UNIQUE,
+    customer_phone_number VARCHAR(255) NOT NULL UNIQUE,
+    customer_address VARCHAR(255) NOT NULL,
     customer_created_at DATETIME NOT NULL #가입일
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -318,26 +319,26 @@ CREATE TABLE IF NOT EXISTS `customer_orders` (
     customer_id BIGINT NOT NULL,
     customer_order_total_amount BIGINT NOT NULL,
     customer_order_total_price BIGINT NOT NULL, # cusc
+    applied_policy_id BIGINT,
     customer_order_date_at DATETIME NOT NULL,
     FOREIGN KEY (customer_id)
-      REFERENCES customer (customer_id)
+      REFERENCES customer (customer_id),
+      FOREIGN KEY (applied_policy_id)
+      REFERENCES discount_policies (policy_id)
     
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `customer_orders_detail` (
-    customer_orders_detail_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+   customer_orders_detail_id BIGINT AUTO_INCREMENT PRIMARY KEY,
    customer_order_id BIGINT NOT NULL, 
    book_isbn VARCHAR(255) NOT NULL,
    branch_id BIGINT NOT NULL,
-    amount BIGINT not null,
-    price BIGINT not null,
-   applied_policy_id BIGINT,
+   amount BIGINT NOT NULL,
+   price BIGINT NOT NULL,
    FOREIGN KEY (customer_order_id)
       REFERENCES customer_orders (customer_order_id),
-   FOREIGN KEY (applied_policy_id)
-      REFERENCES discount_policies (policy_id),
-    FOREIGN KEY (book_isbn)
-        REFERENCES books(book_isbn)
+   FOREIGN KEY (book_isbn)
+	  REFERENCES books(book_isbn)
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `refund_orders` (
@@ -350,6 +351,7 @@ CREATE TABLE IF NOT EXISTS `refund_orders` (
     CONSTRAINT chk_refund_reason
       CHECK (refund_reason IN ('DEFECTIVE_PRODUCT', 'REPAYMENT_PLANNED', 'CHANGE_OF_MIND', 'OTHER'))
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 
 -- ===============================
 -- 8. Logs and Alerts (로그 및 알림 관리)
