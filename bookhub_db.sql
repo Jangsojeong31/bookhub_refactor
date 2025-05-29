@@ -317,13 +317,17 @@ CREATE TABLE IF NOT EXISTS `customer`(
 CREATE TABLE IF NOT EXISTS `customer_orders` (
     customer_order_id BIGINT AUTO_INCREMENT PRIMARY KEY, 
     customer_id BIGINT NOT NULL,
+    branch_id BIGINT NOT NULL,
+    
     customer_order_total_amount BIGINT NOT NULL,
     customer_order_total_price BIGINT NOT NULL, # cusc
     applied_policy_id BIGINT DEFAULT NULL,
     customer_order_date_at DATETIME NOT NULL,
     FOREIGN KEY (customer_id)
       REFERENCES customer (customer_id),
-      FOREIGN KEY (applied_policy_id)
+	FOREIGN KEY (branch_id)
+	  REFERENCES branches (branch_id),
+	FOREIGN KEY (applied_policy_id)
       REFERENCES discount_policies (policy_id)
     
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -332,11 +336,10 @@ CREATE TABLE IF NOT EXISTS `customer_orders_detail` (
    customer_orders_detail_id BIGINT AUTO_INCREMENT PRIMARY KEY,
    customer_order_id BIGINT NOT NULL, 
    book_isbn VARCHAR(255) NOT NULL,
-   branch_id BIGINT NOT NULL,
    amount BIGINT NOT NULL,
    price BIGINT NOT NULL,
    FOREIGN KEY (customer_order_id)
-      REFERENCES customer_orders (customer_order_id),
+      REFERENCES customer_orders (customer_order_id) ON DELETE CASCADE,
    FOREIGN KEY (book_isbn)
      REFERENCES books(book_isbn)
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
