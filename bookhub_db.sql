@@ -350,7 +350,7 @@ CREATE TABLE IF NOT EXISTS `refund_orders` (
     refund_date_at DATETIME NOT NULL,
     refund_reason VARCHAR(255),
     FOREIGN KEY (order_id)
-        REFERENCES customer_orders (customer_order_id),
+        REFERENCES customer_orders (customer_order_id) ON DELETE CASCADE,
     CONSTRAINT chk_refund_reason
       CHECK (refund_reason IN ('DEFECTIVE_PRODUCT', 'REPAYMENT_PLANNED', 'CHANGE_OF_MIND', 'OTHER'))
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
