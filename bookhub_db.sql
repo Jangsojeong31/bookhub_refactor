@@ -193,7 +193,7 @@ CREATE TABLE IF NOT EXISTS `books` (
     book_title VARCHAR(255) NOT NULL,
     book_price INT NOT NULL,
     published_date DATE NOT NULL,
-    cover_url VARCHAR(255) NOT NULL, # 책 이미지 - VARCHAR 인지 애매함
+    cover_url VARCHAR(500) NOT NULL,
     page_count VARCHAR(255) NOT NULL, # 책 페이지
     language VARCHAR(255) NOT NULL, # 책 원본 나라 표시
     description TEXT DEFAULT NULL,
@@ -408,3 +408,24 @@ CREATE TABLE IF NOT EXISTS alerts (
 # 메시지 내용만으로는 어떤 알림이 어떤 '책', '발주서', '정책'과 관련되어 있는지 불분명
 # : target_table   알림이 연결된 대상 테이블 타입 (BOOK, PURCHASE_ORDER 등)
 # : target_id   해당 대상의 기본 키 값 (book_isbn, purchase_order_id, policy_id 등과 매칭)
+
+-- ===============================
+-- 9. File System (파일 시스템 관리)
+-- ===============================
+
+CREATE TABLE IF NOT EXISTS `upload_files` (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    original_name VARCHAR(255) NOT NULL,  -- 원본 파일명
+    file_name VARCHAR(255) NOT NULL,      -- 서버 저장 파일명
+    file_path VARCHAR(500) NOT NULL,      -- 저장 경로
+    file_type VARCHAR(100),               -- MIME 타입
+    file_size BIGINT NOT NULL,            -- 크기 (bytes)
+
+    target_id VARCHAR(255) NOT NULL,      -- 책 ISBN
+    target_type VARCHAR(50) NOT NULL,     -- BOOK만 허용
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT chk_target_type CHECK (target_type = 'BOOK'),
+    INDEX idx_target (target_type, target_id)
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
