@@ -235,25 +235,27 @@ CREATE TABLE IF NOT EXISTS `stocks` (
     stock_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     book_isbn VARCHAR(255) NOT NULL,
     branch_id BIGINT NOT NULL,
-    book_amount INT NOT NULL,
+    book_amount BIGINT DEFAULT 0,
+    UNIQUE KEY uq_book_branch (book_isbn, branch_id),
     FOREIGN KEY (book_isbn) REFERENCES books(book_isbn),
     FOREIGN KEY (branch_id) REFERENCES branches(branch_id)
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `stock_logs` (
     log_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    book_isbn VARCHAR(255) NOT NULL,
-    branch_id BIGINT NOT NULL,
     action_type VARCHAR(255) NOT NULL,
-    target_branch_id BIGINT NOT NULL,
-    amount INT NOT NULL,
     employee_id BIGINT NOT NULL,
+    book_isbn VARCHAR(255) NOT NULL,
+    branch_id BIGINT NOT NULL,    
+    target_branch_id BIGINT NOT NULL,
+    amount BIGINT NOT NULL,
+    book_amount BIGINT NOT NULL,
     action_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     description TEXT DEFAULT NULL, -- 재고 이동 이유
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id),
     FOREIGN KEY (book_isbn) REFERENCES books(book_isbn),
     FOREIGN KEY (branch_id) REFERENCES branches(branch_id),
     FOREIGN KEY (target_branch_id) REFERENCES branches(branch_id),
-    FOREIGN KEY (employee_id) REFERENCES employees(employee_id),
     CONSTRAINT chk_action_type
       CHECK (action_type IN ('IN', 'OUT', 'MOVE', 'LOSS'))
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
