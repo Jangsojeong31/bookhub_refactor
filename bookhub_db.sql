@@ -247,7 +247,6 @@ CREATE TABLE IF NOT EXISTS `stock_logs` (
     employee_id BIGINT NOT NULL,
     book_isbn VARCHAR(255) NOT NULL,
     branch_id BIGINT NOT NULL,    
-    target_branch_id BIGINT NOT NULL,
     amount BIGINT NOT NULL,
     book_amount BIGINT NOT NULL,
     action_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -255,9 +254,8 @@ CREATE TABLE IF NOT EXISTS `stock_logs` (
     FOREIGN KEY (employee_id) REFERENCES employees(employee_id),
     FOREIGN KEY (book_isbn) REFERENCES books(book_isbn),
     FOREIGN KEY (branch_id) REFERENCES branches(branch_id),
-    FOREIGN KEY (target_branch_id) REFERENCES branches(branch_id),
     CONSTRAINT chk_action_type
-      CHECK (action_type IN ('IN', 'OUT', 'MOVE', 'LOSS'))
+      CHECK (action_type IN ('IN', 'OUT', 'LOSS'))
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 
