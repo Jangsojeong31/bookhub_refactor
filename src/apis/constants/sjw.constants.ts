@@ -75,12 +75,15 @@ const GET_RECEPTION_URL = `${RECEPTION_ADMIN_MODULE_URL}`;
 // /${조회 기준} : bookReceptionApprovalId, employeeId, branchId, purchaseOrderApproalId, isReceptionApproved, receptionDateAt
 
 //! 5. 알람 관련 요청 베이스 URL
-const ALERT_COMMON_MODULE_URL = `${API_DOMAIN}/api/v1/common/alert`;
+const ALERT_COMMON_MODULE_URL = `${API_DOMAIN}/api/v1/common/alerts`;
 
 //? 알람 관련 기능
 
-// 알람 조회
-const GET_ALERT_URL = `${ALERT_COMMON_MODULE_URL}`;
+// 알람 전체 조회
+const GET_ALERT_URL = `${ALERT_COMMON_MODULE_URL}/{employeeId}`;
 
-// 알람 삭제
-const DELETE_ALERT_URL = (alertId : number) => `${ALERT_COMMON_MODULE_URL}/${alertId}`;
+// 읽지 않은 알람 전체 조회
+const GET_UNREAD_ALERT_URL = `${ALERT_COMMON_MODULE_URL}/unread/{employeeId}`;
+
+// 알람 읽음 처리
+const PUT_ALERT_URL = (alertId : number) => `${ALERT_COMMON_MODULE_URL}/read`;
