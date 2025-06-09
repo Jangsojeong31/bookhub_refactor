@@ -285,7 +285,7 @@ CREATE TABLE IF NOT EXISTS `purchase_order_approvals` (
     employee_id BIGINT NOT NULL,
     purchase_order_id BIGINT NOT NULL,
     is_approved BOOLEAN NOT NULL,
-    approved_date_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
     FOREIGN KEY (employee_id)
         REFERENCES employees (employee_id),
     FOREIGN KEY (purchase_order_id)
