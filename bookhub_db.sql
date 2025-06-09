@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `employee_signup_approvals` (
     authorizer_id BIGINT NOT NULL,
     status VARCHAR(255) NOT NULL,
     applied_at DATETIME,
-    update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, # PENDING과 DENIED 시 NULL로 둘 것인지 (거절된 경우 거절한 권한자에 대한 메모와 시기 작성은?)
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, # PENDING과 DENIED 시 NULL로 둘 것인지 (거절된 경우 거절한 권한자에 대한 메모와 시기 작성은?)
     -- PENDING 시 NULL로 두고, DENIED 시에는 시간을 기록하면 될 것 같습니다.
     denied_reason VARCHAR(255), -- 거절 이유
     FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE,
