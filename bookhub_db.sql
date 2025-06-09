@@ -82,9 +82,9 @@ CREATE TABLE IF NOT EXISTS `employees` (
 CREATE TABLE IF NOT EXISTS `employee_signup_approvals` (
     approval_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     employee_id BIGINT NOT NULL,
-    authorizer_id BIGINT NOT NULL,
-    status VARCHAR(255) NOT NULL,
-    applied_at DATETIME,
+    authorizer_id BIGINT,
+    status VARCHAR(255) not null,
+    applied_at DATETIME not null,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, # PENDING과 DENIED 시 NULL로 둘 것인지 (거절된 경우 거절한 권한자에 대한 메모와 시기 작성은?)
     -- PENDING 시 NULL로 두고, DENIED 시에는 시간을 기록하면 될 것 같습니다.
     denied_reason VARCHAR(255), -- 거절 이유
