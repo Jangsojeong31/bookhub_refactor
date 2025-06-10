@@ -12,19 +12,19 @@ const COMMON = 'common';
 const AUTHOR_MODULE_URL = `${API_DOMAIN}/api/v1/${ADMIN}/authors`;
 
 // 1) 저자 등록
-const POST_AUTHOR_URL = `${AUTHOR_MODULE_URL}`;
+export const POST_AUTHOR_URL = `${AUTHOR_MODULE_URL}`;
 
 // 2) 저자 전체 조회
-const GET_ALL_AUTHOR_URL = `${AUTHOR_MODULE_URL}`;
+export const GET_ALL_AUTHOR_URL = `${AUTHOR_MODULE_URL}`;
 
 // 3) 저자 단건 조회
-const GET_AUTHOR_URL = (authorId: number) => `${AUTHOR_MODULE_URL}/${authorId}`;
+export const GET_AUTHOR_URL = (authorId: number) => `${AUTHOR_MODULE_URL}/${authorId}`;
 
 // 4) 저자 수정
-const PUT_AUTHOR_URL = (authorId: number) => `${AUTHOR_MODULE_URL}/${authorId}`;
+export const PUT_AUTHOR_URL = (authorId: number) => `${AUTHOR_MODULE_URL}/${authorId}`;
 
 // 5) 저자 삭제
-const DELETE_AUTHOR_URL = (authorId: number) => `${AUTHOR_MODULE_URL}/${authorId}`;
+export const DELETE_AUTHOR_URL = (authorId: number) => `${AUTHOR_MODULE_URL}/${authorId}`;
 
 
 // & 2. purchase_orders
