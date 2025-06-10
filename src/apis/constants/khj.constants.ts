@@ -14,9 +14,13 @@ const SIGN_UP_URL = `${AUTH_MODULE_URL}/signup`;
 // 2) 로그인
 const SIGN_IN_URL = `${AUTH_MODULE_URL}/login`;
 
+// 3) 아이디 찾기 - 이메일 보내기
+const LOGIN_ID_FIND_EMAIL_URL = `${AUTH_MODULE_URL}/login-id-find/email`;
 // 3) 아이디 찾기
 const LOGIN_ID_FIND_URL = `${AUTH_MODULE_URL}/login-id-find`;
 
+// 4) 비밀번호 변경 - 이메일 보내기
+const PASSWORD_CHANGE_EMAIL_URL = `${AUTH_MODULE_URL}/password-change/email`;
 // 4) 비밀번호 변경
 const PASSWORD_CHANGE_URL = `${AUTH_MODULE_URL}/password-change`;
 
