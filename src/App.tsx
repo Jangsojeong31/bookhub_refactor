@@ -1,6 +1,8 @@
 import React from 'react';
 import Sidebar from './layouts/sidebar';
 import Header from './layouts/header';
+import { Route, Routes } from 'react-router-dom';
+import CreateAuthor from './views/author/CreateAuthor';
 
 function App() {
   return (
@@ -11,7 +13,12 @@ function App() {
       <div style={{ flex: 1, display: 'flex', minHeight: 0 }}>
         <Sidebar />
         <main style={{ flex: 1, padding: '30px', overflowY: 'auto', minHeight: 0, minWidth: 0 }}>
-          <h1>BookHub 메인 화면dfd</h1>
+          <h1>
+            BookHub 메인 화면dfd
+            <Routes>
+              <Route path='author' element={<CreateAuthor />} />
+            </Routes>
+          </h1>
         </main>
       </div>
     </div>
