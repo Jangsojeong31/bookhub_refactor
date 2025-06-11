@@ -1,11 +1,13 @@
-.sidebar {
-  width: 220px;
-  background-color: white;
-  padding: 20px 0;
-  border-right: 1px solid #ccc;
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
+/* .sidebar {
+   position: relative;
+  width: 200px;
+  height: calc(100vh - 40px); 
+  margin: 20px 0 20px 20px;  
+  border-radius: 12px;
+  
+  padding: 20px;
+  z-index: 10; 
+  background-color: #f5f8ff;
 }
 
 .menu {
@@ -20,7 +22,8 @@
   color: #003366;
   cursor: pointer;
   transition: all 0.3s;
-  background-color: #ffffff;
+ 
+  border-radius: 4px;
 }
 
 .menuItem:hover,
@@ -28,13 +31,14 @@
   background-color: #265185;
   font-weight: bold;
   color: white;
+  border-radius: 4px;
 }
 
 .submenu {
   overflow: hidden;
   transition: max-height 0.3s ease-out, padding 0.3s ease-out;
   flex-direction: column;
-  background-color: #f1f1f1;
+  background-color: #ffffff;
   margin: 0;
   display: flex;
 }
@@ -42,7 +46,7 @@
 .submenuItem {
   padding: 12px 10px;
   font-size: 14px;
-  background-color: #f1f1f1;
+  background-color: #ffffff;
   border-bottom: 1px solid #ddd;
   font-weight: bold;
   color: #003366;
@@ -52,7 +56,7 @@
   background-color: #e0e0e0;
 }
 
-.adminMode {
+.modeChange {
   background-color: #003366;
   color: white;
   font-weight: bold;
@@ -60,4 +64,76 @@
   cursor: pointer;
   margin-top: auto;
 }
+ */
 
+ .sidebar {
+  position: relative;
+  width: 200px;
+  height: calc(100vh - 40px);
+  margin: 20px 0 20px 20px;
+  border-radius: 12px;
+  padding: 20px;
+  z-index: 10;
+  background-color: #f5f8ff;
+  display: flex;
+  flex-direction: column;
+}
+
+.menuWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.menu {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.menuItem {
+  padding: 10px 20px;
+  color: #003366;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 4px;
+}
+
+.menuItem:hover,
+.active {
+  background-color: #265185;
+  font-weight: bold;
+  color: white;
+  border-radius: 4px;
+}
+
+.submenu {
+  overflow: hidden;
+  transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+  flex-direction: column;
+  background-color: #ffffff;
+  margin: 0;
+  display: flex;
+}
+
+.submenuItem {
+  padding: 12px 10px;
+  font-size: 14px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #ddd;
+  font-weight: bold;
+  color: #003366;
+}
+
+.submenuItem:hover {
+  background-color: #e0e0e0;
+}
+
+.modeChange {
+  background-color: #003366;
+  color: white;
+  font-weight: bold;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-top: auto; /* 핵심: 아래 고정 */
+}

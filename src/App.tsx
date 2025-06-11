@@ -3,11 +3,13 @@ import Sidebar from './layouts/sidebar';
 import Header from './layouts/header';
 import { Route, Routes } from 'react-router-dom';
 import CreateAuthor from './views/author/CreateAuthor';
-import ElseAuthor from './views/author/ElseAuthor';
+import * as csy from '@/apis/constants/csy.constants';
+import * as jsj from '@/apis/constants/jsj.constants';
+
 
 function App() {
   return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ height: '150vh', display: 'flex', flexDirection: 'column', border: 'none' }}>
       <Header />
 
       {/* 메인 콘텐츠 영역: 사이드바 + 본문 */}
@@ -17,7 +19,7 @@ function App() {
           <h1>
             BookHub 메인 화면dfd
             <Routes>
-              <Route path='author' element={<CreateAuthor />} />
+              <Route path={jsj.POST_AUTHOR_URL} element={<CreateAuthor />} />
             </Routes>
           </h1>
         </main>
