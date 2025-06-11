@@ -362,7 +362,6 @@ CREATE TABLE IF NOT EXISTS `refund_orders` (
 CREATE TABLE IF NOT EXISTS `book_logs` (
     book_log_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     employee_id BIGINT NOT NULL,
-    branch_id BIGINT DEFAULT NULL,
     policy_id BIGINT DEFAULT NULL,
     book_isbn VARCHAR(255) NOT NULL,
     log_type VARCHAR(25) NOT NULL,
@@ -373,8 +372,6 @@ CREATE TABLE IF NOT EXISTS `book_logs` (
       REFERENCES employees (employee_id),
    FOREIGN KEY (book_isbn)
       REFERENCES books (book_isbn),
-   FOREIGN KEY (branch_id)
-      REFERENCES branches (branch_id),
    FOREIGN KEY (policy_id)
       REFERENCES discount_policies (policy_id),
     CONSTRAINT chk_log_type
