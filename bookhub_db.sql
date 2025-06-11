@@ -193,6 +193,7 @@ CREATE TABLE IF NOT EXISTS `books` (
     book_title VARCHAR(255) NOT NULL,
     book_price INT NOT NULL,
     published_date DATE NOT NULL,
+    book_status VARCHAR(50) NOT NULL,
     cover_url VARCHAR(500) NOT NULL,
     page_count VARCHAR(255) NOT NULL, # 책 페이지
     language VARCHAR(255) NOT NULL, # 책 원본 나라 표시
@@ -206,8 +207,10 @@ CREATE TABLE IF NOT EXISTS `books` (
       REFERENCES authors(author_id),
     FOREIGN KEY (publisher_id)
       REFERENCES publishers(publisher_id),
-   FOREIGN KEY (discount_policy_id)
-     REFERENCES discount_policies (policy_id) 
+    FOREIGN KEY (discount_policy_id)
+      REFERENCES discount_policies (policy_id),
+    CONSTRAINT chk_book_status
+      CHECK (book_status IN ('ACTIVE','INACTIVE','HIDDEN'))
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `book_display_locations` (
@@ -375,7 +378,7 @@ CREATE TABLE IF NOT EXISTS `book_logs` (
    FOREIGN KEY (policy_id)
       REFERENCES discount_policies (policy_id),
     CONSTRAINT chk_log_type
-      CHECK (log_type IN ('CREATE', 'PRICE_CHANGE', 'DISCOUNT_RATE', 'DELETE'))
+      CHECK (log_type IN ('CREATE', 'PRICE_CHANGE', 'DISCOUNT_RATE', 'HIDDEN'))
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS alerts (
