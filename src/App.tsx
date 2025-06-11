@@ -1,11 +1,10 @@
-import React from 'react';
 import Sidebar from './layouts/sidebar';
 import Header from './layouts/header';
 import { Route, Routes } from 'react-router-dom';
 import CreateAuthor from './views/author/CreateAuthor';
+import SignUp from './views/auth/SignUp';
 import * as csy from '@/apis/constants/csy.constants';
 import * as jsj from '@/apis/constants/jsj.constants';
-
 
 function App() {
   return (
@@ -19,6 +18,8 @@ function App() {
           <h1>
             BookHub 메인 화면dfd
             <Routes>
+              <Route path='author' element={<CreateAuthor />} />
+              <Route path='auth/sign-up' element={<SignUp />} />
               <Route path={jsj.POST_AUTHOR_URL} element={<CreateAuthor />} />
             </Routes>
           </h1>
