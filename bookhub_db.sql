@@ -378,7 +378,7 @@ CREATE TABLE IF NOT EXISTS `book_logs` (
    FOREIGN KEY (policy_id)
       REFERENCES discount_policies (policy_id),
     CONSTRAINT chk_log_type
-      CHECK (log_type IN ('CREATE', 'PRICE_CHANGE', 'DISCOUNT_RATE', 'HIDDEN'))
+      CHECK (log_type IN ('CREATE', 'PRICE_CHANGE', 'DISCOUNT_RATE', 'STATUS_CHANGE', 'HIDDEN'))
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS alerts (
