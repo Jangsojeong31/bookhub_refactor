@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { AuthorRequestDto } from '@/dtos/author/request/author.request.dto'
 import { AuthorCreateRequestDto } from '@/dtos/author/request/author-create.request.dto';
 import { createAuthor } from '@/apis/author/author';
+import Modal from '../../apis/constants/Modal';
 
 
 // 여러건 동시 등록
@@ -11,17 +12,16 @@ function CreateAuthor() {
     authorName: "",
     authorEmail: ""
   })
-
+  const [authors, setAuthors] = useState<AuthorRequestDto[]>([]);
   const [message, setMessage] = useState('');
-
-  const authors: AuthorRequestDto[] = [];
+  const [modalStatus, setModalStatus] = useState(false);
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target;
     setForm({...form, [name]: value});
   }
   
-  // 저자 추가
+  // 추가 버튼 클락 -> 리스트에 추가됨
   const onAddAuthor = () => {
     const {authorName, authorEmail} = form;
 
@@ -30,24 +30,49 @@ function CreateAuthor() {
       return;
     }
 
-    authors.push({authorName, authorEmail});
+    const newAuthor: AuthorRequestDto = {authorName, authorEmail};
+    setAuthors([...authors,  newAuthor]);
+
+    setForm({ authorName: "",authorEmail: "" });
+
+    setMessage('');
   }
 
-  // 저자 리스트 등록
+  // 저자 리스트 (노출용)
+  const authorList = authors.map((author, index) => {
+    return (
+      <tr key={index}>
+        <td>{author.authorName}</td>
+        <td>{author.authorEmail}</td>
+      </tr>
+    )
+  })
+
+  // 등록 버튼 클릭 -> 저자 리스트 등록(저장)
   const onCreateAuthorClick = async() => {
 
     const requestBody: AuthorCreateRequestDto = {authors}
 
-    // const response = await createAuthor(requestBody);
-    // const {code, message} = response;
+    const response = await createAuthor(requestBody);
+    const {code, message} = response;
 
-    // if(!code) {
-    //   setMessage(message);
-    //   return;
-    // }
-    // 팝업창으로 등록된 저자 리스트 보여지도록
+    if(!code) {
+      setMessage(message);
+      return;
+    }
 
-    setMessage("등록이 완료되었습니다.");
+    // 팝업창(모달창) 열림
+    onHandleModalStatus();
+
+    alert("등록이 완료되었습니다."); // 메시지를 모달창 안으로 포함시킬까 고민중
+
+    // authors 초기화
+    setAuthors([]);
+  }
+
+  // 모달창 상태 변환 함수
+  const onHandleModalStatus = () => {
+    setModalStatus(!modalStatus);
   }
 
   return (
@@ -68,11 +93,25 @@ function CreateAuthor() {
         onChange={onInputChange}
         />
         <button onClick={onAddAuthor}>추가</button>
+        <table>
+          <tr>
+            <th>저자 이름</th>
+            <th>저자 이메일</th>
+          </tr>
+          {authorList}
+        </table>
         <button onClick={onCreateAuthorClick}>등록</button>
+
+        {/* <button onClick={onHandleModalStatus}>모달창 열기</button> */}
+        {modalStatus && (
+          <Modal title='모달 제목' setModal={onHandleModalStatus}>
+            {authorList}
+            <button onClick={onHandleModalStatus}>창 닫기</button>
+          </Modal>
+        )}
         {message && <p>{message}</p>}
     </div>
   )
 }
-
 export default CreateAuthor
 
