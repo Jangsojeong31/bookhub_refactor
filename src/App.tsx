@@ -15,7 +15,6 @@ function App() {
         <Sidebar />
         <main style={{ flex: 1, padding: '30px', overflowY: 'auto', minHeight: 0, minWidth: 0 }}>
             <Routes>
-              <Route path='author' element={<CreateAuthor />} />
               <Route path='auth/sign-up' element={<SignUp />} />
               <Route path={jsj.POST_AUTHOR_URL} element={<CreateAuthor />} />
               <Route path={csy.POST_PUBLISHER_URL} element={<Publisher />} />

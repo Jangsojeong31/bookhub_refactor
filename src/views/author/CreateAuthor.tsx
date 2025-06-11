@@ -77,6 +77,8 @@ function CreateAuthor() {
 
   return (
     <div>
+      <button>등록</button>
+      <button>조회 / 수정 / 삭제</button>
       <h2>저자 등록</h2>
       <input 
         type="text"
@@ -86,7 +88,7 @@ function CreateAuthor() {
         onChange={onInputChange}
         />
       <input 
-        type="text"
+        type="email"
         placeholder='저자 이메일'
         name='authorEmail'
         value={form.authorEmail}
