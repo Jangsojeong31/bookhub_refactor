@@ -9,7 +9,7 @@ const COMMON = 'common';
 
 // & 1. authors 
 // 베이스 URL
-const AUTHOR_MODULE_URL = `${API_DOMAIN}/api/v1/${ADMIN}/authors`;
+const AUTHOR_MODULE_URL = `${API_DOMAIN}/api/v1/auth/author`; 
 
 // 1) 저자 등록
 export const POST_AUTHOR_URL = `${AUTHOR_MODULE_URL}`;

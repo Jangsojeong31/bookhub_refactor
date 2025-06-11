@@ -18,7 +18,6 @@ function App() {
           <h1>
             BookHub 메인 화면dfd
             <Routes>
-              <Route path='author' element={<CreateAuthor />} />
               <Route path='auth/sign-up' element={<SignUp />} />
               <Route path={jsj.POST_AUTHOR_URL} element={<CreateAuthor />} />
             </Routes>
