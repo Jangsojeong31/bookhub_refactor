@@ -9,22 +9,22 @@ const COMMON = 'common';
 
 // & 1. publishers
 // 베이스 URL
-const PUBLISHER_MODULE_URL = `${API_DOMAIN}/api/v1/${ADMIN}/publishers`;
+export const PUBLISHER_MODULE_URL = `${API_DOMAIN}/api/v1/${ADMIN}/publishers`;
 
 // 1) 출판사 등록
-const POST_PUBLISHER_URL = `${PUBLISHER_MODULE_URL}`;
+export const POST_PUBLISHER_URL = `${PUBLISHER_MODULE_URL}`;
 
 // 2) 출판사 전체 조회
-const GET_ALL_PUBLISHER_URL = `${PUBLISHER_MODULE_URL}`;
+export const GET_ALL_PUBLISHER_URL = `${PUBLISHER_MODULE_URL}`;
 
 // 3) 출판사 단건 조회
-const GET_PUBLISHER_URL = (publisherId: number) => `${PUBLISHER_MODULE_URL}/${publisherId}`;
+export const GET_PUBLISHER_URL = (publisherId: number) => `${PUBLISHER_MODULE_URL}/${publisherId}`;
 
 // 4) 출판사 수정
-const PUT_PUBLISHER_URL = (publisherId: number) => `${PUBLISHER_MODULE_URL}/${publisherId}`;
+export const PUT_PUBLISHER_URL = (publisherId: number) => `${PUBLISHER_MODULE_URL}/${publisherId}`;
 
 // 5) 출판사 삭제
-const DELETE_PUBLISHER_URL = (publisherId: number) => `${PUBLISHER_MODULE_URL}/${publisherId}`;
+export const DELETE_PUBLISHER_URL = (publisherId: number) => `${PUBLISHER_MODULE_URL}/${publisherId}`;
 
 
 // & 2.book_display_locations

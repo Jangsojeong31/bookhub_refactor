@@ -2,11 +2,11 @@
   width: 98%;
   height: 60px;
   background-color: rgba(124, 183, 255, 0.13);
-  border-bottom: 1px solid #ccc;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 30px;
+  border-radius: none;
 }
 
 .logoImg {
