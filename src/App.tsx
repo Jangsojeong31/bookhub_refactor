@@ -3,6 +3,7 @@ import Sidebar from './layouts/sidebar';
 import Header from './layouts/header';
 import { Route, Routes } from 'react-router-dom';
 import CreateAuthor from './views/author/CreateAuthor';
+import ElseAuthor from './views/author/ElseAuthor';
 
 function App() {
   return (

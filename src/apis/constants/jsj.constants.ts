@@ -17,8 +17,12 @@ export const POST_AUTHOR_URL = `${AUTHOR_MODULE_URL}`;
 // 2) 저자 전체 조회
 export const GET_ALL_AUTHOR_URL = `${AUTHOR_MODULE_URL}`;
 
+
 // 3) 저자 단건 조회
 export const GET_AUTHOR_URL = (authorId: number) => `${AUTHOR_MODULE_URL}/${authorId}`;
+
+// 저자 이름으로 조회
+export const GET_ALL_AUTHOR_BY_NAME_URL = (authorName: string) => `${AUTHOR_MODULE_URL}/author-name/${authorName}`;
 
 // 4) 저자 수정
 export const PUT_AUTHOR_URL = (authorId: number) => `${AUTHOR_MODULE_URL}/${authorId}`;
