@@ -1,3 +1,65 @@
+
+### .gitignore에 명시 전 깃에 업로드 된 파일 제거 ###
+
+# # 1. 제거할 파일명을 .gitignore에 추가
+# application.properties
+# # +) sercret 추가 제거 필요!!
+# # 또는 모든 properties 파일을 제외하려면
+# *.properties
+
+# # 2. Git 캐시에서 제거 (업로드된 상태 제거)
+# # git rm --cached 이후의 파일 목록을 삭제
+# git rm --cached src/main/resources/application.properties
+# # 모든 .properties를 제거
+# git rm --cached -r -- '*.properties'
+
+# # 3. 캐시 제거 후 add / commit
+
+# # 4. 푸시(push)
+
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+### properties ###
+/src/main/resources/application.properties
+/src/main/resources/application-secret.properties
+
+
 ### macOS ###
 # General
 .DS_Store
