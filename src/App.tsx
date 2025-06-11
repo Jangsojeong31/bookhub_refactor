@@ -1,8 +1,8 @@
-import React from 'react';
 import Sidebar from './layouts/sidebar';
 import Header from './layouts/header';
 import { Route, Routes } from 'react-router-dom';
 import CreateAuthor from './views/author/CreateAuthor';
+import SignUp from './views/auth/SignUp';
 
 function App() {
   return (
@@ -17,6 +17,7 @@ function App() {
             BookHub 메인 화면dfd
             <Routes>
               <Route path='author' element={<CreateAuthor />} />
+              <Route path='auth/sign-up' element={<SignUp />} />
             </Routes>
           </h1>
         </main>
