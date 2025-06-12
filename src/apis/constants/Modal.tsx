@@ -1,59 +1,87 @@
-import React, { useEffect } from "react";
+// src/components/common/Modal.tsx
 
-interface ModalProps {
-  title?: string;
-  setModal: () => void;
-  children?: React.ReactNode;
-}
+// 사용방법
 
-// 모달 내부를 눌렀을 때 모달창이 닫히는 것 방지
-const Modal = ({ title, setModal, children }: ModalProps) => {
-  const preventOffModal = (event: React.MouseEvent) => {
-    event.stopPropagation();
-  };
+//현재 만들어져 있는 Modal은 껍데기
+//그래서 해당 모달 안에 들어갈 내용을 .tsx파일에 정의하고(예시 CreatePublisher)
+//해당 모달에서 실행할 내용을 index.tsx 파일에서 실행 (아래 코드는 index에서 불러올때 내용용)
+//       {/* 등록 모달 */}
+//    {isCreateOpen && ( 
+//   <CreatePublisher-- 각자 만든 모달 내용을 정의한 페이지
+//     isOpen={isCreateOpen}
+//     onClose={() => setIsCreateOpen(false)}
+//     onCreated={fetchPublishers}
+//   />
+// )}
 
-  // 모달창이 뜬 상태에서는 뒷 화면 스크롤 방지
+
+
+import React, { useEffect } from 'react';
+import styled from '@emotion/styled';
+import ReactDOM from 'react-dom';
+
+type ModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+};
+
+const Modal = ({ isOpen, onClose, children }: ModalProps) => {
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = 'auto';
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
     };
-  }, []);
-  
-  // 모달창
-  return (
-    <div
-      id="모달 외부"
-      onClick={setModal}
-      style={{
-        backgroundColor: "rgba(0, 0, 0, 0.4)",
-        position: "fixed",
-        top: "0",
-        bottom: "0",
-        left: "0",
-        right: "0",
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center"
-      }}
-    >
-      <div
-        id="모달"
-        onClick={preventOffModal}
-        style={{
-        backgroundColor: "white",
-        width: "300px",
-        height: "300px",
-        margin: "auto"
-      }}
-      >
-        <div className="text-gray-400">{title}</div>
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  return ReactDOM.createPortal(
+    <Overlay onClick={onClose}>
+      <Container onClick={(e) => e.stopPropagation()}>
+        <CloseButton onClick={onClose}>×</CloseButton>
         {children}
-      </div>
-    </div>
+      </Container>
+    </Overlay>,
+    document.getElementById('modal-root') as HTMLElement
   );
 };
 
 export default Modal;
+
+const Overlay = styled.div`
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+`;
+
+const Container = styled.div`
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  width: 600px;
+  max-width: 90%;
+  max-height: 80%;
+  position: relative;
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 8px; right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+`;

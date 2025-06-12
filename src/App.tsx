@@ -18,7 +18,7 @@ function App() {
               <Route path='author' element={<CreateAuthor />} />
               <Route path='auth/sign-up' element={<SignUp />} />
               <Route path={jsj.POST_AUTHOR_URL} element={<CreateAuthor />} />
-              <Route path={csy.POST_PUBLISHER_URL} element={<Publisher />} />
+              <Route path='api/publishers' element={<Publisher />} />
 
             </Routes>
         </main>
