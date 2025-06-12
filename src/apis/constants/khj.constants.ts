@@ -16,13 +16,18 @@ export const SIGN_IN_URL = `${AUTH_MODULE_URL}/login`;
 
 // 3) 아이디 찾기 - 이메일 보내기
 export const LOGIN_ID_FIND_EMAIL_URL = `${AUTH_MODULE_URL}/login-id-find/email`;
+
 // 3) 아이디 찾기
 export const LOGIN_ID_FIND_URL = `${AUTH_MODULE_URL}/login-id-find`;
 
 // 4) 비밀번호 변경 - 이메일 보내기
 export const PASSWORD_CHANGE_EMAIL_URL = `${AUTH_MODULE_URL}/password-change/email`;
+
 // 4) 비밀번호 변경
 export const PASSWORD_CHANGE_URL = `${AUTH_MODULE_URL}/password-change`;
+
+// 5) 아이디 중복 확인
+export const CHECK_LOGIN_ID_DUPLICATE  = `${AUTH_MODULE_URL}/login-id-exists`
 
 
 //! 2) ADMIN 관련 요청 URL
@@ -35,7 +40,7 @@ const BRANCH_MODULE_URL = `${ADMIN_MODULE_URL}/ branches`;
 export const POST_BRANCH_URL = `${BRANCH_MODULE_URL}`;
 
 // 2) 지점 조회
-export const GET_BRANCH_URL = `${BRANCH_MODULE_URL}`;
+export const GET_BRANCH_URL = `${AUTH_MODULE_URL}/branches`;
 
 // 3) 지점 수정
 export const PUT_BRANCH_URL = (branchId: number) => 
