@@ -11,13 +11,13 @@ import { useEmployeeStore } from "./stores/employee.store";
 import { useEffect } from "react";
 import SignIn from "./views/auth/SignIn";
 import { SIGN_IN_URL } from "./apis/constants/khj.constants";
+import { GET_ALL_PUBLISHER_URL } from './apis';
+import MainCommon from './views/main/MainCommon';
+
 
 function App() {
-  //& === HOOK === //
   const [cookies ] = useCookies(["accessToken"]);
 
-  // (state) => state.setLogin
-  // : Zustand 내부의 상태(속성1, 메서드2)에서 setLogin만 꺼내옴 
   const setLogin = useEmployeeStore((state) => state.setLogin); 
   const isLogin = useEmployeeStore((state) => state.isLogin);
 
@@ -35,13 +35,14 @@ function App() {
         <div style={{ flex: 1, display: 'flex', minHeight: 0 }}>
           <Sidebar />
           <main style={{ flex: 1, padding: '30px', overflowY: 'auto', minHeight: 0, minWidth: 0 }}>
-              <Routes>
-                <Route path="/auth/login" element={<SignIn />} />
-                <Route path='/auth/sign-up' element={<SignUp />} />
-                <Route path='/authors' element={<CreateAuthor />} />
-                <Route path= '/publishers' element={<Publisher />} />
-
-              </Routes>
+            <Routes>
+              <Route path = "/" element={<Navigate to = "/main"/>}/>
+              <Route path = "/main" element = {<MainCommon />} />
+              <Route path="/auth/login" element={<SignIn />} />
+              <Route path='/auth/sign-up' element={<SignUp />} />
+              <Route path='/authors' element={<CreateAuthor />} />
+              <Route path= '/publishers' element={<Publisher />} />
+            </Routes>
           </main>
         </div>
       </div>

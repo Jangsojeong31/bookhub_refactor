@@ -1,7 +1,8 @@
-// jsj.constants.ts
+// csy.constants.ts
 // # URL 상수 정의
 
-const API_DOMAIN = 'http://localhost:8080';
+const API_DOMAIN = import.meta.env.REACT_APP_API_DOMAIN || "http://localhost:8080";
+
 
 const ADMIN = 'admin';
 const MANAGER = 'manager';
@@ -9,7 +10,8 @@ const COMMON = 'common';
 
 // & 1. publishers
 // 베이스 URL
-export const PUBLISHER_MODULE_URL = `${API_DOMAIN}/api/v1/${ADMIN}/publishers`;
+const PUBLISHER_MODULE_URL = `${API_DOMAIN}/api/v1/${ADMIN}/publishers`;
+//const PUBLISHER_MODULE_URL = `${API_DOMAIN}/api/v1/publishers`;
 
 // 1) 출판사 등록
 export const POST_PUBLISHER_URL = `${PUBLISHER_MODULE_URL}`;

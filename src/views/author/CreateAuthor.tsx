@@ -3,7 +3,7 @@ import { AuthorRequestDto } from '@/dtos/author/request/author.request.dto'
 import { AuthorCreateRequestDto } from '@/dtos/author/request/author-create.request.dto';
 import { createAuthor } from '@/apis/author/author';
 import Modal from '../../apis/constants/Modal';
-
+import { NavLink } from 'react-router-dom';
 
 // 여러건 동시 등록
 function CreateAuthor() {
@@ -21,7 +21,7 @@ function CreateAuthor() {
     setForm({...form, [name]: value});
   }
   
-  // 추가 버튼 클락 -> 리스트에 추가됨
+  // 추가 버튼 클릭 -> 리스트에 추가됨
   const onAddAuthor = () => {
     const {authorName, authorEmail} = form;
 
@@ -77,8 +77,27 @@ function CreateAuthor() {
 
   return (
     <div>
-      <button>등록</button>
-      <button>조회 / 수정 / 삭제</button>
+      <NavLink
+        to="/author/basic"
+        key="/author/basic"
+        style={({isActive}) => ({
+          backgroundColor: isActive? 'blue' : 'lightgray',
+          padding: '10px 20xp'
+        })}>
+        등록
+      </NavLink>
+      <NavLink
+        to="/author"
+        key="/author"
+        style={({isActive}) => ({
+          backgroundColor: isActive? 'blue' : 'lightgray',
+          padding: '10px 20xp'
+        })}>
+        조회 / 수정 / 삭제
+      </NavLink>
+      {/* <button>등록</button>
+      <button>조회 / 수정 / 삭제</button> */}
+
       <h2>저자 등록</h2>
       <input 
         type="text"
@@ -105,12 +124,12 @@ function CreateAuthor() {
         <button onClick={onCreateAuthorClick}>등록</button>
 
         {/* <button onClick={onHandleModalStatus}>모달창 열기</button> */}
-        {modalStatus && (
+        {/* {modalStatus && (
           <Modal title='모달 제목' setModal={onHandleModalStatus}>
             {authorList}
             <button onClick={onHandleModalStatus}>창 닫기</button>
           </Modal>
-        )}
+        )} */}
         {message && <p>{message}</p>}
     </div>
   )
