@@ -2,6 +2,7 @@ import Sidebar from "./layouts/sidebar";
 import Header from "./layouts/header";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import CreateAuthor from "./views/author/CreateAuthor";
+import ElseAuthor from "./views/author/ElseAuthor";
 import SignUp from "./views/auth/SignUp";
 import * as csy from "@/apis/constants/csy.constants";
 import * as jsj from "@/apis/constants/jsj.constants";
@@ -13,6 +14,7 @@ import SignIn from "./views/auth/SignIn";
 import { SIGN_IN_URL } from "./apis/constants/khj.constants";
 import { GET_ALL_PUBLISHER_URL } from './apis';
 import MainCommon from './views/main/MainCommon';
+import CreatePurchaseOrder from "./views/purchaseOrder/CreatePurchaseOrder";
 
 
 function App() {
@@ -41,7 +43,9 @@ function App() {
               <Route path="/auth/login" element={<SignIn />} />
               <Route path='/auth/sign-up' element={<SignUp />} />
               <Route path='/authors' element={<CreateAuthor />} />
+              <Route path='/authors-else' element={<ElseAuthor />} />
               <Route path= '/publishers' element={<Publisher />} />
+              <Route path= '/purchase-orders' element={<CreatePurchaseOrder />} />
             </Routes>
           </main>
         </div>
