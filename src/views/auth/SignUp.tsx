@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { signUpRequest } from "@/apis/auth/auth";
+import { checkLoginIdDuplicate, signUpRequest } from "@/apis/auth/auth";
+import { GET_BRANCH_URL } from "@/apis/constants/khj.constants";
 import { SignUpRequestDto } from "@/dtos/auth/request/sign-up.request.dto";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -24,8 +25,28 @@ function SignUp() {
     branchId: 0,
   });
 
+  const loginRegex = /^[A-Za-z][A-Za-z\d]{3,12}/;
+  const [loginIdMessage, setLoginIdMessage] = useState("");
+
+  const passwordRegex =
+    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%*?])[A-Za-z\d!@#$%*?]{8,16}$/;
+  const [message, setMessage] = useState("");
+  const [passwordCheckMessage, setPasswordCheckMessage] = useState("");
+
   useEffect(() => {
-    fetch(`http://localhost:8080/api/v1/auth/branches?branchLocation=전체`, {
+    setLoginIdMessage("");
+  }, [form.loginId]);
+
+  useEffect(() => {
+    setMessage("");
+  }, [form]);
+
+  useEffect(() => {
+    setPasswordCheckMessage("");
+  }, [form.password, form.confirmPassword]);
+
+  useEffect(() => {
+    fetch(`${GET_BRANCH_URL}?branchLocation=전체`, {
       method: "GET",
     })
       .then((res) => res.json())
@@ -34,8 +55,6 @@ function SignUp() {
       })
       .catch((e) => console.error(e));
   }, []);
-
-  const [message, setMessage] = useState("");
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -47,7 +66,43 @@ function SignUp() {
     setForm({ ...form, branchId: Number(selectBrancId) });
   };
 
-  const onSignUpclick = async () => {
+  const onPasswordBlur = async () => {
+    if (form.password) {
+      if (!passwordRegex.test(form.password)) {
+        setPasswordCheckMessage(
+          "8~16자 영문, 숫자, 특수문자 모두 포함되어야 합니다."
+        );
+        return;
+      }
+    }
+    if (form.confirmPassword && form.password) {
+      if (form.password !== form.confirmPassword) {
+        setPasswordCheckMessage("비밀번호가 일치하지 않습니다.");
+        return;
+      } else {
+        setPasswordCheckMessage("비밀번호가 일치합니다.");
+        return;
+      }
+    }
+  };
+
+  const onCheckLoginIdBlur = async () => {
+    if (!loginRegex.test(form.loginId)) {
+      setLoginIdMessage("아이디는 4~12자의 영어와 숫자만 사용해야 합니다.");
+      return;
+    }
+
+    const response = await checkLoginIdDuplicate(form.loginId);
+    const { code, message } = response;
+
+    if (code == "SU") {
+      setLoginIdMessage(message);
+      return;
+    }
+    setLoginIdMessage(message);
+  };
+
+  const onSignUpClick = async () => {
     const {
       loginId,
       password,
@@ -66,19 +121,11 @@ function SignUp() {
       !name ||
       !email ||
       !phoneNumber ||
-      !birthDate
+      !birthDate ||
+      !branchId ||
+      branchId === 0
     ) {
       setMessage("모든 항목을 입력해 주세요");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setMessage("비밀번호가 일치하지 않습니다.");
-      return;
-    }
-
-    if (!branchId || branchId === 0) {
-      setMessage("지점을 선택해 주세요");
       return;
     }
 
@@ -96,11 +143,12 @@ function SignUp() {
     const response = await signUpRequest(requestBody);
     const { code, message } = response;
 
-    if (code !== "SU") {
-      alert("회원가입 실패: " + message);
+    if (code != "SU") {
+      alert("회원가입에 실패");
+      setMessage(message);
       return;
     } else {
-      alert("회원가입을 성공: " + message);
+      alert("회원가입을 성공하였습니다.");
       navigate("/auth");
     }
   };
@@ -110,18 +158,21 @@ function SignUp() {
       <h2>회원가입</h2>
       <input
         type="text"
-        placeholder="아이디"
+        placeholder="아이디 (영문으로 시작, 4~12자 영문/숫자 조합)"
         name="loginId"
         value={form.loginId}
         onChange={onInputChange}
+        onBlur={onCheckLoginIdBlur}
       />
       <br />
+      {loginIdMessage && <p style={{ fontSize: "10px" }}>{loginIdMessage}</p>}
       <input
         type="password"
-        placeholder="비밀번호"
+        placeholder="비밀번호 (8~16자 영문, 숫자, 특수문자 모두 포함)"
         name="password"
         value={form.password}
         onChange={onInputChange}
+        onBlur={onPasswordBlur}
       />
       <br />
       <input
@@ -130,8 +181,10 @@ function SignUp() {
         name="confirmPassword"
         value={form.confirmPassword}
         onChange={onInputChange}
+        onBlur={onPasswordBlur}
       />
       <br />
+      {passwordCheckMessage && <p>{passwordCheckMessage}</p>}
       <input
         type="text"
         placeholder="이름"
@@ -170,8 +223,9 @@ function SignUp() {
           <option value={branch.branchId}>{branch.branchName}</option>
         ))}
       </select>
-      <button onClick={onSignUpclick}>회원가입</button>
-      {message && <p>{message}</p>}
+      <br />
+      {<p>{message}</p>}
+      <button onClick={onSignUpClick}>회원가입</button>
     </div>
   );
 }
