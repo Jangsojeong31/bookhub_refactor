@@ -1,4 +1,4 @@
-interface PublisherResponseDto{
+export interface PublisherResponseDto{
   publisherId : number;
   publisherName: string;
 }
