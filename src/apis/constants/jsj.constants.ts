@@ -54,6 +54,21 @@ export const DELETE_PURCHASE_ORDER_URL = (purchaseOrderId: number) => `${PURCHAS
 // 6) 발주 승인 / 승인 취소 (발주 요청서 수정)
 export const PUT_PURCHASE_ORDER_STATUS_URL = (purchaseOrderId: number) => `${PURCHASE_ORDER_MODULE_URL_ADMIN}/status/${purchaseOrderId}`;
 
+// 발주 요청서 조건으로 조회 (발주 담당자, 책 제목, 승인 여부)
+export const GET_PURCHASE_ORDER_BY_CRITERIA = (
+  employeeName: string,
+  bookTitle: string,
+  purchaseOrderStatus: string
+) => {
+  const queryParams = new URLSearchParams();
+
+  if (employeeName) queryParams.append("employeeName", employeeName);
+  if (bookTitle) queryParams.append("bookTitle", bookTitle);
+  if (purchaseOrderStatus) queryParams.append("purchaseOrderStatus", purchaseOrderStatus);
+
+  return `${PURCHASE_ORDER_MODULE_URL_MANAGER}/search?${queryParams.toString()}`;
+};
+
 
 // & 3. purchase_order_approvals
 // 베이스 URL

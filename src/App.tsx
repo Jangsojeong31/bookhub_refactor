@@ -15,6 +15,10 @@ import { SIGN_IN_URL } from "./apis/constants/khj.constants";
 import { GET_ALL_PUBLISHER_URL } from './apis';
 import MainCommon from './views/main/MainCommon';
 import CreatePurchaseOrder from "./views/purchaseOrder/CreatePurchaseOrder";
+import ElsePurchaseOrder from "./views/purchaseOrder/ElsePurchaseOrder";
+import PurchaseOrder from "./views/purchaseOrder";
+import Author from "./views/author";
+import Employee from "./views/employee";
 
 
 function App() {
@@ -42,10 +46,21 @@ function App() {
               <Route path = "/main" element = {<MainCommon />} />
               <Route path="/auth/login" element={<SignIn />} />
               <Route path='/auth/sign-up' element={<SignUp />} />
-              <Route path='/authors' element={<CreateAuthor />} />
-              <Route path='/authors-else' element={<ElseAuthor />} />
               <Route path= '/publishers' element={<Publisher />} />
-              <Route path= '/purchase-orders' element={<CreatePurchaseOrder />} />
+              {/* {Alert()}
+              {Auth()}
+              {Book()}
+              {BookLocation()}
+              {Category()}
+              {Policy()}
+              {Publisher()}
+              {Reception()}
+              {Reception()}
+              {Statistics()}
+              {Stocks()} */}
+              {Author()}
+              {PurchaseOrder()}
+              {Employee()}
             </Routes>
           </main>
         </div>
