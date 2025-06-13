@@ -1,22 +1,56 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./CreateCategory.css";
 import { CategoryCreateRequestDto } from "@/dtos/category/request/category-create.request.dto";
-import { createCategory } from "@/apis/category/category";
+import { createCategory, getRootCategories } from "@/apis/category/category";
 import { CategoryTreeResponseDto } from "@/dtos/category/response/category-tree.response.dto";
+import { useCookies } from "react-cookie";
 
 interface CreateCategoryProps {
   parentCategories: CategoryTreeResponseDto[];
   onSuccess: () => Promise<void>;
 }
 
-function CreateCategory({ parentCategories, onSuccess }: CreateCategoryProps) {
+function CreateCategory({ onSuccess }: CreateCategoryProps) {
   const [categoryName, setCategoryName] = useState("");
   const [categoryType, setCategoryType] = useState<"DOMESTIC" | "FOREIGN">("DOMESTIC");
   const [categoryLevel, setCategoryLevel] = useState<1 | 2>(1);
   const [parentCategoryId, setParentCategoryId] = useState<number | null>(null);
+  const [parentCategories, setParentCategories] = useState<CategoryTreeResponseDto[]>([]);
+  const [cookies] = useCookies(["accessToken"]);
+
+  // categoryType 또는 categoryLevel이 변경될 때 대분류 목록을 fetch
+  useEffect(() => {
+    if (categoryLevel !== 2) {
+      setParentCategories([]); // 소분류 아닌 경우는 비움
+      return;
+    }
+
+    const token = cookies.accessToken;
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
+    getRootCategories(token).then((res) => {
+      console.log("📦 대분류 응답 결과:", res);
+      if (res.code === "SU") {
+        const all = res.data ?? [];
+        const filtered = all.filter((cat) => cat.categoryType === categoryType);
+        setParentCategories(filtered);
+      } else {
+        alert("대분류 조회 실패");
+      }
+    });
+  }, [categoryLevel, categoryType]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const token = cookies.accessToken;
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
 
     const dto: CategoryCreateRequestDto = {
       categoryName,
@@ -26,14 +60,18 @@ function CreateCategory({ parentCategories, onSuccess }: CreateCategoryProps) {
     };
 
     try {
-      await createCategory(dto);
+      const res = await createCategory(dto, token);
+      if (res.code !== "SU") throw new Error(res.message);
+
       alert("카테고리 등록 성공!");
       setCategoryName("");
       setCategoryType("DOMESTIC");
       setCategoryLevel(1);
       setParentCategoryId(null);
-      await onSuccess(); // ✅ 상위 컴포넌트에서 fetchCategories 실행
+      setParentCategories([]);
+      await onSuccess();
     } catch (err) {
+      console.error(err);
       alert("카테고리 등록 실패");
     }
   };

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { CategoryUpdateRequestDto } from "@/dtos/category/request/category-update.request.dto";
 import { updateCategory } from "@/apis/category/category";
 import { CategoryTreeResponseDto } from "@/dtos/category/response/category-tree.response.dto";
+import { useCookies } from "react-cookie";
 
 interface UpdateCategoryProps {
   category: CategoryTreeResponseDto;
@@ -16,6 +17,7 @@ function UpdateCategory({ category, onSuccess, mode }: UpdateCategoryProps) {
   const [categoryType, setCategoryType] = useState<"DOMESTIC" | "FOREIGN">("DOMESTIC");
   const [categoryOrder, setCategoryOrder] = useState(0);
   const [isActive, setIsActive] = useState(true);
+  const [cookies] = useCookies(["accessToken"]);
 
   useEffect(() => {
     setCategoryName(category.categoryName);
@@ -27,6 +29,12 @@ function UpdateCategory({ category, onSuccess, mode }: UpdateCategoryProps) {
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const token = cookies.accessToken;
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
     const dto: CategoryUpdateRequestDto = {
       categoryName,
       categoryType,
@@ -35,7 +43,7 @@ function UpdateCategory({ category, onSuccess, mode }: UpdateCategoryProps) {
     };
 
     try {
-      await updateCategory(category.categoryId, dto);
+      await updateCategory(category.categoryId, dto, token);
       alert("카테고리 수정 성공!");
       onSuccess();
     } catch (err) {
@@ -47,6 +55,12 @@ function UpdateCategory({ category, onSuccess, mode }: UpdateCategoryProps) {
     const confirm = window.confirm("정말 이 카테고리를 비활성화하시겠습니까?");
     if (!confirm) return;
 
+    const token = cookies.accessToken;
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
     const dto: CategoryUpdateRequestDto = {
       categoryName,
       categoryType,
@@ -55,7 +69,7 @@ function UpdateCategory({ category, onSuccess, mode }: UpdateCategoryProps) {
     };
     
     try {
-      await updateCategory(category.categoryId, dto);
+      await updateCategory(category.categoryId, dto, token);
       alert("카테고리 비활성화 완료");
       onSuccess();
     } catch (error) {

@@ -60,7 +60,7 @@ export const POST_CATEGORY_URL = `${CATEGORY_MODULE_URL}`;
 // 카테고리 전체 조회
 // export const GET_CATEGORY_TREE_URL = (type : "DOMESTIC" | "FOREIGN") => `${CATEGORY_MODULE_URL}/tree/${type}`;
 export const GET_CATEGORY_TREE_URL = (type: "DOMESTIC" | "FOREIGN") =>
-  `${CATEGORY_MODULE_URL}}/tree?type=${type}`;
+  `${CATEGORY_MODULE_URL}/tree?type=${type}`;
 
 // 카테고리 수정
 export const PUT_CATEGORY_URL = (categoryId : number) => `${CATEGORY_MODULE_URL}/${categoryId}`;
