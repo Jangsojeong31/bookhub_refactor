@@ -4,6 +4,7 @@ import { AuthorCreateRequestDto } from '@/dtos/author/request/author-create.requ
 import { createAuthor } from '@/apis/author/author';
 import Modal from '../../apis/constants/Modal';
 import { NavLink } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 
 // 여러건 동시 등록
 function CreateAuthor() {
@@ -15,6 +16,7 @@ function CreateAuthor() {
   const [authors, setAuthors] = useState<AuthorRequestDto[]>([]);
   const [message, setMessage] = useState('');
   const [modalStatus, setModalStatus] = useState(false);
+  const [cookies] = useCookies(["accessToken"]);
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target;
@@ -51,9 +53,15 @@ function CreateAuthor() {
   // 등록 버튼 클릭 -> 저자 리스트 등록(저장)
   const onCreateAuthorClick = async() => {
 
-    const requestBody: AuthorCreateRequestDto = {authors}
+    const requestBody: AuthorCreateRequestDto = {authors};
+    const token = cookies.accessToken;
 
-    const response = await createAuthor(requestBody);
+    if(!token){
+      alert('인증 토큰이 없습니다.')
+      return
+    }
+
+    const response = await createAuthor(requestBody, token);
     const {code, message} = response;
 
     if(!code) {
@@ -78,20 +86,23 @@ function CreateAuthor() {
   return (
     <div>
       <NavLink
-        to="/author/basic"
-        key="/author/basic"
+        to="/authors"
+        key="/authors"
         style={({isActive}) => ({
           backgroundColor: isActive? 'blue' : 'lightgray',
-          padding: '10px 20xp'
+          padding: '10px 20xp',
+          margin: '10px 10px'
         })}>
         등록
       </NavLink>
+
       <NavLink
-        to="/author"
-        key="/author"
+        to="/authors-else"
+        key="/authors-else"
         style={({isActive}) => ({
           backgroundColor: isActive? 'blue' : 'lightgray',
-          padding: '10px 20xp'
+          padding: '10px 20xp',
+          margin: '10px 10px'
         })}>
         조회 / 수정 / 삭제
       </NavLink>
@@ -115,11 +126,15 @@ function CreateAuthor() {
         />
         <button onClick={onAddAuthor}>추가</button>
         <table>
-          <tr>
-            <th>저자 이름</th>
-            <th>저자 이메일</th>
-          </tr>
-          {authorList}
+          <thead>
+            <tr>
+              <th>저자 이름</th>
+              <th>저자 이메일</th>
+            </tr>
+          </thead>
+          <tbody>
+            {authorList}
+          </tbody>
         </table>
         <button onClick={onCreateAuthorClick}>등록</button>
 

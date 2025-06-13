@@ -1,0 +1,35 @@
+.category-container {
+  padding: 30px;
+  background-color: #f9f9fc;
+  color: #333;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.category {
+  font-weight: 600;
+  padding: 10px;
+  background: #dde9f7;
+  border-radius: 6px;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.category:hover {
+  background: #cdd9eb;
+}
+
+.subcategory-list {
+  margin-left: 20px;
+  margin-top: 8px;
+  padding-left: 12px;
+  border-left: 3px solid #aaa;
+}
+
+.subcategory-item {
+  margin: 4px 0;
+  padding: 6px 12px;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}

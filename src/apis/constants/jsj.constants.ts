@@ -9,7 +9,7 @@ const COMMON = 'common';
 
 // & 1. authors 
 // 베이스 URL
-const AUTHOR_MODULE_URL = `${API_DOMAIN}/api/v1/auth/author`; 
+const AUTHOR_MODULE_URL = `${API_DOMAIN}/api/v1/admin/author`; 
 
 // 1) 저자 등록
 export const POST_AUTHOR_URL = `${AUTHOR_MODULE_URL}`;
@@ -33,8 +33,8 @@ export const DELETE_AUTHOR_URL = (authorId: number) => `${AUTHOR_MODULE_URL}/${a
 
 // & 2. purchase_orders
 // 베이스 URL
-const PURCHASE_ORDER_MODULE_URL_MANAGER = `${API_DOMAIN}/api/v1/${MANAGER}/purchase-orders`;
-const PURCHASE_ORDER_MODULE_URL_ADMIN = `${API_DOMAIN}/api/v1/${ADMIN}/purchase-orders`;
+const PURCHASE_ORDER_MODULE_URL_MANAGER = `${API_DOMAIN}/api/v1/${MANAGER}/purchase-order`;
+const PURCHASE_ORDER_MODULE_URL_ADMIN = `${API_DOMAIN}/api/v1/${ADMIN}/purchase-order`;
 
 // 1) 발주 요청서 작성
 export const POST_PURCHASE_ORDER_URL = `${PURCHASE_ORDER_MODULE_URL_MANAGER}`;

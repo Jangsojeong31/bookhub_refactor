@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { deleteAuthor, getAllAuthorsByName, updateAuthor } from '@/apis/author/author';
 import { AuthorResponseDto } from '@/dtos/author/response/author.response.dto';
+import { NavLink } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 
 // & 기능: 이름으로 조회, 수정, 삭제
 
@@ -10,6 +12,7 @@ function ElseAuthor() {
   const [authors, setAuthors] = useState<AuthorResponseDto[]>([]);
   const [message, setMessage] = useState('');
   const [modalStatus, setModalStatus] = useState(false);
+  const [cookies] = useCookies(["accessToken"]);
   
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target;
@@ -19,7 +22,13 @@ function ElseAuthor() {
   // * 이름으로 조회
   const onGetAllAuthorsByNameClick = async() => {
     const {authorName} = form;
-    const response = await getAllAuthorsByName(authorName);
+    const token = cookies.accessToken;
+
+    if(!token){
+      alert('인증 토큰이 없습니다.')
+      return
+    }
+    const response = await getAllAuthorsByName(authorName, token);
     const {code, message, data} = response; 
 
     if(!code) {
@@ -50,8 +59,14 @@ function ElseAuthor() {
       authorName: form.authorName,
       authorEmail: form.authorEmail
     };
+    const token = cookies.accessToken;
+
+    if(!token){
+      alert('인증 토큰이 없습니다.')
+      return
+    }
   
-    const response = await updateAuthor(authorId, dto);
+    const response = await updateAuthor(authorId, dto, token);
     const { code, message } = response;
   
     if (!code) {
@@ -65,7 +80,14 @@ function ElseAuthor() {
   
   // * 삭제
   const onDeleteAuthorClick = async(authorId: number) => {
-    const response = await deleteAuthor(authorId);
+    const token = cookies.accessToken;
+
+    if(!token){
+      alert('인증 토큰이 없습니다.')
+      return
+    }
+
+    const response = await deleteAuthor(authorId, token);
     const {code, message} = response;
 
     if(!code) {
@@ -92,10 +114,30 @@ function ElseAuthor() {
   return (
     <div>
       <div>
-        <button>등록</button>
-        <button>조회 / 수정 / 삭제</button>
+        <NavLink
+          to="/authors"
+          key="/authors"
+          style={({isActive}) => ({
+            backgroundColor: isActive? 'blue' : 'lightgray',
+            padding: '10px 20xp',
+            margin: '10px 10px'
+          })}>
+          등록
+        </NavLink>
+  
+        <NavLink
+          to="/authors-else"
+          key="/authors-else"
+          style={({isActive}) => ({
+            backgroundColor: isActive? 'blue' : 'lightgray',
+            padding: '10px 20xp',
+            margin: '10px 10px'
+          })}>
+          조회 / 수정 / 삭제
+        </NavLink>
       </div>
 
+    <h2>저자 조회</h2>
       <input 
         type='text'
         name='authorName'
@@ -105,11 +147,15 @@ function ElseAuthor() {
         />
       <button onClick={onGetAllAuthorsByNameClick}>조회</button>
       <table>
-        <tr>
-          <th>저자 이름</th>
-          <th>저자 이메일</th>
-        </tr>
-        {authorList}
+        <thead>
+          <tr>
+            <th>저자 이름</th>
+            <th>저자 이메일</th>
+          </tr>
+        </thead>
+        <tbody>
+          {authorList}
+        </tbody>
       </table>
 
       {modalStatus && 
