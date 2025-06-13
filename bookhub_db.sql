@@ -277,7 +277,7 @@ CREATE TABLE IF NOT EXISTS `purchase_orders` (
         REFERENCES branches (branch_id),
     FOREIGN KEY (book_isbn)
         REFERENCES books (book_isbn),
-    FOREIGN KEY (employee_id)
+    FOREIGN KEY (purchase_employee_id)
         REFERENCES employees (employee_id),
     CONSTRAINT chk_purchase_order_status
       CHECK (purchase_order_status IN ('REQUESTED', 'APPROVED', 'REJECTED'))
@@ -289,7 +289,7 @@ CREATE TABLE IF NOT EXISTS `purchase_order_approvals` (
     purchase_order_id BIGINT NOT NULL,
     is_approved BOOLEAN NOT NULL,
     created_at DATETIME NOT NULL,
-    FOREIGN KEY (employee_id)
+    FOREIGN KEY (purchase_approval_employee_id)
         REFERENCES employees (employee_id),
     FOREIGN KEY (purchase_order_id)
         REFERENCES purchase_orders (purchase_order_id)
