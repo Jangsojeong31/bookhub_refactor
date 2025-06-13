@@ -269,7 +269,7 @@ CREATE TABLE IF NOT EXISTS `purchase_orders` (
     purchase_order_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     branch_id BIGINT NOT NULL,
     book_isbn VARCHAR(255) NOT NULL,
-    employee_id BIGINT NOT NULL,
+    purchase_employee_id BIGINT NOT NULL,
     purchase_order_amount INT NOT NULL,
     purchase_order_status VARCHAR(50) NOT NULL,
     purchase_order_date_at DATETIME NOT NULL,
@@ -285,7 +285,7 @@ CREATE TABLE IF NOT EXISTS `purchase_orders` (
 
 CREATE TABLE IF NOT EXISTS `purchase_order_approvals` (
     purchase_order_approval_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    employee_id BIGINT NOT NULL,
+    purchase_approval_employee_id BIGINT NOT NULL,
     purchase_order_id BIGINT NOT NULL,
     is_approved BOOLEAN NOT NULL,
     created_at DATETIME NOT NULL,
@@ -297,15 +297,16 @@ CREATE TABLE IF NOT EXISTS `purchase_order_approvals` (
 
 CREATE TABLE IF NOT EXISTS `book_reception_approvals` (
     book_reception_approval_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    employee_id BIGINT NOT NULL,
-    branch_id BIGINT NOT NULL,
+    reception_employee_id BIGINT NOT NULL,
+    book_isbn VARCHAR(255) NOT NULL,
+    book_title VARCHAR(255) NOT NULL,
+    purchase_order_amount INT NOT NULL,
+    branch_name VARCHAR(255) NOT NULL,
     purchase_order_approval_id BIGINT NOT NULL,
     is_reception_approved BOOLEAN NOT NULL DEFAULT FALSE,
-    reception_date_at DATETIME NOT NULL,
-    FOREIGN KEY (employee_id)
+    reception_date_at DATETIME,
+    FOREIGN KEY (reception_employee_id)
         REFERENCES employees (employee_id),
-   FOREIGN KEY (branch_id)
-      REFERENCES branches (branch_id),
     FOREIGN KEY (purchase_order_approval_id)
         REFERENCES purchase_order_approvals (purchase_order_approval_id)
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
