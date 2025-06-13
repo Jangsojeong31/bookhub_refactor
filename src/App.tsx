@@ -23,8 +23,8 @@ import PurchaseOrder from "./views/purchaseOrder";
 import Author from "./views/author";
 import Employee from "./views/employee";
 import Category from "./views/category";
-import LoginIdFindEmail from "./views/auth/loginIdFindEmail";
-import LoginIdGet from "./views/auth/loginIdGet";
+import LoginIdFindEmail from "./views/auth/LoginIdFindEmail";
+import LoginIdGet from "./views/auth/LoginIdGet";
 
 
 
