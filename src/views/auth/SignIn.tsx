@@ -39,6 +39,7 @@ function SignIn() {
       return;
     }
 
+    
     const { token, exprTime } = data;
 
     if (typeof exprTime !== "number" || isNaN(exprTime)) {
@@ -48,9 +49,6 @@ function SignIn() {
 
     const expireDate = new Date();
     expireDate.setMilliseconds(expireDate.getMilliseconds() + exprTime);
-
-    console.log(typeof exprTime); // number
-    console.log(!isNaN(exprTime)); // true
 
     setCookie("accessToken", token, {
       path: "/",

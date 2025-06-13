@@ -19,6 +19,8 @@ import Policy from './views/policy';
 
 import CreatePurchaseOrder from "./views/purchaseOrder/CreatePurchaseOrder";
 import Category from "./views/category";
+import LoginIdFindEmail from "./views/auth/loginIdFindEmail";
+import LoginIdGet from "./views/auth/loginIdGet";
 
 
 function App() {
@@ -46,6 +48,9 @@ function App() {
               <Route path = "/main" element = {<MainCommon />} />
               <Route path="/auth/login" element={<SignIn />} />
               <Route path='/auth/sign-up' element={<SignUp />} />
+              <Route path='/auth/login-id-find/email' element={<LoginIdFindEmail/>} />
+              <Route path="/auth/login-id-find" element ={<LoginIdGet/>}/>
+
               <Route path='/authors' element={<CreateAuthor />} />
               <Route path='/authors-else' element={<ElseAuthor />} />
               <Route path= '/publishers' element={<Publisher />} />
