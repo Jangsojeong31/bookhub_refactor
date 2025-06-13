@@ -23,6 +23,8 @@ import PurchaseOrder from "./views/purchaseOrder";
 import Author from "./views/author";
 import Employee from "./views/employee";
 import Category from "./views/category";
+import LoginIdFindEmail from "./views/auth/loginIdFindEmail";
+import LoginIdGet from "./views/auth/loginIdGet";
 
 
 
@@ -51,11 +53,19 @@ function App() {
               <Route path = "/main" element = {<MainCommon />} />
               <Route path="/auth/login" element={<SignIn />} />
               <Route path='/auth/sign-up' element={<SignUp />} />
+
+              <Route path='/auth/login-id-find/email' element={<LoginIdFindEmail/>} />
+              <Route path="/auth/login-id-find" element ={<LoginIdGet/>}/>
+
+              <Route path='/authors' element={<CreateAuthor />} />
+              <Route path='/authors-else' element={<ElseAuthor />} />
+
               <Route path= '/publishers' element={<Publisher />} />
-<<<<<<< HEAD
+
               {/* {Alert()}
               {Auth()}
               {Book()}
+              {Branch()}
               {BookLocation()}
               {Category()}
               {Policy()}
@@ -67,7 +77,7 @@ function App() {
               {Author()}
               {PurchaseOrder()}
               {Employee()}
-=======
+
 
               <Route path= '/policies' element={<Policy />} />
 
@@ -75,7 +85,6 @@ function App() {
               <Route path= '/purchase-orders' element={<CreatePurchaseOrder />} />
               <Route path= '/categories' element={<Category />} />
 
->>>>>>> 4f3d5f040ea5bb9106795fa785fc5feb5e500eb9
             </Routes>
           </main>
         </div>
