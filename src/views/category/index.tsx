@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CategoryTreeResponseDto } from "@/dtos/category/response/category-tree.response.dto";
 import { getCategoryTree } from "@/apis/category/category";
 import CreateCategory from "./CreateCategory";
 import UpdateCategory from "./UpdateCategory";
 import CategoryTree from "./CategoryTree";
+import { useCookies } from "react-cookie";
 
 type Mode = "create" | "read" | "update" | "delete";
 
@@ -11,18 +12,26 @@ function Category() {
   const [categories, setCategories] = useState<CategoryTreeResponseDto[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<CategoryTreeResponseDto | null>(null);
   const [mode, setMode] = useState<Mode>("create");
+  const [cookies] = useCookies(["accessToken"]);
 
   const fetchCategories = async () => {
-    const res = await getCategoryTree();
-    console.log("카테고리 응답 성공 유무 확인: ", res);
+    const token = cookies.accessToken;
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
+    const res = await getCategoryTree("DOMESTIC", token);
     if (res.code === "SU") {
       setCategories(res.data ?? []);
+    } else {
+      console.error("카테고리 목록 조회 실패:", res.message);
     }
   };
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+  // useEffect(() => {
+  //   fetchCategories();
+  // }, []);
 
   const handleSelectCategory = (category: CategoryTreeResponseDto) => {
     setSelectedCategory(category);
