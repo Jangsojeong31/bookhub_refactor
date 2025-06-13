@@ -14,6 +14,9 @@ import SignIn from "./views/auth/SignIn";
 import { SIGN_IN_URL } from "./apis/constants/khj.constants";
 import { GET_ALL_PUBLISHER_URL } from './apis';
 import MainCommon from './views/main/MainCommon';
+
+import Policy from './views/policy';
+
 import CreatePurchaseOrder from "./views/purchaseOrder/CreatePurchaseOrder";
 import Category from "./views/category";
 
@@ -46,8 +49,13 @@ function App() {
               <Route path='/authors' element={<CreateAuthor />} />
               <Route path='/authors-else' element={<ElseAuthor />} />
               <Route path= '/publishers' element={<Publisher />} />
+
+              <Route path= '/policies' element={<Policy />} />
+
+
               <Route path= '/purchase-orders' element={<CreatePurchaseOrder />} />
               <Route path= '/categories' element={<Category />} />
+
             </Routes>
           </main>
         </div>
