@@ -1,9 +1,17 @@
 import React from 'react'
+import { Route, Routes } from 'react-router-dom'
+import CreatePolicy from './CreatePolicy'
 
-function index() {
+function Policy() {
   return (
-    <div>index</div>
+    <div>
+      <Routes>
+        <Route path = '/create' element={<CreatePolicy/>}/>
+      </Routes>
+
+
+    </div>
   )
 }
 
-export default index
+export default Policy

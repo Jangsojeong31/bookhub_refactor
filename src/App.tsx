@@ -7,6 +7,7 @@ import * as jsj from '@/apis/constants/jsj.constants';
 import Publisher from './views/publisher';
 import { GET_ALL_PUBLISHER_URL } from './apis';
 import MainCommon from './views/main/MainCommon';
+import Policy from './views/policy';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
               <Route path='auth/sign-up' element={<SignUp />} />
               <Route path='/authors' element={<CreateAuthor />} />
               <Route path= '/publishers' element={<Publisher />} />
+              <Route path= '/policies' element={<Policy />} />
 
             </Routes>
         </main>
