@@ -14,11 +14,16 @@ import SignIn from "./views/auth/SignIn";
 import { SIGN_IN_URL } from "./apis/constants/khj.constants";
 import { GET_ALL_PUBLISHER_URL } from './apis';
 import MainCommon from './views/main/MainCommon';
+
+import Policy from './views/policy';
+
 import CreatePurchaseOrder from "./views/purchaseOrder/CreatePurchaseOrder";
 import ElsePurchaseOrder from "./views/purchaseOrder/ElsePurchaseOrder";
 import PurchaseOrder from "./views/purchaseOrder";
 import Author from "./views/author";
 import Employee from "./views/employee";
+import Category from "./views/category";
+
 
 
 function App() {
@@ -47,6 +52,7 @@ function App() {
               <Route path="/auth/login" element={<SignIn />} />
               <Route path='/auth/sign-up' element={<SignUp />} />
               <Route path= '/publishers' element={<Publisher />} />
+<<<<<<< HEAD
               {/* {Alert()}
               {Auth()}
               {Book()}
@@ -61,6 +67,15 @@ function App() {
               {Author()}
               {PurchaseOrder()}
               {Employee()}
+=======
+
+              <Route path= '/policies' element={<Policy />} />
+
+
+              <Route path= '/purchase-orders' element={<CreatePurchaseOrder />} />
+              <Route path= '/categories' element={<Category />} />
+
+>>>>>>> 4f3d5f040ea5bb9106795fa785fc5feb5e500eb9
             </Routes>
           </main>
         </div>

@@ -1,0 +1,40 @@
+body {
+      background-color: #eaf2fb;
+      font-family: 'Arial', sans-serif;
+    }
+
+    table {
+      width: 90%;
+      margin: 30px auto;
+      border-collapse: collapse;
+      background-color: white;
+    }
+
+    thead {
+      background-color: #2b5480;
+      color: white;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .status-button {
+      padding: 5px 12px;
+      border-radius: 15px;
+      background-color: #e74c3c;
+      color: white;
+      font-size: 12px;
+      border: none;
+      cursor: default;
+    }
+
+    .gray-text {
+      color: gray;
+    }
+
+    .tableheight{
+      height: 48px;
+    }
