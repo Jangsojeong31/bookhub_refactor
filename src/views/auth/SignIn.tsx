@@ -35,7 +35,7 @@ function SignIn() {
     const { code, message, data } = response;
 
     if (code != "SU" || !data) {
-      setMessage("로그인에 실패하였습니다." + message);
+      setMessage("로그인에 실패하였습니다.");
       return;
     }
 
@@ -73,6 +73,7 @@ function SignIn() {
         placeholder="아이디"
         onChange={onInputChange}
       />
+      <br />
       <input
         type="password"
         name="password"
@@ -80,7 +81,15 @@ function SignIn() {
         placeholder="비밀번호"
         onChange={onInputChange}
       />
+      <br />
       <button onClick={onSignInClick}>로그인</button>
+      <br />
+      <p>
+        <a href="/auth/sign-up">회원가입</a> |{" "}
+        <a href="/auth/login-id-find/email">아이디 찾기</a> |{" "}
+        <a href="/auth/password-change/email">비밀번호 변경</a>
+      </p>
+
       {message && <p>{message}</p>}
     </div>
   );
