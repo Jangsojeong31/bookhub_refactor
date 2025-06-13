@@ -7,7 +7,7 @@ import { useCookies } from 'react-cookie';
 
 function CreatePurchaseOrder() {
   const [form, setForm] = useState({
-    isbn: "",
+    bookTitle: "",
     purchaseOrderAmount: 0
   })
   const [purchaseOrders, setRequestOrders] = useState<PurchaseOrderRequestDto[]>([]);
@@ -27,17 +27,17 @@ function CreatePurchaseOrder() {
 
   // 추가 버튼 누르면
   const onAddPurchaseOrder = () => {
-    const {isbn, purchaseOrderAmount} = form;
+    const {bookTitle, purchaseOrderAmount} = form;
 
-    if(!isbn || !purchaseOrderAmount) {
+    if(!bookTitle || !purchaseOrderAmount) {
       setMessage('모든 항목을 입력해주세요')
       return;
     }
 
-    const newPurchaseOrder: PurchaseOrderRequestDto = {isbn, purchaseOrderAmount};
+    const newPurchaseOrder: PurchaseOrderRequestDto = {bookTitle, purchaseOrderAmount};
     setRequestOrders([...purchaseOrders,  newPurchaseOrder]);
 
-    setForm({ isbn: "", purchaseOrderAmount: 0 });
+    setForm({ bookTitle: "", purchaseOrderAmount: 0 });
 
     setMessage('');
   }
@@ -46,7 +46,7 @@ function CreatePurchaseOrder() {
   const reqeustPurchaseOrderList = purchaseOrders.map((purchaseOrder, index) => {
     return (
       <tr key={index}>
-        <td>{purchaseOrder.isbn}</td>
+        <td>{purchaseOrder.bookTitle}</td>
         <td>{purchaseOrder.purchaseOrderAmount}</td>
       </tr>
     )
@@ -117,9 +117,9 @@ function CreatePurchaseOrder() {
       <h2>발주요청서 등록</h2>
       <input 
         type="text"
-        placeholder='ISBN'
-        name='isbn'
-        value={form.isbn}
+        placeholder='책 제목'
+        name='bookTitle'
+        value={form.bookTitle}
         onChange={onInputChange}
         />
       <input 

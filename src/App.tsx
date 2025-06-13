@@ -18,9 +18,14 @@ import MainCommon from './views/main/MainCommon';
 import Policy from './views/policy';
 
 import CreatePurchaseOrder from "./views/purchaseOrder/CreatePurchaseOrder";
+import ElsePurchaseOrder from "./views/purchaseOrder/ElsePurchaseOrder";
+import PurchaseOrder from "./views/purchaseOrder";
+import Author from "./views/author";
+import Employee from "./views/employee";
 import Category from "./views/category";
 import LoginIdFindEmail from "./views/auth/loginIdFindEmail";
 import LoginIdGet from "./views/auth/loginIdGet";
+
 
 
 function App() {
@@ -48,12 +53,31 @@ function App() {
               <Route path = "/main" element = {<MainCommon />} />
               <Route path="/auth/login" element={<SignIn />} />
               <Route path='/auth/sign-up' element={<SignUp />} />
+
               <Route path='/auth/login-id-find/email' element={<LoginIdFindEmail/>} />
               <Route path="/auth/login-id-find" element ={<LoginIdGet/>}/>
 
               <Route path='/authors' element={<CreateAuthor />} />
               <Route path='/authors-else' element={<ElseAuthor />} />
+
               <Route path= '/publishers' element={<Publisher />} />
+
+              {/* {Alert()}
+              {Auth()}
+              {Book()}
+              {Branch()}
+              {BookLocation()}
+              {Category()}
+              {Policy()}
+              {Publisher()}
+              {Reception()}
+              {Reception()}
+              {Statistics()}
+              {Stocks()} */}
+              {Author()}
+              {PurchaseOrder()}
+              {Employee()}
+
 
               <Route path= '/policies' element={<Policy />} />
 
