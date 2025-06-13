@@ -2,6 +2,7 @@
 import { checkLoginIdDuplicate, signUpRequest } from "@/apis/auth/auth";
 import { GET_BRANCH_URL } from "@/apis/constants/khj.constants";
 import { SignUpRequestDto } from "@/dtos/auth/request/sign-up.request.dto";
+import { join } from "path";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -220,12 +221,13 @@ function SignUp() {
       <select value={form.branchId} onChange={onSelectChange}>
         <option value={0}>지점을 선택하세요</option>
         {branches.map((branch) => (
-          <option value={branch.branchId}>{branch.branchName}</option>
+          <option key={branch.branchId} value={branch.branchId}>{branch.branchName}</option>
         ))}
       </select>
       <br />
-      {<p>{message}</p>}
+      {message && <p>{message}</p>}
       <button onClick={onSignUpClick}>회원가입</button>
+
     </div>
   );
 }
