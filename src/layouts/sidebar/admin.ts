@@ -40,8 +40,8 @@ export const adminMenu: SidebarMenu[] = [
   {
     title: '발주 승인',
     submenu: [
-      { label: '발주 승인', path: '/orders/approval' },
-      { label: '발주 승인 로그 확인', path: '/orders/approval/logs' },
+      { label: '발주 승인', path: '/purchase-order/approve' },
+      { label: '발주 승인 기록', path: '/purchase-order-approval' },
     ],
   },
   {

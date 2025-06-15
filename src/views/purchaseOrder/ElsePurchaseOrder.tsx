@@ -146,7 +146,7 @@ function ElsePurchaseOrder() {
     setPurchaseOrders(updatedPurchaseOrders);
   }
 
-  // 노출 리스트
+  // *노출 리스트
   const responsePurchaseOrderList = purchaseOrders.map((purchaseOrder, index) => {
     return (
       <tr key={index}>
@@ -159,8 +159,8 @@ function ElsePurchaseOrder() {
         <td>{purchaseOrder.purchaseOrderAmount}</td>
         <td>{purchaseOrder.purchaseOrderPrice}</td>
         <td>{purchaseOrder.purchaseOrderStatus}</td>
-        <button onClick={() => openUpdateModal(purchaseOrder)}>수정</button>
-        <button onClick={() => onDeletePurchaseOrderClick(purchaseOrder, purchaseOrder.purchaseOrderId)}>삭제</button>
+        <td><button onClick={() => openUpdateModal(purchaseOrder)}>수정</button></td>
+        <td><button onClick={() => onDeletePurchaseOrderClick(purchaseOrder, purchaseOrder.purchaseOrderId)}>삭제</button></td>
 
         {/* <td>{purchaseOrder.purchaseOrderDateAt}</td> */} 
       </tr>
