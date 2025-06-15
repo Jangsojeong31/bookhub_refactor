@@ -59,8 +59,9 @@ function SignIn() {
     setLogin();
 
     alert(message);
-    navigate("/auth/sign-up");
+    navigate("/main");
   };
+  
   return (
     <div>
       <h1>로그인</h1>

@@ -32,13 +32,14 @@ function LoginIdFindEmail() {
 
     const requestBody: LoginIdFindSendEmailRequestDto = { email, phoneNumber };
     const response = await loginIdFindSendEmailRequest(requestBody);
-    const { code, message } = response;
+    const { code, message, data } = response;
 
     if (code != "SU") {
       setMessage("이메일 전송 실패: " + message);
-    } else{
-      alert("이메일 전송 성공");
-      navigate("/auth/login")
+      return;
+    } else {
+      alert(data);
+      navigate("/auth/login");
     }
   };
 

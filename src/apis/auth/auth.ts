@@ -9,6 +9,8 @@ import {
   CHECK_LOGIN_ID_DUPLICATE,
   LOGIN_ID_FIND_EMAIL_URL,
   LOGIN_ID_FIND_URL,
+  PASSWORD_CHANGE_EMAIL_URL,
+  PASSWORD_CHANGE_URL,
   SIGN_IN_URL,
   SIGN_UP_URL,
 } from "../constants/khj.constants";
@@ -16,7 +18,8 @@ import { AxiosError } from "axios";
 import { SignInRequestDto } from "@/dtos/auth/request/sign-in.request.dto";
 import { SignInResponseDto } from "@/dtos/auth/response/sign-in.response.dto";
 import { LoginIdFindSendEmailRequestDto } from "@/dtos/auth/request/login-id-find-email.request.dto";
-import { LoginIdFindResponseDto } from "@/dtos/auth/response/Login-id-find.response.dto";
+import { PasswordChangeEamilRequestDto } from "@/dtos/auth/request/password-change-email.request.dto";
+import { PasswordChangeRequestDto } from "@/dtos/auth/request/password-change.request.dto";
 
 export const signUpRequest = async (
   dto: SignUpRequestDto
@@ -70,6 +73,45 @@ export const loginIdFindRequest = async (
   try {
     const response = await axiosInstance.get(
       LOGIN_ID_FIND_URL + `?token=${token}`
+    );
+    return responseSuccessHandler(response);
+  } catch (error) {
+    return responseErrorHandler(error as AxiosError<ResponseDto>);
+  }
+};
+
+export const passwordChangeEmailRequest = async (
+  dto: PasswordChangeEamilRequestDto
+): Promise<ResponseDto<string>> => {
+  try {
+    const response = await axiosInstance.post(PASSWORD_CHANGE_EMAIL_URL, dto);
+    return responseSuccessHandler(response);
+  } catch (error) {
+    return responseErrorHandler(error as AxiosError<ResponseDto>);
+  }
+};
+
+export const verifyToken = async (
+  token: string
+): Promise<ResponseDto<string>> => {
+  try {
+    const response = await axiosInstance.get(
+      PASSWORD_CHANGE_URL + `?token=${token}`
+    );
+    return responseSuccessHandler(response);
+  } catch (error) {
+    return responseErrorHandler(error as AxiosError<ResponseDto>);
+  }
+};
+
+export const passwordChangeRequest = async (
+  token: string,
+  dto: PasswordChangeRequestDto
+): Promise<ResponseDto<string>> => {
+  try {
+    const response = await axiosInstance.put(
+      PASSWORD_CHANGE_URL + `?token=${token}`,
+      dto
     );
     return responseSuccessHandler(response);
   } catch (error) {
