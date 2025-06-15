@@ -1,31 +1,22 @@
 import Sidebar from "./layouts/sidebar";
 import Header from "./layouts/header";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
-import CreateAuthor from "./views/author/CreateAuthor";
-import ElseAuthor from "./views/author/ElseAuthor";
-import SignUp from "./views/auth/SignUp";
-import * as csy from "@/apis/constants/csy.constants";
-import * as jsj from "@/apis/constants/jsj.constants";
-import Publisher from "./views/publisher";
 import { useCookies } from "react-cookie";
 import { useEmployeeStore } from "./stores/employee.store";
 import { useEffect } from "react";
-import SignIn from "./views/auth/SignIn";
-import { SIGN_IN_URL } from "./apis/constants/khj.constants";
-import { GET_ALL_PUBLISHER_URL } from './apis';
-import MainCommon from './views/main/MainCommon';
-
-import Policy from './views/policy';
-
-import CreatePurchaseOrder from "./views/purchaseOrder/CreatePurchaseOrder";
-import ElsePurchaseOrder from "./views/purchaseOrder/ElsePurchaseOrder";
-import PurchaseOrder from "./views/purchaseOrder";
+import Main from "./views/main";
+import Alert from "./views/alert";
+import Auth from "./views/auth";
 import Author from "./views/author";
-import Employee from "./views/employee";
+import Branch from "./views/branch/Branch";
+import Book from "./views/book";
 import Category from "./views/category";
-import LoginIdFindEmail from "./views/auth/LoginIdFindEmail";
-import LoginIdGet from "./views/auth/LoginIdGet";
-
+import Employee from "./views/employee";
+import Policy from './views/policy';
+import Publisher from "./views/publisher";
+import PurchaseOrder from "./views/purchaseOrder";
+import Reception from "./views/reception";
+import StockStatistics from "./views/statistics";
 
 
 function App() {
@@ -50,21 +41,10 @@ function App() {
           <main style={{ flex: 1, padding: '30px', overflowY: 'auto', minHeight: 0, minWidth: 0 }}>
             <Routes>
               <Route path = "/" element={<Navigate to = "/main"/>}/>
-              <Route path = "/main" element = {<MainCommon />} />
-              <Route path="/auth/login" element={<SignIn />} />
-              <Route path='/auth/sign-up' element={<SignUp />} />
-
-              <Route path='/auth/login-id-find/email' element={<LoginIdFindEmail/>} />
-              <Route path="/auth/login-id-find" element ={<LoginIdGet/>}/>
-
-              <Route path='/authors' element={<CreateAuthor />} />
-              <Route path='/authors-else' element={<ElseAuthor />} />
-
-              <Route path= '/publishers' element={<Publisher />} />
-
-              {/* {Alert()}
+              {Main()}
+              {/* {Alert()} */}
               {Auth()}
-              {Book()}
+              {/* {Book()}
               {Branch()}
               {BookLocation()}
               {Category()}
@@ -72,19 +52,11 @@ function App() {
               {Publisher()}
               {Reception()}
               {Reception()}
-              {Statistics()}
+              {StockStatistics()}
               {Stocks()} */}
               {Author()}
               {PurchaseOrder()}
-              {Employee()}
-
-
-              <Route path= '/policies' element={<Policy />} />
-
-
-              <Route path= '/purchase-orders' element={<CreatePurchaseOrder />} />
-              <Route path= '/categories' element={<Category />} />
-
+              {/* {Employee()} */}
             </Routes>
           </main>
         </div>

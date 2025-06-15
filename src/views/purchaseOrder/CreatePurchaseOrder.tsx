@@ -8,7 +8,7 @@ import { useCookies } from 'react-cookie';
 function CreatePurchaseOrder() {
   const [form, setForm] = useState({
     bookTitle: "",
-    purchaseOrderAmount: 0
+    purchaseOrderAmount: ""
   })
   const [purchaseOrders, setRequestOrders] = useState<PurchaseOrderRequestDto[]>([]);
   const [responseOrders, setResponseOrders] = useState<PurchaseOrderResponseDto[]>([]);
@@ -34,10 +34,12 @@ function CreatePurchaseOrder() {
       return;
     }
 
-    const newPurchaseOrder: PurchaseOrderRequestDto = {bookTitle, purchaseOrderAmount};
+    const parsedAmount = parseInt(purchaseOrderAmount, 10);
+
+    const newPurchaseOrder: PurchaseOrderRequestDto = {bookTitle, purchaseOrderAmount: parsedAmount};
     setRequestOrders([...purchaseOrders,  newPurchaseOrder]);
 
-    setForm({ bookTitle: "", purchaseOrderAmount: 0 });
+    setForm({ bookTitle: "", purchaseOrderAmount: "" });
 
     setMessage('');
   }
@@ -57,36 +59,25 @@ function CreatePurchaseOrder() {
     const requestBody: PurchaseOrderCreateRequestDto = {purchaseOrders};
     const token = cookies.accessToken;
     
-    
+  
     if(!token){
       alert('인증 토큰이 없습니다.')
       return
     }
-    console.log('testProblem1');
     
-    const response = await createPurchaseOrder(requestBody, token); // 코드 문제 - 수정 요함
-    console.log('testProblem2');
+    const response = await createPurchaseOrder(requestBody, token); 
     const {code, message, data: responseOrders} = response; 
     
-    console.log('testProblem3');
     
     if(!code) {
       setMessage(message);
       return;
     }
-    
-    // if (!responseOrders) {
-    //   setRequestOrders([]);
-    //   setMessage("주문 목록을 불러오지 못했습니다.");
-    //   return;
-    // }
 
     if (Array.isArray(responseOrders)) {
       setResponseOrders(responseOrders);
-      console.log('testProblem4')
     } else {
       setMessage("데이터 형식이 올바르지 않습니다.");
-      console.log('testProblem5')
     }
     
     setRequestOrders([]);
