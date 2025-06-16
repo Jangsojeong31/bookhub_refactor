@@ -5,7 +5,7 @@ export const adminMenu: SidebarMenu[] = [
   {
     title: '책 정보관리',
     submenu: [
-      { label: '작가 관리', path: '/authors' },       // ✅ 수정
+      { label: '작가 관리', path: '/author/create' },       // ✅ 수정
       { label: '출판사 관리', path: '/publishers' },   // ✅ 수정
       { label: '카테고리 관리', path: '/categories' }, // 추가 예정이면 빈 문자열 말고 대략 예상 경로라도!
       { label: '책 등록', path: '/books/create' },

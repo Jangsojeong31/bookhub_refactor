@@ -3,6 +3,7 @@ import { deleteAuthor, getAllAuthorsByName, updateAuthor } from '@/apis/author/a
 import { AuthorResponseDto } from '@/dtos/author/response/author.response.dto';
 import { NavLink } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+import Modal from '@/apis/constants/Modal';
 
 // & 기능: 이름으로 조회, 수정, 삭제
 
@@ -110,6 +111,28 @@ function ElseAuthor() {
       <button onClick={() => onDeleteAuthorClick(author.authorId)}>삭제</button>
     </tr>
   )})
+
+  const modalContent: React.ReactNode = (
+  <>
+    <h3>저자 수정 모달</h3>
+      <input
+        type="text"
+        name="authorName"
+        value={form.authorName}
+        onChange={onInputChange}
+        placeholder={form.authorName}
+      />
+      <input
+        type="text"
+        name="authorEmail"
+        value={form.authorEmail}
+        onChange={onInputChange}
+        placeholder={form.authorEmail}
+      />
+      <button onClick={() => onUpdateAuthorClick(authorId)}>수정</button>
+      {message && <p>{message}</p>}
+  </>
+);
   
   return (
     <div>
@@ -158,7 +181,7 @@ function ElseAuthor() {
         </tbody>
       </table>
 
-      {modalStatus && 
+      {/* {modalStatus && 
       <div>
         <h3>저자 수정 모달</h3>
         <input
@@ -178,6 +201,14 @@ function ElseAuthor() {
         <button onClick={() => onUpdateAuthorClick(authorId)}>수정</button>
         {message && <p>{message}</p>}
       </div>
+      } */}
+
+      {modalStatus &&
+        <Modal 
+          isOpen={modalStatus}
+          onClose={() => setModalStatus(false)}
+          children={modalContent}
+        />
       }
     </div>
   )
