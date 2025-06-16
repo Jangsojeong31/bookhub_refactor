@@ -9,6 +9,7 @@ import {
   CHECK_LOGIN_ID_DUPLICATE,
   LOGIN_ID_FIND_EMAIL_URL,
   LOGIN_ID_FIND_URL,
+  LOGOUT_URL,
   PASSWORD_CHANGE_EMAIL_URL,
   PASSWORD_CHANGE_URL,
   SIGN_IN_URL,
@@ -113,6 +114,15 @@ export const passwordChangeRequest = async (
       PASSWORD_CHANGE_URL + `?token=${token}`,
       dto
     );
+    return responseSuccessHandler(response);
+  } catch (error) {
+    return responseErrorHandler(error as AxiosError<ResponseDto>);
+  }
+};
+
+export const logoutRequest = async (): Promise<ResponseDto<void>> => {
+  try {
+    const response = await axiosInstance.post(LOGOUT_URL);
     return responseSuccessHandler(response);
   } catch (error) {
     return responseErrorHandler(error as AxiosError<ResponseDto>);
