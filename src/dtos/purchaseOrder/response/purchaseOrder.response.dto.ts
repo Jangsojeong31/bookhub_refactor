@@ -9,5 +9,5 @@ export interface PurchaseOrderResponseDto {
   purchaseOrderAmount: number;
   purchaseOrderPrice: number;
   purchaseOrderStatus: string;
-  purchaseOrderDateAt: Date;
+  purchaseOrderDateAt: string;
 }

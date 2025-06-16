@@ -1,3 +1,4 @@
+import Modal from '@/apis/constants/Modal';
 import { createPurchaseOrder } from '@/apis/purchaseOrder/purchaseOrder';
 import { PurchaseOrderCreateRequestDto } from '@/dtos/purchaseOrder/request/purchaseOrder-create.request.dto';
 import { PurchaseOrderRequestDto } from '@/dtos/purchaseOrder/request/purchaseOrder.request.dto';
@@ -7,7 +8,7 @@ import { useCookies } from 'react-cookie';
 
 function CreatePurchaseOrder() {
   const [form, setForm] = useState({
-    bookTitle: "",
+    isbn: "",
     purchaseOrderAmount: ""
   })
   const [purchaseOrders, setRequestOrders] = useState<PurchaseOrderRequestDto[]>([]);
@@ -27,19 +28,19 @@ function CreatePurchaseOrder() {
 
   // 추가 버튼 누르면
   const onAddPurchaseOrder = () => {
-    const {bookTitle, purchaseOrderAmount} = form;
+    const {isbn, purchaseOrderAmount} = form;
 
-    if(!bookTitle || !purchaseOrderAmount) {
+    if(!isbn || !purchaseOrderAmount) {
       setMessage('모든 항목을 입력해주세요')
       return;
     }
 
     const parsedAmount = parseInt(purchaseOrderAmount, 10);
 
-    const newPurchaseOrder: PurchaseOrderRequestDto = {bookTitle, purchaseOrderAmount: parsedAmount};
+    const newPurchaseOrder: PurchaseOrderRequestDto = {isbn, purchaseOrderAmount: parsedAmount};
     setRequestOrders([...purchaseOrders,  newPurchaseOrder]);
 
-    setForm({ bookTitle: "", purchaseOrderAmount: "" });
+    setForm({ isbn: "", purchaseOrderAmount: "" });
 
     setMessage('');
   }
@@ -48,7 +49,7 @@ function CreatePurchaseOrder() {
   const reqeustPurchaseOrderList = purchaseOrders.map((purchaseOrder, index) => {
     return (
       <tr key={index}>
-        <td>{purchaseOrder.bookTitle}</td>
+        <td>{purchaseOrder.isbn}</td>
         <td>{purchaseOrder.purchaseOrderAmount}</td>
       </tr>
     )
@@ -56,6 +57,11 @@ function CreatePurchaseOrder() {
   
   // 등록 기능
   const onCreatePurchaseOrderClick = async() => {
+    if(purchaseOrders.length === 0) {
+      setMessage('등록하실 발주 요청서를 입력하세요.')
+      return;
+    }
+
     const requestBody: PurchaseOrderCreateRequestDto = {purchaseOrders};
     const token = cookies.accessToken;
     
@@ -76,13 +82,14 @@ function CreatePurchaseOrder() {
 
     if (Array.isArray(responseOrders)) {
       setResponseOrders(responseOrders);
+      setMessage('');
     } else {
       setMessage("데이터 형식이 올바르지 않습니다.");
     }
     
     setRequestOrders([]);
 
-    alert("등록이 완료되었습니다."); 
+    setModalStatus(true);
   }
   
   // 노출 리스트(response)
@@ -98,19 +105,45 @@ function CreatePurchaseOrder() {
         <td>{purchaseOrder.purchaseOrderAmount}</td>
         <td>{purchaseOrder.purchaseOrderPrice}</td>
         <td>{purchaseOrder.purchaseOrderStatus}</td>
-        {/* <td>{purchaseOrder.purchaseOrderDateAt}</td> */} 
+        <td>{purchaseOrder.purchaseOrderDateAt}</td> 
       </tr>
     )
   })
+
+  const modalContent: React.ReactNode = (
+      <>
+        <h3>발주 요청서 등록이 완료되었습니다.</h3>
+        <table>
+            <thead>
+              <tr>
+                <th>지점명</th>
+                <th>지점 주소</th>
+                <th>발주 담당 사원</th>
+                <th>ISBN</th>
+                <th>책 제목</th>
+                <th>책 가격</th>
+                <th>발주 수량</th>
+                <th>발주 가격</th>
+                <th>발주 일자</th>
+                <th>승인 상태</th>
+              </tr>
+            </thead>
+            <tbody>
+              {responsePurchaseOrderList}
+            </tbody>
+          </table>  
+        {message && <p>{message}</p>}
+      </>
+    );
 
   return (
     <div>
       <h2>발주요청서 등록</h2>
       <input 
         type="text"
-        placeholder='책 제목'
-        name='bookTitle'
-        value={form.bookTitle}
+        placeholder='ISBN'
+        name='isbn'
+        value={form.isbn}
         onChange={onInputChange}
         />
       <input 
@@ -134,30 +167,19 @@ function CreatePurchaseOrder() {
         </table>
         <button onClick={onCreatePurchaseOrderClick}>등록</button>
         <br />
-        {/* 모달창 안으로 */}
-        등록된 발주 요청서
-        {responseOrders && (
-          <table>
-            <thead>
-              <tr>
-                <th>지점명</th>
-                <th>지점 주소</th>
-                <th>발주 담당 사원</th>
-                <th>ISBN</th>
-                <th>책 제목</th>
-                <th>책 가격</th>
-                <th>발주 수량</th>
-                <th>발주 가격</th>
-                <th>승인 상태</th>
-              </tr>
-            </thead>
-            <tbody>
-              {responsePurchaseOrderList}
-            </tbody>
-          </table>
-        )}
-        {/* 모달창 닫기 누르면 setResponseOrders([]) */}
-        {message && <p>{message}</p>}
+        
+      {modalStatus &&
+        <Modal 
+          isOpen={modalStatus}
+          onClose={() => {
+            setModalStatus(false);
+            setResponseOrders([])
+            setMessage("");
+          }}
+          children={modalContent}
+        />
+      }
+      {message && <p>{message}</p>}
     </div>
   )
 }

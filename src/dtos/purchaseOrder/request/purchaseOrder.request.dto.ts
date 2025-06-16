@@ -1,4 +1,4 @@
 export interface PurchaseOrderRequestDto {
-  bookTitle: string;
+  isbn: string;
   purchaseOrderAmount: number;
 }

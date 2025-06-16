@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
 import { AuthorRequestDto } from '@/dtos/author/request/author.request.dto'
 import { AuthorCreateRequestDto } from '@/dtos/author/request/author-create.request.dto';
-import { createAuthor } from '@/apis/author/author';
+import { checkDuplicateAuthorEmail, createAuthor } from '@/apis/author/author';
 import Modal from '../../apis/constants/Modal';
 import { NavLink } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 
 // 여러건 동시 등록
 function CreateAuthor() {
-
   const [form, setForm] = useState({
     authorName: "",
     authorEmail: ""
@@ -24,11 +23,24 @@ function CreateAuthor() {
   }
   
   // 추가 버튼 클릭 -> 리스트에 추가됨
-  const onAddAuthor = () => {
+  const onAddAuthor = async() => {
     const {authorName, authorEmail} = form;
+    const token = cookies.accessToken;
 
     if (!authorName || !authorEmail) {
       setMessage('모든 항목을 입력해주세요');
+      return;
+    }
+
+    // authorEmail 중복 확인
+    const response = await checkDuplicateAuthorEmail(authorEmail, token);
+    const { code } = response;
+    if(code === "IV") {
+      setMessage('중복된 이메일입니다.');
+      setForm({
+        authorName: `${authorName}`,
+        authorEmail: ""
+      })
       return;
     }
 
@@ -52,6 +64,10 @@ function CreateAuthor() {
 
   // 등록 버튼 클릭 -> 저자 리스트 등록(저장)
   const onCreateAuthorClick = async() => {
+    if(authors.length === 0) {
+      setMessage('등록하실 저자를 입력하세요.')
+      return;
+    }
 
     const requestBody: AuthorCreateRequestDto = {authors};
     const token = cookies.accessToken;
@@ -69,25 +85,33 @@ function CreateAuthor() {
       return;
     }
 
-    // 팝업창(모달창) 열림
-    onHandleModalStatus();
-
-    alert("등록이 완료되었습니다."); // 메시지를 모달창 안으로 포함시킬까 고민중
-
-    // authors 초기화
-    setAuthors([]);
+    setModalStatus(true);
+    setMessage("등록이 완료되었습니다.")
   }
 
-  // 모달창 상태 변환 함수
-  const onHandleModalStatus = () => {
-    setModalStatus(!modalStatus);
-  }
+  const modalContent: React.ReactNode = (
+    <>
+      <h3>등록된 작가</h3>
+      <table>
+          <thead>
+            <tr>
+              <th>저자 이름</th>
+              <th>저자 이메일</th>
+            </tr>
+          </thead>
+          <tbody>
+            {authorList}
+          </tbody>
+        </table>  
+      {message && <p>{message}</p>}
+    </>
+  );
 
   return (
     <div>
       <NavLink
-        to="/authors"
-        key="/authors"
+        to="/author/create"
+        key="/author/create"
         style={({isActive}) => ({
           backgroundColor: isActive? 'blue' : 'lightgray',
           padding: '10px 20xp',
@@ -97,8 +121,8 @@ function CreateAuthor() {
       </NavLink>
 
       <NavLink
-        to="/authors-else"
-        key="/authors-else"
+        to="/author/else"
+        key="/author/else"
         style={({isActive}) => ({
           backgroundColor: isActive? 'blue' : 'lightgray',
           padding: '10px 20xp',
@@ -106,8 +130,6 @@ function CreateAuthor() {
         })}>
         조회 / 수정 / 삭제
       </NavLink>
-      {/* <button>등록</button>
-      <button>조회 / 수정 / 삭제</button> */}
 
       <h2>저자 등록</h2>
       <input 
@@ -124,28 +146,32 @@ function CreateAuthor() {
         value={form.authorEmail}
         onChange={onInputChange}
         />
-        <button onClick={onAddAuthor}>추가</button>
-        <table>
-          <thead>
-            <tr>
-              <th>저자 이름</th>
-              <th>저자 이메일</th>
-            </tr>
-          </thead>
-          <tbody>
-            {authorList}
-          </tbody>
-        </table>
-        <button onClick={onCreateAuthorClick}>등록</button>
-
-        {/* <button onClick={onHandleModalStatus}>모달창 열기</button> */}
-        {/* {modalStatus && (
-          <Modal title='모달 제목' setModal={onHandleModalStatus}>
-            {authorList}
-            <button onClick={onHandleModalStatus}>창 닫기</button>
-          </Modal>
-        )} */}
-        {message && <p>{message}</p>}
+      <button onClick={onAddAuthor}>추가</button>
+      {message && <p>{message}</p>}
+      <table>
+        <thead>
+          <tr>
+            <th>저자 이름</th>
+            <th>저자 이메일</th>
+          </tr>
+        </thead>
+        <tbody>
+          {authorList}
+        </tbody>
+      </table>
+      <button onClick={onCreateAuthorClick}>등록</button>
+        
+      {modalStatus &&
+      <Modal 
+        isOpen={modalStatus}
+        onClose={() => {
+          setModalStatus(false);
+          setAuthors([])
+          setMessage("");
+        }}
+        children={modalContent}
+      />
+      }
     </div>
   )
 }

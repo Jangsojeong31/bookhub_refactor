@@ -5,6 +5,7 @@ import { axiosInstance, bearerAuthorization, responseErrorHandler, responseSucce
 import { DELETE_PURCHASE_ORDER_URL, GET_ALL_PURCHASE_ORDER_URL, GET_PURCHASE_ORDER_BY_CRITERIA, POST_PURCHASE_ORDER_URL, PUT_PURCHASE_ORDER_URL } from "../constants/jsj.constants";
 import { AxiosError } from "axios";
 import { PurchaseOrderRequestDto } from "@/dtos/purchaseOrder/request/purchaseOrder.request.dto";
+import { PurchaseOrderStatus } from "@/dtos/purchaseOrderApproval/request/purchaseOrder-approve.request.dto";
 
 
 // 발주 요청서 작성 (사용자 정보 가져와서 이름, 지점 등 사용)
@@ -28,7 +29,7 @@ export const getAllPurchaseOrder = async(accessToken: string): Promise<ResponseD
 }
 
 // 조회 기준으로 조회(발주 담당 사원, isbn, 승인 상태)
-export const getAllPurchaseOrderByCriteria = async(employeeName: string, bookTitle: string, purchaseOrderStatus: string, accessToken: string): Promise<ResponseDto<PurchaseOrderResponseDto[]>> => {
+export const getAllPurchaseOrderByCriteria = async(employeeName: string, bookTitle: string, purchaseOrderStatus: PurchaseOrderStatus | null, accessToken: string): Promise<ResponseDto<PurchaseOrderResponseDto[]>> => {
   try{
     const response = await axiosInstance.get(GET_PURCHASE_ORDER_BY_CRITERIA(employeeName, bookTitle, purchaseOrderStatus), bearerAuthorization(accessToken));
     return responseSuccessHandler(response);

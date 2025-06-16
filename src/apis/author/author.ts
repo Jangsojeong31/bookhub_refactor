@@ -6,13 +6,23 @@ import { AxiosError } from "axios";
 
 import { AuthorRequestDto } from "@/dtos/author/request/author.request.dto";
 import { axiosInstance, bearerAuthorization, responseErrorHandler, responseSuccessHandler } from "../axiosConfig";
-import { DELETE_AUTHOR_URL, GET_ALL_AUTHOR_BY_NAME_URL, GET_ALL_AUTHOR_URL, GET_AUTHOR_URL, POST_AUTHOR_URL, PUT_AUTHOR_URL } from "../constants/jsj.constants";
+import { CHECK_DUPLICATE_AUTHOR_EMAIL, DELETE_AUTHOR_URL, GET_ALL_AUTHOR_BY_NAME_URL, GET_ALL_AUTHOR_URL, GET_AUTHOR_URL, POST_AUTHOR_URL, PUT_AUTHOR_URL } from "../constants/jsj.constants";
 
 
 // 저자 등록
 export const createAuthor = async (dto: AuthorCreateRequestDto, accessToken: string): Promise<ResponseDto<AuthorResponseDto[]>> => {
   try {
     const response = await axiosInstance.post(POST_AUTHOR_URL, dto, bearerAuthorization(accessToken));
+    return responseSuccessHandler(response);
+  } catch (error) {
+    return responseErrorHandler(error as AxiosError<ResponseDto>);
+  }
+}
+
+// 저자 이메일 중복 체크
+export const checkDuplicateAuthorEmail = async (authorEmail: string, accessToken: string): Promise<ResponseDto<void>> => {
+  try {
+    const response = await axiosInstance.get(CHECK_DUPLICATE_AUTHOR_EMAIL(authorEmail), bearerAuthorization(accessToken));
     return responseSuccessHandler(response);
   } catch (error) {
     return responseErrorHandler(error as AxiosError<ResponseDto>);

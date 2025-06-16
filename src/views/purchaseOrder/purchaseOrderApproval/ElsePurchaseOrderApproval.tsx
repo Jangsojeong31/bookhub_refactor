@@ -1,4 +1,5 @@
 import { getAllPurchaseOrderApproval, getAllPurchaseOrderApprovalByCriteria, getAllPurchaseOrderApprovalByDate } from '@/apis/purchaseOrder/purchaseOrderApproval'
+import { PurchaseOrderStatus } from '@/dtos/purchaseOrderApproval/request/purchaseOrder-approve.request.dto';
 import { PurchaseOrderApprovalResponseDto } from '@/dtos/purchaseOrderApproval/response/purchaseOrderApproval.respose.dto';
 import React, { useState } from 'react'
 import { useCookies } from 'react-cookie';
@@ -52,6 +53,7 @@ function ElsePurchaseOrderApproval() {
 
   //* 조회 조건으로 조회
   const onGetPurchaseOrderByCriteria = async() => {
+    setPurchaseOrderApprovals([]);
     const{employeeName, isApproved} = searchForm;
     const token = cookies.accessToken;
 
@@ -78,6 +80,7 @@ function ElsePurchaseOrderApproval() {
   
   // * 날짜로 조회
   const onGetPurchaseOrderApprovalByDate = async() => {
+    setPurchaseOrderApprovals([]);
     const{startDate, endDate} = dateForm;
     const token = cookies.accessToken;
 
@@ -107,17 +110,17 @@ function ElsePurchaseOrderApproval() {
     return (
       <tr key={index}>
         <td>{purchaseOrderApproval.employeeName}</td>
-        <td>{purchaseOrderApproval.isApproved ? "승인" : "승인 거절"}</td>
+        <td>{purchaseOrderApproval.isApproved ? "승인" : "승인 거부"}</td>
         <td>{purchaseOrderApproval.approvedDateAt}</td>
         
         <td>[발주서 사항]</td>
-        <td>{purchaseOrderApproval.poDetail?.branchName}</td>
-        <td>{purchaseOrderApproval.poDetail?.employeeName}</td>
-        <td>{purchaseOrderApproval.poDetail?.isbn}</td>
-        <td>{purchaseOrderApproval.poDetail?.bookTitle}</td>
-        <td>{purchaseOrderApproval.poDetail?.bookPrice}</td>
-        <td>{purchaseOrderApproval.poDetail?.purchaseOrderAmount}</td>
-        <td>{purchaseOrderApproval.poDetail?.purchaseOrderStatus}</td>
+        <td>{purchaseOrderApproval.poDetail.branchName}</td>
+        <td>{purchaseOrderApproval.poDetail.employeeName}</td>
+        <td>{purchaseOrderApproval.poDetail.isbn}</td>
+        <td>{purchaseOrderApproval.poDetail.bookTitle}</td>
+        <td>{purchaseOrderApproval.poDetail.bookPrice}</td>
+        <td>{purchaseOrderApproval.poDetail.purchaseOrderAmount}</td>
+        <td>{purchaseOrderApproval.poDetail.purchaseOrderStatus == PurchaseOrderStatus.REQUESTED ? '요청중' : purchaseOrderApproval.poDetail.purchaseOrderStatus === PurchaseOrderStatus.APPROVED ? '승인' : '거부'}</td>
       </tr>
     )
   })
@@ -178,7 +181,7 @@ function ElsePurchaseOrderApproval() {
               
               <th>[발주서 사항]</th>
               <th>지점명</th>
-              <th>지점 주소</th>
+              <th>발주 담당자</th>
               <th>ISBN</th>
               <th>책 제목</th>
               <th>책 가격</th>
@@ -191,6 +194,7 @@ function ElsePurchaseOrderApproval() {
           </tbody>
         </table> 
       }
+      {message && <p>{message}</p>}
       
     </div>
   )
