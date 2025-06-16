@@ -1,9 +1,13 @@
-import React from 'react'
+import React from "react";
+import { Route } from "react-router-dom";
+import EmployeeSearch from "./EmployeeSearch";
 
 function Employee() {
   return (
-    <div>index</div>
-  )
+    <>
+      <Route path="/employees" element={<EmployeeSearch/>} />
+    </>
+  );
 }
 
-export default Employee
+export default Employee;
