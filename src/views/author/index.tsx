@@ -6,8 +6,8 @@ import ElseAuthor from './ElseAuthor'
 function Author() {
   return (
     <>
-      <Route path='/author-create' element={<CreateAuthor />} />
-      <Route path='/author-else' element={<ElseAuthor />} />
+      <Route path='/author/create' element={<CreateAuthor />} />
+      <Route path='/author/else' element={<ElseAuthor />} />
     </>
   )
 }
