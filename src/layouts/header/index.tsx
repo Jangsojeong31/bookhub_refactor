@@ -2,12 +2,18 @@ import React from "react";
 import styles from "./Header.module.css";
 import { logoutRequest } from "@/apis/auth/auth";
 import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import { useEmployeeStore } from "@/stores/employee.store";
 
 export default function Header() {
+  const [, , removeCookie] = useCookies(["accessToken"]);
+  const logout = useEmployeeStore((state) => state.setLogout);
+
   const navigate = useNavigate();
   const onLogoutClick = async () => {
     await logoutRequest();
-    document.cookie = "accessToken=; path=/; max-age=0";
+    removeCookie("accessToken", { path: "/" }); 
+    logout();
     navigate("/auth/login");
   };
 

@@ -30,7 +30,17 @@ function App() {
     if (accessToken) {
       setLogin();
     }
-  }, [cookies]);
+  }, [cookies, setLogin]);
+
+  if (!isLogin) {
+    return (
+      <>
+          <Routes>
+            {Auth()}
+          </Routes>
+      </>
+    );
+  }
 
   return (
     <>
@@ -43,7 +53,6 @@ function App() {
               <Route path = "/" element={<Navigate to = "/main"/>}/>
               {Main()}
               {/* {Alert()} */}
-              {Auth()}
               {/* {Book()}
               {Branch()}
               {BookLocation()}
