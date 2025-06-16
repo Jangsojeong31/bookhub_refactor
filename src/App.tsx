@@ -65,7 +65,7 @@ function App() {
               {Stocks()} */}
               {Author()}
               {PurchaseOrder()}
-              {/* {Employee()} */}
+              {Employee()}
             </Routes>
           </main>
         </div>

@@ -2,10 +2,11 @@ import React from "react";
 import { Route } from "react-router-dom";
 import SignIn from "./SignIn";
 import SignUp from "./SignUp";
-import LoginIdFindEmail from "./LoginIdFindEmail";
+import LoginIdFindEmail from "./loginIdFindEmail";
 import LoginIdGet from "./LoginIdGet";
+import PasswordChange from "./passwordChange";
 import PasswordChangeSendEmail from "./PasswordChangeSendEmail";
-import PasswordChange from "./PasswordChange";
+
 
 
 function Auth() {
