@@ -29,6 +29,9 @@ export const PASSWORD_CHANGE_URL = `${AUTH_MODULE_URL}/password-change`;
 // 5) 아이디 중복 확인
 export const CHECK_LOGIN_ID_DUPLICATE  = `${AUTH_MODULE_URL}/login-id-exists`
 
+// 6) 로그아웃 
+export const LOGOUT_URL = `${AUTH_MODULE_URL}/logout`
+
 
 //! 2) ADMIN 관련 요청 URL
 const ADMIN_MODULE_URL = `${API_DOMAIN}/api/v1/${ADMIN}`;

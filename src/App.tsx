@@ -30,7 +30,17 @@ function App() {
     if (accessToken) {
       setLogin();
     }
-  }, [cookies]);
+  }, [cookies, setLogin]);
+
+  if (!isLogin) {
+    return (
+      <>
+          <Routes>
+            {Auth()}
+          </Routes>
+      </>
+    );
+  }
 
   return (
     <>
@@ -46,8 +56,10 @@ function App() {
               <Route path="/publishers/*" element={<Publisher />} />
               {Main()}
               {/* {Alert()} */}
+
               {Auth()}
               {/* {Publisher()} */}
+
               {/* {Book()}
               {Branch()}
               {BookLocation()}
@@ -60,7 +72,7 @@ function App() {
               {Stocks()} */}
               {Author()}
               {PurchaseOrder()}
-              {/* {Employee()} */}
+              {Employee()}
             </Routes>
           </main>
         </div>

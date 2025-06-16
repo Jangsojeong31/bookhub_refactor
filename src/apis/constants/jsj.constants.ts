@@ -1,6 +1,8 @@
 // jsj.constants.ts
 // # URL 상수 정의
 
+import { PurchaseOrderStatus } from "@/dtos/purchaseOrderApproval/request/purchaseOrder-approve.request.dto";
+
 const API_DOMAIN = 'http://localhost:8080';
 
 const ADMIN = 'admin';
@@ -13,6 +15,9 @@ const AUTHOR_MODULE_URL = `${API_DOMAIN}/api/v1/admin/author`;
 
 // 1) 저자 등록
 export const POST_AUTHOR_URL = `${AUTHOR_MODULE_URL}`;
+
+// 저자 이메일 중복 체크
+export const CHECK_DUPLICATE_AUTHOR_EMAIL = (authorEmail: string) => `${AUTHOR_MODULE_URL}/${authorEmail}`;
 
 // 2) 저자 전체 조회
 export const GET_ALL_AUTHOR_URL = `${AUTHOR_MODULE_URL}`;
@@ -56,7 +61,7 @@ export const DELETE_PURCHASE_ORDER_URL = (purchaseOrderId: number) => `${PURCHAS
 export const GET_PURCHASE_ORDER_BY_CRITERIA = (
   employeeName: string,
   bookTitle: string,
-  purchaseOrderStatus: string
+  purchaseOrderStatus: PurchaseOrderStatus | null
 ) => {
   const queryParams = new URLSearchParams();
   

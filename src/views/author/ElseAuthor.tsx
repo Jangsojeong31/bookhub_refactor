@@ -1,27 +1,35 @@
 import React, { useState } from 'react'
-import { deleteAuthor, getAllAuthorsByName, updateAuthor } from '@/apis/author/author';
+import { checkDuplicateAuthorEmail, deleteAuthor, getAllAuthorsByName, updateAuthor } from '@/apis/author/author';
 import { AuthorResponseDto } from '@/dtos/author/response/author.response.dto';
 import { NavLink } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+import Modal from '@/apis/constants/Modal';
 
 // & 기능: 이름으로 조회, 수정, 삭제
 
 function ElseAuthor() {
-  const [form, setForm] = useState({ authorName: "", authorEmail: "" });
+  const [searchForm, setSearchForm] = useState({ authorName: "" });
+  const [updateForm, setUpdateForm] = useState({ authorName: "", authorEmail: "" });
   const [authorId, setAuthorId] = useState<number>(0);
   const [authors, setAuthors] = useState<AuthorResponseDto[]>([]);
   const [message, setMessage] = useState('');
+  const [modalMessage, setModalMessage] = useState('');
   const [modalStatus, setModalStatus] = useState(false);
   const [cookies] = useCookies(["accessToken"]);
   
-  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target;
-    setForm({...form, [name]: value});
+    setSearchForm({...searchForm, [name]: value});
+  }
+
+  const onUpdateInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const {name, value} = e.target;
+    setUpdateForm({...updateForm, [name]: value});
   }
   
   // * 이름으로 조회
   const onGetAllAuthorsByNameClick = async() => {
-    const {authorName} = form;
+    const {authorName} = searchForm;
     const token = cookies.accessToken;
 
     if(!token){
@@ -38,6 +46,7 @@ function ElseAuthor() {
 
     if (Array.isArray(data)) {
       setAuthors(data);
+      setMessage("");
     } else {
       setMessage("데이터 형식이 올바르지 않습니다.");
     }
@@ -46,7 +55,7 @@ function ElseAuthor() {
   // * 수정 모달창
   const openUpdateModal = (author: AuthorResponseDto) => {
     setAuthorId(author.authorId); 
-    setForm({
+    setUpdateForm({
       authorName: author.authorName,
       authorEmail: author.authorEmail
     });
@@ -55,9 +64,10 @@ function ElseAuthor() {
   
   // * 수정
   const onUpdateAuthorClick = async (authorId: number) => {
+    setModalMessage("");
     const dto = {
-      authorName: form.authorName,
-      authorEmail: form.authorEmail
+      authorName: updateForm.authorName,
+      authorEmail: updateForm.authorEmail
     };
     const token = cookies.accessToken;
 
@@ -65,17 +75,26 @@ function ElseAuthor() {
       alert('인증 토큰이 없습니다.')
       return
     }
+
+    const checkResponse = await checkDuplicateAuthorEmail(dto.authorEmail, token);
+    const { code: checkCode } = checkResponse;
+    if(checkCode === "IV") {
+      setModalMessage('중복된 이메일입니다.');
+      return;
+    } 
+
+    const updateResponse = await updateAuthor(authorId, dto, token);
+    const { code: udpateCode, message } = updateResponse;
   
-    const response = await updateAuthor(authorId, dto, token);
-    const { code, message } = response;
-  
-    if (!code) {
+    if (!udpateCode) {
       setMessage(message);
+      {}
       return;
     }
   
     alert("수정되었습니다.");
     setModalStatus(false);
+    onGetAllAuthorsByNameClick(); // 수정된 이메일 업데이트 -- 코드 수정 요함
   };
   
   // * 삭제
@@ -110,13 +129,35 @@ function ElseAuthor() {
       <button onClick={() => onDeleteAuthorClick(author.authorId)}>삭제</button>
     </tr>
   )})
+
+  const modalContent: React.ReactNode = (
+  <>
+    <h3>저자 수정 모달</h3>
+      <input
+        type="text"
+        name="authorName"
+        value={updateForm.authorName}
+        onChange={onUpdateInputChange}
+        placeholder={updateForm.authorName}
+      />
+      <input
+        type="text"
+        name="authorEmail"
+        value={updateForm.authorEmail}
+        onChange={onUpdateInputChange}
+        placeholder={updateForm.authorEmail}
+      />
+      <button onClick={() => onUpdateAuthorClick(authorId)}>수정</button>
+      {modalMessage && <p>{modalMessage}</p>}
+  </>
+);
   
   return (
     <div>
       <div>
         <NavLink
-          to="/authors"
-          key="/authors"
+          to="/author/create"
+          key="/author/create"
           style={({isActive}) => ({
             backgroundColor: isActive? 'blue' : 'lightgray',
             padding: '10px 20xp',
@@ -126,8 +167,8 @@ function ElseAuthor() {
         </NavLink>
   
         <NavLink
-          to="/authors-else"
-          key="/authors-else"
+          to="/author/else"
+          key="/author/else"
           style={({isActive}) => ({
             backgroundColor: isActive? 'blue' : 'lightgray',
             padding: '10px 20xp',
@@ -141,9 +182,9 @@ function ElseAuthor() {
       <input 
         type='text'
         name='authorName'
-        value={form.authorName}
+        value={searchForm.authorName}
         placeholder='조회할 저자 이름을 입력하세요'
-        onChange={onInputChange}
+        onChange={onSearchInputChange}
         />
       <button onClick={onGetAllAuthorsByNameClick}>조회</button>
       <table>
@@ -157,27 +198,15 @@ function ElseAuthor() {
           {authorList}
         </tbody>
       </table>
+      {message && <p>{message}</p>}
 
-      {modalStatus && 
-      <div>
-        <h3>저자 수정 모달</h3>
-        <input
-          type="text"
-          name="authorName"
-          value={form.authorName}
-          onChange={onInputChange}
-          placeholder={form.authorName}
+
+      {modalStatus &&
+        <Modal 
+          isOpen={modalStatus}
+          onClose={() => setModalStatus(false)}
+          children={modalContent}
         />
-        <input
-          type="text"
-          name="authorEmail"
-          value={form.authorEmail}
-          onChange={onInputChange}
-          placeholder={form.authorEmail}
-        />
-        <button onClick={() => onUpdateAuthorClick(authorId)}>수정</button>
-        {message && <p>{message}</p>}
-      </div>
       }
     </div>
   )
