@@ -76,8 +76,8 @@ function EmployeeSearch() {
   };
 
   useEffect(() => {
-    onSearchClick();
-  }, []);
+
+  }, [employeeList]);
 
   const paginatedEmployees = employeeList.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,

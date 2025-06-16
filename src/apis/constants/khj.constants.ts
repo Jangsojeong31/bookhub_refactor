@@ -91,9 +91,6 @@ const EMPLOYEE_EXIT_LOGS_MODULE_URL = `${ADMIN_MODULE_URL}/employee-exit-logs`;
 export const GET_ALL_EMPLOYEE_CHANGE_LOGS_URL = `${EMPLOYEE_CHANGE_LOGS_MODULE_URL}`;
 
 // 2) 지점, 직급, 권한 변경 로그 조회 기준별
-// 2-1) 로그 id로 조회
-export const GET_EMPLOYEE_CHANGE_LOGS_BY_ID_URL = (logId: string) =>
-  `${EMPLOYEE_CHANGE_LOGS_MODULE_URL}/${logId}`;
 
 // 2-2) 특정 조회 기준으로 조회(@RequestParam)
 export const GET_EMPLOYEE_CHANGE_LOGS_URL = (
