@@ -8,9 +8,12 @@ import {
 } from "../axiosConfig";
 import {
   GET_ALL_EMPLOYEE_URL,
+  GET_EMPLOYEE_SIGN_UP_APRROVALS_URL,
   GET_EMPLOYEE_URL,
+  PUT_EMPLOYEE_APPROVE_URL,
 } from "../constants/khj.constants";
 import { AxiosError } from "axios";
+import { EmployeeSignUpApprovalRequestDto } from "@/dtos/employee/request/employee-sign-up-Approval.request.dto";
 
 interface SearchEmployeeParams {
   name?: string;
@@ -29,6 +32,23 @@ export const employeeResquest = async (
       params,
       ...bearerAuthorization(accessToken),
     });
+    return responseSuccessHandler(response);
+  } catch (error) {
+    return responseErrorHandler(error as AxiosError<ResponseDto>);
+  }
+};
+
+export const employeeSignUpApprovalRequest = async (
+  employeeId: number,
+  dto: EmployeeSignUpApprovalRequestDto,
+  loginId: string,
+  accessToken: string
+): Promise<ResponseDto<void>> => {
+  try {
+    const response = await axiosInstance.put(
+      PUT_EMPLOYEE_APPROVE_URL(employeeId),
+      { loginId, dto, ...bearerAuthorization(accessToken) }
+    );
     return responseSuccessHandler(response);
   } catch (error) {
     return responseErrorHandler(error as AxiosError<ResponseDto>);
