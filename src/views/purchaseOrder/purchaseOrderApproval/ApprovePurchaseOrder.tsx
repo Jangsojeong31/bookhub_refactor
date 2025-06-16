@@ -58,7 +58,8 @@ function ApprovePurchaseOrder() {
         <td>{purchaseOrder.bookPrice}</td>
         <td>{purchaseOrder.purchaseOrderAmount}</td>
         <td>{purchaseOrder.purchaseOrderPrice}</td>
-        <td>{purchaseOrder.purchaseOrderStatus}</td>
+        <td>{purchaseOrder.purchaseOrderDateAt}</td>
+        <td>{purchaseOrder.purchaseOrderStatus == PurchaseOrderStatus.REQUESTED ? '요청중' : purchaseOrder.purchaseOrderStatus === PurchaseOrderStatus.APPROVED ? '승인' : '거부'}</td>
         <td><button onClick={() => onPurchaseOrderApproveClick(purchaseOrder.purchaseOrderId)} >승인</button></td>
         <td><button onClick={() => onPurchaseOrderRejectClick(purchaseOrder.purchaseOrderId)} >승인 거부</button></td>
         
@@ -139,6 +140,7 @@ function ApprovePurchaseOrder() {
                 <th>책 가격</th>
                 <th>발주 수량</th>
                 <th>발주 가격</th>
+                <th>발주 일자</th>
                 <th>승인 상태</th>
               </tr>
             </thead>

@@ -41,7 +41,6 @@ function SignIn() {
 
     
     const { token, exprTime } = data;
-    console.log(typeof exprTime);
     if (typeof exprTime !== "number" || isNaN(exprTime)) {
       setMessage("서버에서 잘못된 만료시간을 받았습니다.");
       return;
