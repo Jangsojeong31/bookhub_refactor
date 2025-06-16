@@ -41,9 +41,13 @@ function App() {
           <main style={{ flex: 1, padding: '30px', overflowY: 'auto', minHeight: 0, minWidth: 0 }}>
             <Routes>
               <Route path = "/" element={<Navigate to = "/main"/>}/>
+              {/* <Route path="/publishers" element={<Publisher />} /> */}
+
+              <Route path="/publishers/*" element={<Publisher />} />
               {Main()}
               {/* {Alert()} */}
               {Auth()}
+              {/* {Publisher()} */}
               {/* {Book()}
               {Branch()}
               {BookLocation()}

@@ -1,9 +1,9 @@
 import React from 'react'
 
-function index() {
+function BookLocation() {
   return (
     <div>index</div>
   )
 }
 
-export default index
+export default BookLocation
