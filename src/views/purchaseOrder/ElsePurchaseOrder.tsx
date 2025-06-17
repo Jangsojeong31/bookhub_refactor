@@ -1,5 +1,5 @@
 import Modal from '@/apis/constants/Modal';
-import { deletePurchaseOrder, getAllPurchaseOrder, getAllPurchaseOrderByCriteria, updatePurchaseOrder } from '@/apis/purchaseOrder/purchaseOrder';
+import { deletePurchaseOrder, getAllPurchaseOrderByCriteria, updatePurchaseOrder } from '@/apis/purchaseOrder/purchaseOrder';
 import { PurchaseOrderResponseDto } from '@/dtos/purchaseOrder/response/purchaseOrder.response.dto';
 import { PurchaseOrderStatus } from '@/dtos/purchaseOrderApproval/request/purchaseOrder-approve.request.dto';
 import React, { useState } from 'react'
@@ -7,14 +7,14 @@ import { useCookies } from 'react-cookie';
 
 function ElsePurchaseOrder() {
   const [searchForm, setSearchForm] = useState<{
-      employeeName: string;
-      bookTitle: string;
-      approvalStatus: PurchaseOrderStatus | null;
-    }>({
-      employeeName: "",
-      bookTitle: "",
-      approvalStatus: null
-    })
+    employeeName: string;
+    bookTitle: string;
+    approvalStatus: PurchaseOrderStatus | null;
+  }>({
+    employeeName: "",
+    bookTitle: "",
+    approvalStatus: null
+  })
   
   const [updateForm, setUpdateForm] = useState({
     isbn: "",
@@ -28,40 +28,40 @@ function ElsePurchaseOrder() {
   const [modalStatus, setModalStatus] = useState(false);
 
   const onSearchInputChange = (e:React.ChangeEvent<HTMLInputElement>) => {
-      const {name, value} = e.target;
-      setSearchForm({...searchForm, [name]: value});
-    }
+    const {name, value} = e.target;
+    setSearchForm({...searchForm, [name]: value});
+  }
 
   const onUpdateInputChange = (e:React.ChangeEvent<HTMLInputElement>) => {
-      const {name, value} = e.target;
-      setUpdateForm({...updateForm, [name]: value});
-    }
+    const {name, value} = e.target;
+    setUpdateForm({...updateForm, [name]: value});
+  }
 
   // * 전체 조회
-  const onGetAllPurchaseOrders = async() => {
-    const token = cookies.accessToken;
+  // const onGetAllPurchaseOrders = async() => {
+  //   const token = cookies.accessToken;
     
-    if(!token){
-      alert('인증 토큰이 없습니다.')
-      return
-    }
-    const response = await getAllPurchaseOrder(token);
-    const {code, message, data} = response; 
+  //   if(!token){
+  //     alert('인증 토큰이 없습니다.')
+  //     return
+  //   }
+  //   const response = await getAllPurchaseOrder(token);
+  //   const {code, message, data} = response; 
 
-    if(!code) {
-      setMessage(message);
-      return;
-    }
+  //   if(!code) {
+  //     setMessage(message);
+  //     return;
+  //   }
 
-    if (Array.isArray(data)) {
-      setPurchaseOrders(data);
-      setMessage("");
-    } else {
-      setMessage("데이터 형식이 올바르지 않습니다.");
-    }
-  }  
+  //   if (Array.isArray(data)) {
+  //     setPurchaseOrders(data);
+  //     setMessage("");
+  //   } else {
+  //     setMessage("데이터 형식이 올바르지 않습니다.");
+  //   }
+  // }  
 
-  //* 조회 조건으로 조회(발주 담당자, 책 제목, 승인 여부)
+  //* 조회 조건으로 조회(발주 담당자, 책 제목, 승인 여부) -- 조건 없을 시 전체 조회
   const onGetPurchaseOrderByCriteria = async() => {
     setPurchaseOrders([]);
     const {employeeName, bookTitle, approvalStatus} = searchForm;
@@ -138,7 +138,15 @@ function ElsePurchaseOrder() {
     
       alert("수정되었습니다.");
       setPurchaseOrders(purchaseOrders);
-      onGetAllPurchaseOrders();
+
+      // 수정 후 리스트 업데이트
+      const updatedPurchaseOrders = purchaseOrders.map(order =>
+          order.purchaseOrderId === purchaseOrderId
+            ? { ...order, purchaseOrderAmount: updateForm.purchaseOrderAmount, purchaseOrderPrice: order.bookPrice*updateForm.purchaseOrderAmount }
+            : order
+        );
+      setPurchaseOrders(updatedPurchaseOrders);
+
       setModalStatus(false);
     };
 
@@ -214,13 +222,13 @@ function ElsePurchaseOrder() {
             e.target.value === "REQUESTED" ? PurchaseOrderStatus.REQUESTED : e.target.value === "APPROVED" ? PurchaseOrderStatus.APPROVED : PurchaseOrderStatus.REJECTED})
         }
       >
-        <option value="">승인 상태를 선택해주세요</option>
+        <option value="">전체</option>
         <option value="REQUESTED">요청중</option>
         <option value="APPROVED">승인</option>
         <option value="REJECTED">승인 거부</option>
       </select>
       <button onClick={onGetPurchaseOrderByCriteria}>조회</button>
-      <button onClick={onGetAllPurchaseOrders}>전체 조회</button>
+      {/* <button onClick={onGetAllPurchaseOrders}>전체 조회</button> */}
       {purchaseOrders && (
           <table>
             <thead>

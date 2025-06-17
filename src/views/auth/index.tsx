@@ -3,7 +3,7 @@ import { Route } from "react-router-dom";
 import SignIn from "./SignIn";
 import SignUp from "./SignUp";
 import LoginIdFindEmail from "./loginIdFindEmail";
-import LoginIdGet from "./LoginIdGet";
+import LoginIdGet from "./loginIdGet";
 import PasswordChange from "./passwordChange";
 import PasswordChangeSendEmail from "./PasswordChangeSendEmail";
 
