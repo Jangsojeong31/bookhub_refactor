@@ -1,5 +1,10 @@
 import { GET_BRANCH_URL } from "@/apis";
-import { employeeResquest } from "@/apis/employee/employee";
+import Modal from "@/apis/constants/Modal";
+import {
+  employeeDetailResquest,
+  employeeResquest,
+} from "@/apis/employee/employee";
+import { EmployeeDetailResponseDto } from "@/dtos/employee/response/employee-detail.response.dto";
 import { EmployeeListResponseDto } from "@/dtos/employee/response/employee-list.response.dto";
 import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
@@ -25,15 +30,14 @@ function EmployeeSearch() {
   });
 
   const [currentPage, setCurrentPage] = useState(1);
-
   const [cookies] = useCookies(["accessToken"]);
-
   const [employeeList, setEmployeeList] = useState<EmployeeListResponseDto[]>(
     []
   );
   const [message, setMessage] = useState("");
-
   const [branches, setBranches] = useState<Branch[]>([]);
+  const [modalStatus, setModalStatus] = useState(false);
+  const [employee, setEmployee] = useState<EmployeeDetailResponseDto>();
 
   const totalPages = Math.ceil(employeeList.length / ITEMS_PER_PAGE);
 
@@ -68,6 +72,7 @@ function EmployeeSearch() {
 
     if (code === "SU" && data) {
       setEmployeeList(data);
+      console.log(employeeList);
       setMessage("");
     } else {
       setEmployeeList([]);
@@ -75,14 +80,53 @@ function EmployeeSearch() {
     }
   };
 
-  useEffect(() => {
-
-  }, [employeeList]);
-
   const paginatedEmployees = employeeList.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
+
+  const onOpenModalClick = async (employee: EmployeeListResponseDto) => {
+    const token = cookies.accessToken;
+
+    if (!token) {
+      alert("인증 토큰이 없습니다.");
+      return;
+    }
+
+    const response = await employeeDetailResquest(employee.employeeId, token);
+    const { code, message, data } = response;
+
+    if (code === "SU") {
+      setEmployee(data);
+    } else {
+      setMessage(message);
+      return;
+    }
+
+    setModalStatus(true);
+  };
+
+  const modalContent: React.ReactNode = (
+    <>
+      <h1>사원 세부 사항</h1>
+      <p>사원 번호: {employee?.employeeNumber}</p>
+      <p>사원 이름: {employee?.employeeName}</p>
+      <p>지점 명: {employee?.branchName}</p>
+      <p>지급 명: {employee?.positionName}</p>
+      <p>권한 명: {employee?.authorityName}</p>
+      <p>이메일: {employee?.email}</p>
+      <p>전화 번호: {employee?.phoneNumber}</p>
+      <p>생년월일: {new Date(employee?.birthDate || "").toLocaleDateString()}</p> 
+      <p>재직 상태: {employee?.status === "EXITED"? "퇴사": "재직"}</p>
+      <p>입사 일자: {new Date(employee?.createdAt || "").toLocaleString()}</p>
+    </>
+  );
+
+  useEffect(() => {
+  console.log("birthDate =", employee?.birthDate);
+  console.log("typeof birthDate =", typeof employee?.birthDate);
+}, [employee]);
+
 
   return (
     <div>
@@ -96,12 +140,18 @@ function EmployeeSearch() {
           onChange={onInputChange}
         />
 
-        <select name="branchName" value={searchForm.branchName} onChange={onInputChange}>
-        <option value="">지점 선택</option>
-        {branches.map((branch) => (
-          <option key={branch.branchName} value={branch.branchName}>{branch.branchName}</option>
-        ))}
-      </select>
+        <select
+          name="branchName"
+          value={searchForm.branchName}
+          onChange={onInputChange}
+        >
+          <option value="">지점 선택</option>
+          {branches.map((branch) => (
+            <option key={branch.branchName} value={branch.branchName}>
+              {branch.branchName}
+            </option>
+          ))}
+        </select>
 
         <select
           name="positionName"
@@ -160,17 +210,21 @@ function EmployeeSearch() {
             <th>직급</th>
             <th>권한</th>
             <th>상태</th>
+            <th>세부 사항</th>
           </tr>
         </thead>
         <tbody>
           {paginatedEmployees.map((emp) => (
-            <tr key={emp.employeeNumber}>
+            <tr key={emp.employeeId}>
               <td>{emp.employeeNumber}</td>
               <td>{emp.employeeName}</td>
               <td>{emp.branchName}</td>
               <td>{emp.positionName}</td>
               <td>{emp.authorityName}</td>
               <td>{emp.status === "EXITED" ? "퇴사" : "재직"}</td>
+              <td>
+                <button onClick={() => onOpenModalClick(emp)}>세부 사항</button>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -196,6 +250,13 @@ function EmployeeSearch() {
             다음
           </button>
         </div>
+      )}
+      {modalStatus && (
+        <Modal
+          isOpen={modalStatus}
+          onClose={() => setModalStatus(false)}
+          children={modalContent}
+        />
       )}
     </div>
   );
