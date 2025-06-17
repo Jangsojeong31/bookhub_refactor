@@ -194,7 +194,7 @@ CREATE TABLE IF NOT EXISTS `books` (
     book_price INT NOT NULL,
     published_date DATE NOT NULL,
     book_status VARCHAR(50) NOT NULL,
-    cover_url VARCHAR(500) NOT NULL,
+    cover_url VARCHAR(500),
     page_count VARCHAR(255) NOT NULL, # 책 페이지
     language VARCHAR(255) NOT NULL, # 책 원본 나라 표시
     description TEXT DEFAULT NULL,
