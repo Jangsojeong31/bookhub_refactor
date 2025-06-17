@@ -11,51 +11,49 @@ const COMMON = 'common';
 
 // & 1. authors 
 // 베이스 URL
-const AUTHOR_MODULE_URL = `${API_DOMAIN}/api/v1/admin/author`; 
+const AUTHOR_MODULE_URL = `${API_DOMAIN}/api/v1/admin/authors`; 
 
-// 1) 저자 등록
+// 저자 등록
 export const POST_AUTHOR_URL = `${AUTHOR_MODULE_URL}`;
 
 // 저자 이메일 중복 체크
 export const CHECK_DUPLICATE_AUTHOR_EMAIL = (authorEmail: string) => `${AUTHOR_MODULE_URL}/${authorEmail}`;
 
-// 2) 저자 전체 조회
+// 저자 전체 조회
 export const GET_ALL_AUTHOR_URL = `${AUTHOR_MODULE_URL}`;
 
-
-// 3) 저자 단건 조회
+// 저자 단건 조회
 export const GET_AUTHOR_URL = (authorId: number) => `${AUTHOR_MODULE_URL}/${authorId}`;
 
 // 저자 이름으로 조회
 export const GET_ALL_AUTHOR_BY_NAME_URL = (authorName: string) => `${AUTHOR_MODULE_URL}/author-name/${authorName}`;
 
-// 4) 저자 수정
+// 저자 수정
 export const PUT_AUTHOR_URL = (authorId: number) => `${AUTHOR_MODULE_URL}/${authorId}`;
 
-// 5) 저자 삭제
+// 저자 삭제
 export const DELETE_AUTHOR_URL = (authorId: number) => `${AUTHOR_MODULE_URL}/${authorId}`;
 
 
 // & 2. purchase_orders
 // 베이스 URL
-const PURCHASE_ORDER_MODULE_URL_MANAGER = `${API_DOMAIN}/api/v1/${MANAGER}/purchase-order`;
-const PURCHASE_ORDER_MODULE_URL_ADMIN = `${API_DOMAIN}/api/v1/${ADMIN}/purchase-order`;
+const PURCHASE_ORDER_MODULE_URL_MANAGER = `${API_DOMAIN}/api/v1/${MANAGER}/purchase-orders`;
+const PURCHASE_ORDER_MODULE_URL_ADMIN = `${API_DOMAIN}/api/v1/${ADMIN}/purchase-orders`;
 
-// 1) 발주 요청서 작성
+// 발주 요청서 작성
 export const POST_PURCHASE_ORDER_URL = `${PURCHASE_ORDER_MODULE_URL_MANAGER}`;
 
-// 2) 발주 요청서 전체 조회
-export const GET_ALL_PURCHASE_ORDER_URL = `${PURCHASE_ORDER_MODULE_URL_MANAGER}`;
+// // 발주 요청서 전체 조회
+// export const GET_ALL_PURCHASE_ORDER_URL = `${PURCHASE_ORDER_MODULE_URL_MANAGER}`;
 
-// 3) 발주 요청서 단건 조회
+// 발주 요청서 단건 조회
 export const GET_PURCHASE_ORDER_URL = (purchaseOrderId: number) => `${PURCHASE_ORDER_MODULE_URL_MANAGER}/${purchaseOrderId}`;
 
-// 4) 발주 요청서 수정
+// 발주 요청서 수정
 export const PUT_PURCHASE_ORDER_URL = (purchaseOrderId: number) => `${PURCHASE_ORDER_MODULE_URL_MANAGER}/${purchaseOrderId}`;
 
-// 5) 발주 요청서 삭제
+// 발주 요청서 삭제
 export const DELETE_PURCHASE_ORDER_URL = (purchaseOrderId: number) => `${PURCHASE_ORDER_MODULE_URL_MANAGER}/${purchaseOrderId}`;
-
 
 // 발주 요청서 조건으로 조회 (발주 담당자, 책 제목, 승인 여부)
 export const GET_PURCHASE_ORDER_BY_CRITERIA = (
@@ -71,13 +69,13 @@ export const GET_PURCHASE_ORDER_BY_CRITERIA = (
 
   console.log(queryParams.toString());
   
-  return `${PURCHASE_ORDER_MODULE_URL_MANAGER}/search?${queryParams.toString()}`;
+  return `${PURCHASE_ORDER_MODULE_URL_MANAGER}?${queryParams.toString()}`;
 };
 
 
 // & 3. purchase_order_approvals
 // 베이스 URL
-export const PURCHASE_APPROVAL_MODULE_URL = `${API_DOMAIN}/api/v1/${ADMIN}/purchase-order-approval`;
+export const PURCHASE_APPROVAL_MODULE_URL = `${API_DOMAIN}/api/v1/${ADMIN}/purchase-order-approvals`;
 
 // 발주 요청서 업데이트 (요청중인 발주 요청서만 전체 조회)
 export const GET_ALL_PURCHASE_ORDER_REQUESTED_URL = `${PURCHASE_ORDER_MODULE_URL_ADMIN}/requested`;
@@ -85,14 +83,10 @@ export const GET_ALL_PURCHASE_ORDER_REQUESTED_URL = `${PURCHASE_ORDER_MODULE_URL
 // 발주 승인 / 승인 취소 (발주 요청서 수정)
 export const PUT_PURCHASE_ORDER_STATUS_URL = (purchaseOrderId: number) => `${PURCHASE_ORDER_MODULE_URL_ADMIN}/approval/${purchaseOrderId}`;
 
-// 1) 발주 승인 로그 전체 조회
-export const GET_ALL_PURCHASE_ORDER_APPROVAL_URL = `${PURCHASE_APPROVAL_MODULE_URL}`;
+// // 발주 승인 로그 전체 조회
+// export const GET_ALL_PURCHASE_ORDER_APPROVAL_URL = `${PURCHASE_APPROVAL_MODULE_URL}`;
 
-// 2) 발주 승인 로그 단건 조회
-// 2-1) id로 조회
-export const GET_PURCHASE_ORDER_APPROVAL_BY_ID_URL = (purchaseOrderApprovalId: number) => `${PURCHASE_APPROVAL_MODULE_URL}/${purchaseOrderApprovalId}`;
-
-// 2-2) 조회 기준으로 조회
+// 조회 기준으로 조회 (승인 담당자, 승인 여부)
 export const GET_PURCHASE_ORDER_APPROVAL_BY_CRITERIA_URL = (
   employeeName?: string, isApproved?: boolean | null
 ) => {
@@ -105,10 +99,10 @@ export const GET_PURCHASE_ORDER_APPROVAL_BY_CRITERIA_URL = (
     queryParams.append("isApproved", String(isApproved))
   }
   
-  return `${PURCHASE_APPROVAL_MODULE_URL}/search?${queryParams.toString()}`;
+  return `${PURCHASE_APPROVAL_MODULE_URL}?${queryParams.toString()}`;
 };
 
-// 2-3) 일자로 조회
+// 일자로 조회
 export const GET_PURCHASE_ORDER_APPROVAL_BY_DATE = (startDate: string, endDate: string) => {
   const queryParams = new URLSearchParams();
 

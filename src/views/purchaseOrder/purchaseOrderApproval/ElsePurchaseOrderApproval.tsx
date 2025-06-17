@@ -1,4 +1,4 @@
-import { getAllPurchaseOrderApproval, getAllPurchaseOrderApprovalByCriteria, getAllPurchaseOrderApprovalByDate } from '@/apis/purchaseOrder/purchaseOrderApproval'
+import { getAllPurchaseOrderApprovalByCriteria, getAllPurchaseOrderApprovalByDate } from '@/apis/purchaseOrder/purchaseOrderApproval'
 import { PurchaseOrderStatus } from '@/dtos/purchaseOrderApproval/request/purchaseOrder-approve.request.dto';
 import { PurchaseOrderApprovalResponseDto } from '@/dtos/purchaseOrderApproval/response/purchaseOrderApproval.respose.dto';
 import React, { useState } from 'react'
@@ -27,31 +27,31 @@ function ElsePurchaseOrderApproval() {
     setDateForm({...dateForm, [name]: value})
   }
 
-  //* 전체 조회
-  const onGetAllPurchaseOrderApprovals = async() => {
-    const token = cookies.accessToken;
+  // //* 전체 조회
+  // const onGetAllPurchaseOrderApprovals = async() => {
+  //   const token = cookies.accessToken;
 
-    if(!token){
-      alert('인증 토큰이 없습니다.')
-      return
-    }
+  //   if(!token){
+  //     alert('인증 토큰이 없습니다.')
+  //     return
+  //   }
 
-    const response = await getAllPurchaseOrderApproval(token);
-    const {code, message, data} = response; 
+  //   const response = await getAllPurchaseOrderApproval(token);
+  //   const {code, message, data} = response; 
 
-    if(!code) {
-      setMessage(message);
-      return;
-    }
+  //   if(!code) {
+  //     setMessage(message);
+  //     return;
+  //   }
 
-    if (Array.isArray(data)) {
-      setPurchaseOrderApprovals(data);
-    } else {
-      setMessage("데이터 형식이 올바르지 않습니다.");
-    }
-  }
+  //   if (Array.isArray(data)) {
+  //     setPurchaseOrderApprovals(data);
+  //   } else {
+  //     setMessage("데이터 형식이 올바르지 않습니다.");
+  //   }
+  // }
 
-  //* 조회 조건으로 조회
+  //* 조회 조건으로 조회 -- 조건 선택안하면 전체 조회
   const onGetPurchaseOrderByCriteria = async() => {
     setPurchaseOrderApprovals([]);
     const{employeeName, isApproved} = searchForm;
@@ -164,7 +164,7 @@ function ElsePurchaseOrderApproval() {
       />
       <button onClick={onGetPurchaseOrderApprovalByDate}>조회</button>
 
-      <button onClick={onGetAllPurchaseOrderApprovals}>전체 조회</button>
+      {/* <button onClick={onGetAllPurchaseOrderApprovals}>전체 조회</button> */}
       
       {purchaseOrderApprovals && 
         <table style={{
