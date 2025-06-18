@@ -4,6 +4,7 @@ import { getCategoryTree } from "@/apis/category/category";
 import { useCookies } from "react-cookie";
 import "./CategoryTree.css";
 
+
 interface CategoryTreeProps {
   onSelect: (category: CategoryTreeResponseDto) => void;
 }
