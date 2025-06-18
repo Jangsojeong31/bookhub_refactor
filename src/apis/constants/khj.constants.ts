@@ -1,8 +1,8 @@
 const API_DOMAIN = "http://localhost:8080";
 
-const ADMIN = 'admin';
-const MANAGER = 'manager';
-const COMMON = 'common';
+const ADMIN = "admin";
+const MANAGER = "manager";
+const COMMON = "common";
 
 //! 1) 인증 관련 요청 URL
 const AUTH_MODULE_URL = `${API_DOMAIN}/api/v1/auth`;
@@ -27,11 +27,16 @@ export const PASSWORD_CHANGE_EMAIL_URL = `${AUTH_MODULE_URL}/password-change/ema
 export const PASSWORD_CHANGE_URL = `${AUTH_MODULE_URL}/password-change`;
 
 // 5) 아이디 중복 확인
-export const CHECK_LOGIN_ID_DUPLICATE  = `${AUTH_MODULE_URL}/login-id-exists`
+export const CHECK_LOGIN_ID_DUPLICATE = `${AUTH_MODULE_URL}/login-id-exists`;
 
-// 6) 로그아웃 
-export const LOGOUT_URL = `${AUTH_MODULE_URL}/logout`
+// 6) 로그아웃
+export const LOGOUT_URL = `${AUTH_MODULE_URL}/logout`;
 
+// 7) 회원가입 승인 알림 이메일
+export const SIGN_UP_RESULT_URL = (approvalId: number) =>
+  `${AUTH_MODULE_URL}/employees/${approvalId}/approve`;
+
+export const EMPLOYEE_UPDATE_URL = `${AUTH_MODULE_URL}/employees/approve`;
 
 //! 2) ADMIN 관련 요청 URL
 const ADMIN_MODULE_URL = `${API_DOMAIN}/api/v1/${ADMIN}`;
@@ -46,13 +51,12 @@ export const POST_BRANCH_URL = `${BRANCH_MODULE_URL}`;
 export const GET_BRANCH_URL = `${AUTH_MODULE_URL}/branches`;
 
 // 3) 지점 수정
-export const PUT_BRANCH_URL = (branchId: number) => 
+export const PUT_BRANCH_URL = (branchId: number) =>
   `${BRANCH_MODULE_URL}/${branchId}`;
 
 // 4) 지점 삭제
 export const DELETE_BRANCH_URL = (branchId: number) =>
   `${BRANCH_MODULE_URL}/${branchId}`;
-
 
 //? 직원 관련 기능
 const EMPLOYEE_MODULE_URL = `${ADMIN_MODULE_URL}/employees`;
@@ -72,10 +76,12 @@ export const PUT_EMPLOYEE_BRANCH_URL = (employeeId: number) =>
 export const PUT_EMPLOYEE_STATUS_URL = (employeeId: number) =>
   `${EMPLOYEE_MODULE_URL}/${employeeId}/status`;
 
-// 5) 직원 회원가입 승인
+// 5) 회원 가입 신청 직원 조회
+export const GET_PENDING_EMPLOYEE_URL = `${EMPLOYEE_MODULE_URL}/approval`;
+
+// 6) 직원 회원가입 승인
 export const PUT_EMPLOYEE_APPROVE_URL = (employeeId: number) =>
   `${EMPLOYEE_MODULE_URL}/${employeeId}/approve`;
-
 
 //? 로그 관련 기능
 // 직원 수정 URL

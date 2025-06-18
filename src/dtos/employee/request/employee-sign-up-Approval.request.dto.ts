@@ -1,10 +1,4 @@
 export interface EmployeeSignUpApprovalRequestDto {
-  status: IsApproved;
+  isApproved: string;
   deniedReason: string;
-}
-
-export interface IsApproved {
-  PENDING: "PENDING"
-  APPROVED: "APPROVED";
-  DENIED: "DENIED";
 }

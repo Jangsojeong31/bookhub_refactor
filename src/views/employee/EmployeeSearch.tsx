@@ -1,9 +1,6 @@
 import { GET_BRANCH_URL } from "@/apis";
 import Modal from "@/apis/constants/Modal";
-import {
-  employeeDetailResquest,
-  employeeResquest,
-} from "@/apis/employee/employee";
+import { employeeDetailRequest, employeeRequest } from "@/apis/employee/employee";
 import { EmployeeDetailResponseDto } from "@/dtos/employee/response/employee-detail.response.dto";
 import { EmployeeListResponseDto } from "@/dtos/employee/response/employee-list.response.dto";
 import React, { useEffect, useState } from "react";
@@ -67,7 +64,7 @@ function EmployeeSearch() {
       return;
     }
 
-    const response = await employeeResquest(searchForm, token);
+    const response = await employeeRequest(searchForm, token);
     const { code, message, data } = response;
 
     if (code === "SU" && data) {
@@ -93,7 +90,7 @@ function EmployeeSearch() {
       return;
     }
 
-    const response = await employeeDetailResquest(employee.employeeId, token);
+    const response = await employeeDetailRequest(employee.employeeId, token);
     const { code, message, data } = response;
 
     if (code === "SU") {
@@ -121,12 +118,6 @@ function EmployeeSearch() {
       <p>입사 일자: {new Date(employee?.createdAt || "").toLocaleString()}</p>
     </>
   );
-
-  useEffect(() => {
-  console.log("birthDate =", employee?.birthDate);
-  console.log("typeof birthDate =", typeof employee?.birthDate);
-}, [employee]);
-
 
   return (
     <div>

@@ -2,7 +2,6 @@
 import { checkLoginIdDuplicate, signUpRequest } from "@/apis/auth/auth";
 import { GET_BRANCH_URL } from "@/apis/constants/khj.constants";
 import { SignUpRequestDto } from "@/dtos/auth/request/sign-up.request.dto";
-import { join } from "path";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -63,8 +62,8 @@ function SignUp() {
   };
 
   const onSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectBrancId = e.target.value;
-    setForm({ ...form, branchId: Number(selectBrancId) });
+    const selectBranchId = e.target.value;
+    setForm({ ...form, branchId: Number(selectBranchId) });
   };
 
   const onPasswordBlur = async () => {
@@ -150,7 +149,7 @@ function SignUp() {
       return;
     } else {
       alert("회원가입을 성공하였습니다.");
-      navigate("/auth");
+      navigate("/auth/login");
     }
   };
 
