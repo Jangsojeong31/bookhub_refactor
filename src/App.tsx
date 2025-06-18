@@ -60,11 +60,11 @@ function App() {
               {Auth()}
               {/* {Publisher()} */}
 
-              {/* {Book()}
-              {Branch()}
-              {BookLocation()}
+              {Book()}
+              {/* {Branch()}
+              {BookLocation()*/}
               {Category()}
-              {Policy()}
+              {/*Policy()}
               {Publisher()}
               {Reception()}
               {Reception()}

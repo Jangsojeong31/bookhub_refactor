@@ -2,69 +2,71 @@ import React, { useState } from "react";
 import { CategoryTreeResponseDto } from "@/dtos/category/response/category-tree.response.dto";
 import { getCategoryTree } from "@/apis/category/category";
 import { useCookies } from "react-cookie";
+import "./CategoryTree.css";
 
 interface CategoryTreeProps {
-  categories: CategoryTreeResponseDto[];
   onSelect: (category: CategoryTreeResponseDto) => void;
 }
 
 const CategoryTree: React.FC<CategoryTreeProps> = ({ onSelect }) => {
-  const [categoryType, setCategoryType] = useState<"DOMESTIC" | "FOREIGN" | null>(null);
-  const [categories, setCategories] = useState<CategoryTreeResponseDto[]>([]);
-  const [expanded, setExpanded] = useState<number[]>([]);
   const [cookies] = useCookies(["accessToken"]);
 
+  const [categoriesMap, setCategoriesMap] = useState<{
+    DOMESTIC?: CategoryTreeResponseDto[];
+    FOREIGN?: CategoryTreeResponseDto[];
+  }>({});
+
+  const [expandedType, setExpandedType] = useState<"DOMESTIC" | "FOREIGN" | null>(null);
+  const [expandedCategoryIds, setExpandedCategoryIds] = useState<number[]>([]);
+
   const fetchCategories = async (type: "DOMESTIC" | "FOREIGN") => {
-    const token = cookies.accessToken;
-    if (!token) {
+    if (!cookies.accessToken) {
       alert("로그인이 필요합니다.");
       return;
     }
 
-    const res = await getCategoryTree(type, token);
-    if (res.code === "SU") {
-      setCategories(res.data ?? []);
-      setCategoryType(type);
-      setExpanded([]); // 초기화
-    } else {
-      alert("카테고리 조회 실패");
+    if (!categoriesMap[type]) {
+      const res = await getCategoryTree(type, cookies.accessToken);
+      if (res.code === "SU") {
+        setCategoriesMap((prev) => ({ ...prev, [type]: res.data ?? [] }));
+      } else {
+        alert("카테고리 조회 실패");
+        return;
+      }
     }
+
+    // 토글 동작 추가
+    setExpandedType((prev) => (prev === type ? null : type));
+    setExpandedCategoryIds([]); // 펼친 대분류 초기화
   };
 
-  const toggleExpand = (id: number) => {
-    setExpanded(prev =>
-      prev.includes(id) ? prev.filter(e => e !== id) : [...prev, id]
+  const toggleCategory = (id: number) => {
+    setExpandedCategoryIds((prev) =>
+      prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id]
     );
   };
 
-  if (!categoryType) {
-    return (
-      <div className="category-container">
-        <h2>📚 전체 도서 카테고리</h2>
-        <button onClick={() => fetchCategories("DOMESTIC")}>국내 도서</button>
-        <button onClick={() => fetchCategories("FOREIGN")}>해외 도서</button>
-      </div>
-    );
-  }
+  const renderCategoryTree = (categories?: CategoryTreeResponseDto[]) => {
+    if (!categories) return null;
 
-  return (
-    <div className="category-container">
-      <button onClick={() => setCategoryType(null)}>← 뒤로 가기</button>
-      <h2>📚 전체 도서 카테고리</h2>
-      {categories.map((cat) => (
+    return categories.map((cat) => {
+      const isExpanded = expandedCategoryIds.includes(cat.categoryId);
+      const hasChildren = cat.subCategories && cat.subCategories.length > 0;
+
+      return (
         <div key={cat.categoryId}>
           <div
             className="category"
             onClick={() => {
-              toggleExpand(cat.categoryId);
+              if (hasChildren) toggleCategory(cat.categoryId);
               onSelect(cat);
             }}
           >
-            ▶ {cat.categoryName}
+            {hasChildren ? (isExpanded ? "▼" : "▶") : "•"} {cat.categoryName}
           </div>
-          {expanded.includes(cat.categoryId) && cat.subCategories && (
-            <div className="subcategory-list">
-              {cat.subCategories.map((sub) => (
+          {isExpanded && hasChildren && (
+            <div>
+              {cat.subCategories!.map((sub) => (
                 <div
                   key={sub.categoryId}
                   className="subcategory-item"
@@ -76,7 +78,35 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({ onSelect }) => {
             </div>
           )}
         </div>
-      ))}
+      );
+    });
+  };
+
+  return (
+    <div className="category-container">
+      <h2>📚 전체 도서 카테고리</h2>
+
+      {/* 국내 도서 */}
+      <div>
+        <div
+          className="category-type"
+          onClick={() => fetchCategories("DOMESTIC")}
+        >
+          {expandedType === "DOMESTIC" ? "▼" : "▶"} 국내 도서
+        </div>
+        {expandedType === "DOMESTIC" && renderCategoryTree(categoriesMap.DOMESTIC)}
+      </div>
+
+      {/* 해외 도서 */}
+      <div>
+        <div
+          className="category-type"
+          onClick={() => fetchCategories("FOREIGN")}
+        >
+          {expandedType === "FOREIGN" ? "▼" : "▶"} 해외 도서
+        </div>
+        {expandedType === "FOREIGN" && renderCategoryTree(categoriesMap.FOREIGN)}
+      </div>
     </div>
   );
 };

@@ -55,8 +55,7 @@ export const commonMenu: SidebarMenu[] = [
   {
     title: '도서검색',
     submenu: [
-      { label: '전체 책 조회', path: '' },
-      { label: '세부 검색', path: '' },
+      { label: '통합 검색', path: '/books/search' },
     ],
   },
 ];

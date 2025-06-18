@@ -1,35 +1,48 @@
-.category-container {
-  padding: 30px;
-  background-color: #f9f9fc;
-  color: #333;
-  font-family: 'Segoe UI', sans-serif;
+/* 1단계: 국내/해외 도서 */
+.category-type {
+  background-color: #c8d8ec;          /* 진한 연파랑 */
+  padding: 16px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 10px;
+  margin-top: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
+.category-type:hover {
+  background-color: #b7cce7;
+}
+
+/* 2단계: 대분류 */
 .category {
-  font-weight: 600;
-  padding: 10px;
-  background: #dde9f7;
+  background-color: #e9edf5;          /* 더 연한 회청색 */
+  margin: 6px 0 0 20px;
+  padding: 10px 14px;
+  font-size: 16px;
+  font-weight: 500;
   border-radius: 6px;
-  margin-top: 10px;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background-color 0.2s;
 }
 
 .category:hover {
-  background: #cdd9eb;
+  background-color: #dde3ee;
 }
 
-.subcategory-list {
-  margin-left: 20px;
-  margin-top: 8px;
-  padding-left: 12px;
-  border-left: 3px solid #aaa;
-}
-
+/* 3단계: 소분류 */
 .subcategory-item {
-  margin: 4px 0;
-  padding: 6px 12px;
-  background: white;
-  border-radius: 4px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  background-color: #fff;
+  margin-left: 40px;
+  margin-top: 4px;
+  padding: 8px 14px;
+  font-size: 15px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.subcategory-item:hover {
+  background-color: #eef6ff;
 }
