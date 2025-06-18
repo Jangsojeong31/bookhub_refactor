@@ -8,14 +8,14 @@ import {
 } from "../axiosConfig";
 import {
   GET_ALL_EMPLOYEE_URL,
-  GET_EMPLOYEE_SIGN_UP_APRROVALS_URL,
   GET_EMPLOYEE_URL,
+  GET_PENDING_EMPLOYEE_URL,
   PUT_EMPLOYEE_APPROVE_URL,
 } from "../constants/khj.constants";
 import { AxiosError } from "axios";
 import { EmployeeSignUpApprovalRequestDto } from "@/dtos/employee/request/employee-sign-up-Approval.request.dto";
 import { EmployeeDetailResponseDto } from "@/dtos/employee/response/employee-detail.response.dto";
-import { access } from "fs";
+import { EmployeeSignUpListResponseDto } from "@/dtos/employee/response/employe-sign-up-list.response.dto copy";
 
 interface SearchEmployeeParams {
   name?: string;
@@ -25,7 +25,7 @@ interface SearchEmployeeParams {
   status?: string;
 }
 
-export const employeeResquest = async (
+export const employeeRequest = async (
   params: SearchEmployeeParams,
   accessToken: string
 ): Promise<ResponseDto<EmployeeListResponseDto[]>> => {
@@ -40,12 +40,29 @@ export const employeeResquest = async (
   }
 };
 
-export const employeeDetailResquest = async (
+export const employeeDetailRequest = async (
   employeeId: number,
   accessToken: string
 ): Promise<ResponseDto<EmployeeDetailResponseDto>> => {
   try {
-    const response = await axiosInstance.get(GET_EMPLOYEE_URL(employeeId), bearerAuthorization(accessToken));
+    const response = await axiosInstance.get(
+      GET_EMPLOYEE_URL(employeeId),
+      bearerAuthorization(accessToken)
+    );
+    return responseSuccessHandler(response);
+  } catch (error) {
+    return responseErrorHandler(error as AxiosError<ResponseDto>);
+  }
+};
+
+export const employeeSignUpListeRequest = async (
+  token: string
+): Promise<ResponseDto<EmployeeSignUpListResponseDto[]>> => {
+  try {
+    const response = await axiosInstance.get(
+      GET_PENDING_EMPLOYEE_URL,
+      bearerAuthorization(token)
+    );
     return responseSuccessHandler(response);
   } catch (error) {
     return responseErrorHandler(error as AxiosError<ResponseDto>);
@@ -55,13 +72,14 @@ export const employeeDetailResquest = async (
 export const employeeSignUpApprovalRequest = async (
   employeeId: number,
   dto: EmployeeSignUpApprovalRequestDto,
-  loginId: string,
+
   accessToken: string
 ): Promise<ResponseDto<void>> => {
   try {
     const response = await axiosInstance.put(
       PUT_EMPLOYEE_APPROVE_URL(employeeId),
-      { loginId, dto, ...bearerAuthorization(accessToken) }
+      dto,
+      bearerAuthorization(accessToken)
     );
     return responseSuccessHandler(response);
   } catch (error) {
