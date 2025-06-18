@@ -16,13 +16,7 @@ import {
   DELETE_PUBLISHER_URL
 } from '@/apis';
 
-/**
- * 페이징 조회 및 키워드 검색 통합 API
- * @param accessToken 인증 토큰
- * @param page 페이지 번호 (0부터 시작)
- * @param size 페이지 크기
- * @param keyword 검색어 (미입력 시 페이징 조회만 수행)
- */
+
 export const getPublishers = async (
   accessToken: string,
   page: number,

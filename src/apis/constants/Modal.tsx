@@ -24,6 +24,8 @@ type ModalProps = {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  className? : string;
+  
 };
 
 const Modal = ({ isOpen, onClose, children }: ModalProps) => {
@@ -71,7 +73,8 @@ const Container = styled.div`
   background: white;
   border-radius: 12px;
   padding: 2rem;
-  width: 600px;
+  width: 1000px;
+  height: 500px;
   max-width: 90%;
   max-height: 80%;
   position: relative;

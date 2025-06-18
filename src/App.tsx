@@ -17,6 +17,8 @@ import Publisher from "./views/publisher";
 import PurchaseOrder from "./views/purchaseOrder";
 import Reception from "./views/reception";
 import StockStatistics from "./views/statistics";
+import 'react-datepicker/dist/react-datepicker.css';
+import PolicyPage from "./views/policy/PolicyPage";
 
 
 function App() {
@@ -54,6 +56,7 @@ function App() {
               {/* <Route path="/publishers" element={<Publisher />} /> */}
 
               <Route path="/publishers/*" element={<Publisher />} />
+              <Route path="/policies/*" element={<PolicyPage />} />
               {Main()}
               {/* {Alert()} */}
 
