@@ -10,6 +10,7 @@ export const adminMenu: SidebarMenu[] = [
       { label: '카테고리 관리', path: '/categories' }, // 추가 예정이면 빈 문자열 말고 대략 예상 경로라도!
       { label: '책 등록', path: '/books/create' },
       { label: '책 수정 및 삭제', path: '/books/edit' },
+      { label: '책 로그', path: '/booklogs' },
     ],
   },
   {

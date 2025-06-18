@@ -32,7 +32,6 @@ function CreateCategory({ onSuccess }: CreateCategoryProps) {
     }
 
     getRootCategories(token).then((res) => {
-      console.log("📦 대분류 응답 결과:", res);
       if (res.code === "SU") {
         const all = res.data ?? [];
         const filtered = all.filter((cat) => cat.categoryType === categoryType);
@@ -77,7 +76,8 @@ function CreateCategory({ onSuccess }: CreateCategoryProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="create-category-form">
+    <div className="create-category-container">
+      <form onSubmit={handleSubmit} className="create-category-form">
       <h2 className="create-category-title">📁 카테고리 등록</h2>
 
       <input
@@ -139,6 +139,8 @@ function CreateCategory({ onSuccess }: CreateCategoryProps) {
 
       <button type="submit" className="create-category-button">등록</button>
     </form>
+    </div>
+    
   );
 }
 

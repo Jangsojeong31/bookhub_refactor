@@ -12,7 +12,6 @@ const COMMON = 'common';
 
 //! 1. 책 관련 요청 베이스 URL
 const BOOK_ADMIN_MODULE_URL = `${API_DOMAIN}/api/v1/admin/books`;
-const BOOK_MANAGER_MODULE_URL = `${API_DOMAIN}/api/v1/manager/books`;
 const BOOK_COMMON_MODULE_URL = `${API_DOMAIN}/api/v1/common/books`;
 
 //? 책 관련 기능
@@ -21,33 +20,33 @@ const BOOK_COMMON_MODULE_URL = `${API_DOMAIN}/api/v1/common/books`;
 export const POST_BOOK_URL = `${BOOK_ADMIN_MODULE_URL}`;
 
 // 책 검색
-export const GET_BOOK_URL = `${BOOK_COMMON_MODULE_URL}`; 
+export const GET_BOOK_URL = `${BOOK_COMMON_MODULE_URL}/search`; 
 // /${(검색기준): bookTitle, authorId, publisherId, categoryId, locationId, publishedDate, printCount, bookPrice, language };
 
 // 책 수정
-export const PUT_BOOK_URL = (bookId : string) => `${BOOK_ADMIN_MODULE_URL}/${bookId}`;
+export const UPDATE_BOOK_URL = (isbn : string) => `${BOOK_ADMIN_MODULE_URL}/${isbn}`;
 
-// 책 삭제
-export const DELETE_BOOK_URL = (bookId : string) => `${BOOK_ADMIN_MODULE_URL}/${bookId}`;
+// 책 숨김 처리
+export const HIDE_BOOK_URL = (isbn : string) => `${BOOK_ADMIN_MODULE_URL}/hidden/${isbn}`;
 
 //! 2. 재고 관련 요청 베이스 URL
-const STOCK_ADMIN_MODULE_URL = `${BOOK_ADMIN_MODULE_URL}/stocks`;
-const STOCK_MANAGER_MODULE_URL = `${BOOK_MANAGER_MODULE_URL}/stocks`;
-const STOCK_COMMON_MODULE_URL = `${BOOK_COMMON_MODULE_URL}/stocks`;
+// const STOCK_ADMIN_MODULE_URL = `${BOOK_ADMIN_MODULE_URL}/stocks`;
+// const STOCK_MANAGER_MODULE_URL = `${BOOK_MANAGER_MODULE_URL}/stocks`;
+// const STOCK_COMMON_MODULE_URL = `${BOOK_COMMON_MODULE_URL}/stocks`;
 
-//? 재고 관련 기능
+// //? 재고 관련 기능
 
-// 재고 생성
-export const POST_STOCK_URL = `${STOCK_ADMIN_MODULE_URL}`;
+// // 재고 생성
+// export const POST_STOCK_URL = `${STOCK_ADMIN_MODULE_URL}`;
 
-// 재고 전체 조회
-export const GET_ALL_STOCK_URL = (branchId : number) => `${STOCK_COMMON_MODULE_URL}/${branchId}`;
+// // 재고 전체 조회
+// export const GET_ALL_STOCK_URL = (branchId : number) => `${STOCK_COMMON_MODULE_URL}/${branchId}`;
 
-// 재고 단건 조회
-export const GET_STOCK_URL = (branchId : number, stockId : number) => `${STOCK_COMMON_MODULE_URL}/${branchId}/${stockId}`;
+// // 재고 단건 조회
+// export const GET_STOCK_URL = (branchId : number, stockId : number) => `${STOCK_COMMON_MODULE_URL}/${branchId}/${stockId}`;
 
-// 책 재고 수량 변경
-export const PUT_STOCK_URL = (branchId : number, stockId : number) => `${STOCK_MANAGER_MODULE_URL}/${branchId}/${stockId}`;
+// // 책 재고 수량 변경
+// export const PUT_STOCK_URL = (branchId : number, stockId : number) => `${STOCK_MANAGER_MODULE_URL}/${branchId}/${stockId}`;
 
 //! 3. 카테고리 관련 요청 베이스 URL
 const CATEGORY_MODULE_URL = `${API_DOMAIN}/api/v1/${ADMIN}/categories`;
