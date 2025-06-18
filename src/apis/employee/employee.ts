@@ -11,11 +11,13 @@ import {
   GET_EMPLOYEE_URL,
   GET_PENDING_EMPLOYEE_URL,
   PUT_EMPLOYEE_APPROVE_URL,
+  PUT_EMPLOYEE_CHANGE_URL,
 } from "../constants/khj.constants";
 import { AxiosError } from "axios";
 import { EmployeeSignUpApprovalRequestDto } from "@/dtos/employee/request/employee-sign-up-Approval.request.dto";
 import { EmployeeDetailResponseDto } from "@/dtos/employee/response/employee-detail.response.dto";
 import { EmployeeSignUpListResponseDto } from "@/dtos/employee/response/employe-sign-up-list.response.dto copy";
+import { EmployeeChangeRequestDto } from "@/dtos/employee/request/employee-change.request.dto";
 
 interface SearchEmployeeParams {
   name?: string;
@@ -56,12 +58,12 @@ export const employeeDetailRequest = async (
 };
 
 export const employeeSignUpListeRequest = async (
-  token: string
+  accessToken: string
 ): Promise<ResponseDto<EmployeeSignUpListResponseDto[]>> => {
   try {
     const response = await axiosInstance.get(
       GET_PENDING_EMPLOYEE_URL,
-      bearerAuthorization(token)
+      bearerAuthorization(accessToken)
     );
     return responseSuccessHandler(response);
   } catch (error) {
@@ -72,12 +74,28 @@ export const employeeSignUpListeRequest = async (
 export const employeeSignUpApprovalRequest = async (
   employeeId: number,
   dto: EmployeeSignUpApprovalRequestDto,
-
   accessToken: string
 ): Promise<ResponseDto<void>> => {
   try {
     const response = await axiosInstance.put(
       PUT_EMPLOYEE_APPROVE_URL(employeeId),
+      dto,
+      bearerAuthorization(accessToken)
+    );
+    return responseSuccessHandler(response);
+  } catch (error) {
+    return responseErrorHandler(error as AxiosError<ResponseDto>);
+  }
+};
+
+export const employeeChangeRequestDto = async (
+  employeeId: number,
+  dto: EmployeeChangeRequestDto,
+  accessToken: string
+): Promise<ResponseDto<void>> => {
+  try {
+    const response = await axiosInstance.put(
+      PUT_EMPLOYEE_CHANGE_URL(employeeId),
       dto,
       bearerAuthorization(accessToken)
     );
