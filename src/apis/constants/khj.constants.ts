@@ -36,6 +36,7 @@ export const LOGOUT_URL = `${AUTH_MODULE_URL}/logout`;
 export const SIGN_UP_RESULT_URL = (approvalId: number) =>
   `${AUTH_MODULE_URL}/employees/${approvalId}/approve`;
 
+// 8) 회원가입 승인 수정
 export const EMPLOYEE_UPDATE_URL = `${AUTH_MODULE_URL}/employees/approve`;
 
 //! 2) ADMIN 관련 요청 URL
@@ -69,7 +70,7 @@ export const GET_EMPLOYEE_URL = (employeeId: number) =>
   `${EMPLOYEE_MODULE_URL}/${employeeId}`;
 
 // 3) 직원 정보 수정
-export const PUT_EMPLOYEE_BRANCH_URL = (employeeId: number) =>
+export const PUT_EMPLOYEE_CHANGE_URL = (employeeId: number) =>
   `${EMPLOYEE_MODULE_URL}/${employeeId}/organization`;
 
 // 4) 직원 퇴직 여부 수정
@@ -134,3 +135,8 @@ export const GET_EMPLOYEE_EXIT_LOGS_BY_ID_URL = (exitId: number) =>
 // 6-2) 특정 조회 기준으로 조회(@RequestParam)
 export const GET_EMPLOYEE_EXIT_LOGS_URL = (employeeId: string, exitAt: Date) =>
   `${EMPLOYEE_EXIT_LOGS_MODULE_URL}?employeeId=${employeeId}&exitAt=${exitAt}`;
+
+
+export const GET_ALL_POSITION_URL = `${AUTH_MODULE_URL}/positions`;
+
+export const GET_ALL_AUTHORITY_URL = `${AUTH_MODULE_URL}/authorities`;
