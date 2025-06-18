@@ -1,6 +1,6 @@
 /* 1단계: 국내/해외 도서 */
 .category-type {
-  background-color: #c8d8ec;          /* 진한 연파랑 */
+  background-color: #c8d8ec;
   padding: 16px 20px;
   font-size: 18px;
   font-weight: bold;
@@ -14,9 +14,10 @@
   background-color: #b7cce7;
 }
 
+
 /* 2단계: 대분류 */
 .category {
-  background-color: #e9edf5;          /* 더 연한 회청색 */
+  background-color: #e9edf5;
   margin: 6px 0 0 20px;
   padding: 10px 14px;
   font-size: 16px;
