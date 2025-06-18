@@ -1,112 +1,182 @@
-// src/views/discountPolicy/DiscountPolicyCreate.tsx
+// src/views/policy/CreatePolicy.tsx
 import React, { useState } from 'react';
-import styles from './policy.module.css'
+import Modal from '@/apis/constants/Modal';
+import { useCookies } from 'react-cookie';
+import { createPolicy } from '@/apis/policy/policy';
+import { PolicyCreateRequestDto } from '@/dtos/policy/policy.request.dto';
+import { PolicyType } from '@/apis/enums/PolicyType';
 
+interface Props {
+  isOpen: boolean;
+  onClose: () => void;
+  onCreated: () => void; // 생성 후 부모에게 알림
+}
 
+function CreatePolicy({ isOpen, onClose, onCreated }: Props) {
+  const [cookies] = useCookies(['accessToken']);
+  const token = cookies.accessToken;
 
-function CreatePolicy() {
-  const [form, setForm] = useState({
-    policyTitle: '',
-    policyDescription: '',
-    policyType: '',
-    totalPriceAchieve: '',
-    discountPercent: '',
-    startDate: '',
-    endDate: '',
-  });
+  const [policyTitle, setPolicyTitle] = useState('');
+  const [policyDescription, setPolicyDescription] = useState('');
+  const [policyType, setPolicyType] = useState<PolicyType>(PolicyType.BOOK_DISCOUNT);
+  const [totalPriceAchieve, setTotalPriceAchieve] = useState<number | undefined>(undefined);
+  const [discountPercent, setDiscountPercent] = useState(0);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [message, setMessage] = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = () => {
-    if (!form.policyTitle || !form.policyType || !form.discountPercent) {
-      alert('필수 항목을 입력해주세요.');
+  const onCreateClick = async () => {
+    if (!policyTitle.trim()) {
+      setMessage('제목을 입력해주세요.');
+      return;
+    }
+    if (discountPercent <= 0) {
+      setMessage('할인율을 입력해주세요.');
       return;
     }
 
-    // TODO: API 호출
-    console.log('등록할 데이터:', form);
+    if (!token) {
+      alert('인증 토큰이 없습니다.');
+      return;
+    }
+
+    const dto: PolicyCreateRequestDto = {
+      policyTitle,
+      policyDescription,
+      policyType,
+      totalPriceAchieve,
+      discountPercent,
+      startDate,
+      endDate,
+    };
+
+    const response = await createPolicy(dto, token);
+    if (response.code !== 'SU') {
+      setMessage(response.message || '정책 생성에 실패했습니다.');
+      return;
+    }
+
     alert('정책이 등록되었습니다.');
+    onCreated();  // 부모에 알림 (리스트 새로고침)
+    onClose();    // 모달 닫기
+    // 폼 초기화
+    setPolicyTitle('');
+    setPolicyDescription('');
+    setPolicyType(PolicyType.BOOK_DISCOUNT);
+    setTotalPriceAchieve(undefined);
+    setDiscountPercent(0);
+    setStartDate('');
+    setEndDate('');
+    setMessage('');
   };
 
+  if (!isOpen) return null;
+
   return (
-    <div className={styles.container}>
-      <h2 className={styles.heading}>할인 정책 등록</h2>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <div style={{ padding: '20px', textAlign: 'center' }}>
+        <h2 style={{ marginBottom: '16px' }}>정책 등록</h2>
 
-      <select
-        name="policyType"
-        value={form.policyType}
-        onChange={handleChange}
-        className={styles.select}
-        required
-      >
-        <option value="">정책 유형 선택</option>
-        <option value="MEMBER">회원 등급 할인</option>
-        <option value="SEASONAL">시즌 할인</option>
-        <option value="EVENT">이벤트 할인</option>
-        {/* ENUM 값에 맞게 수정 */}
-      </select>
+        {/* 할인 종류 */}
+        <select
+          value={policyType}
+          onChange={e => setPolicyType(e.target.value as PolicyType)}
+          style={{ width: '100%', padding: '8px', marginBottom: '12px' }}
+        >
+          <option value={PolicyType.BOOK_DISCOUNT}>도서 할인</option>
+          <option value={PolicyType.TOTAL_PRICE_DISCOUNT}>총 금액 할인</option>
+          <option value={PolicyType.CATEGORY_DISCOUNT}>카테고리 할인</option>
+        </select>
 
-      <input
-        type="text"
-        name="policyTitle"
-        placeholder="정책 제목"
-        value={form.policyTitle}
-        onChange={handleChange}
-        className={styles.input}
-        required
-      />
+        {/* 날짜 */}
+        <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+          <input
+            type="date"
+            value={startDate}
+            onChange={e => setStartDate(e.target.value)}
+            style={{ flex: 1, padding: '8px' }}
+          />
+          <input
+            type="date"
+            value={endDate}
+            onChange={e => setEndDate(e.target.value)}
+            style={{ flex: 1, padding: '8px' }}
+          />
+        </div>
 
-      <textarea
-        name="policyDescription"
-        placeholder="정책 설명 (선택)"
-        value={form.policyDescription}
-        onChange={handleChange}
-        className={styles.textarea}
-      />
+        {/* 제목 */}
+        <input
+          type="text"
+          placeholder="제목을 입력하세요"
+          value={policyTitle}
+          onChange={e => setPolicyTitle(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '10px',
+            marginBottom: '12px',
+            border: '1px solid #ccc',
+            borderRadius: '4px'
+          }}
+        />
 
-      <input
-        type="number"
-        name="totalPriceAchieve"
-        placeholder="달성 금액 기준 (선택)"
-        value={form.totalPriceAchieve}
-        onChange={handleChange}
-        className={styles.input}
-      />
+        {/* 설명 */}
+        <textarea
+          placeholder="설명을 입력하세요"
+          value={policyDescription}
+          onChange={e => setPolicyDescription(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '10px',
+            marginBottom: '12px',
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            minHeight: '80px'
+          }}
+        />
 
-      <input
-        type="number"
-        name="discountPercent"
-        placeholder="할인율 (%)"
-        value={form.discountPercent}
-        onChange={handleChange}
-        className={styles.input}
-        required
-      />
+        {/* 금액·할인율 */}
+        <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+          <input
+            type="number"
+            placeholder="총 금액"
+            value={totalPriceAchieve ?? ''}
+            onChange={e => setTotalPriceAchieve(e.target.value ? Number(e.target.value) : undefined)}
+            style={{ flex: 1, padding: '8px', border: '1px solid #ccc', borderRadius: '4px' }}
+          />
+          <input
+            type="number"
+            placeholder="할인율(%)"
+            value={discountPercent}
+            onChange={e => setDiscountPercent(Number(e.target.value))}
+            style={{ flex: 1, padding: '8px', border: '1px solid #ccc', borderRadius: '4px' }}
+          />
+        </div>
 
-      <input
-        type="date"
-        name="startDate"
-        value={form.startDate}
-        onChange={handleChange}
-        className={styles.input}
-      />
+        {/* 에러 메시지 */}
+        {message && (
+          <p style={{ color: 'red', marginBottom: '12px' }}>{message}</p>
+        )}
 
-      <input
-        type="date"
-        name="endDate"
-        value={form.endDate}
-        onChange={handleChange}
-        className={styles.input}
-      />
-
-      <button onClick={handleSubmit} className={styles.button}>
-        등록
-      </button>
-    </div>
+        {/* 등록 버튼 */}
+        <button
+          onClick={onCreateClick}
+          style={{
+            width: '100%',
+            padding: '12px',
+            backgroundColor: '#4e7fff',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            fontSize: '16px',
+            cursor: 'pointer'
+          }}
+        >
+          등록
+        </button>
+      </div>
+    </Modal>
   );
 }
 
 export default CreatePolicy;
+

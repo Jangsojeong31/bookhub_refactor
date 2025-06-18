@@ -2,18 +2,15 @@ import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 import CreatePolicy from './CreatePolicy'
 import UpdatePolicy from './UpdatePolicy'
+import PolicyPage from './PolicyPage'
 
 function Policy() {
   return (
-    <div>
-      <>
-        <Route path = '/create' element={<CreatePolicy/>}/>
-        <Route path = '/:policyId' element={<UpdatePolicy/>}/>
-      </>
+    <Routes>
+      <Route path="/" element={<PolicyPage/>}/>
+    </Routes>
 
-
-    </div>
   )
-}
+};
 
-export default Policy
+export default Policy;
