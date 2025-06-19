@@ -7,13 +7,15 @@ import { useNavigate } from "react-router-dom";
 
 function SignIn() {
   const navigate = useNavigate();
-  const [cookies, setCookie] = useCookies(["accessToken"]);
+  const [, setCookie] = useCookies(["accessToken"]);
   const setLogin = useEmployeeStore((store) => store.setLogin);
 
   const [form, setForm] = useState({
     loginId: "",
     password: "",
   });
+
+  const setEmployee = useEmployeeStore((state) => state.setEmployee);
 
   const [message, setMessage] = useState("");
 
@@ -23,7 +25,7 @@ function SignIn() {
   };
 
   const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); // 새로고침 방지
+    e.preventDefault();
 
     const { loginId, password } = form;
 
@@ -41,9 +43,10 @@ function SignIn() {
       return;
     }
 
-    const { token, exprTime } = data;
-    if (typeof exprTime !== "number" || isNaN(exprTime)) {
-      setMessage("서버에서 잘못된 만료시간을 받았습니다.");
+    const { token, exprTime, employee } = data;
+
+    if (!employee) {
+      setMessage("로그인 정보가 없습니다.");
       return;
     }
 
@@ -58,7 +61,9 @@ function SignIn() {
 
     setLogin();
 
-    alert(message);
+    setEmployee(employee);
+
+    alert("로그인 성공!");
     navigate("/main");
   };
 

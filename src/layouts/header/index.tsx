@@ -1,18 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./Header.module.css";
 import { logoutRequest } from "@/apis/auth/auth";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { useEmployeeStore } from "@/stores/employee.store";
+import Employee from "@/views/employee";
+import { GET_BRANCH_URL } from "@/apis";
 
 export default function Header() {
   const [, , removeCookie] = useCookies(["accessToken"]);
   const logout = useEmployeeStore((state) => state.setLogout);
+  const employee = useEmployeeStore((state) => state.employee);
+  const clearEmployee = useEmployeeStore((state) => state.clearEmployee);
 
   const navigate = useNavigate();
   const onLogoutClick = async () => {
     await logoutRequest();
-    removeCookie("accessToken", { path: "/" }); 
+    removeCookie("accessToken", { path: "/" });
+    clearEmployee();
     logout();
     navigate("/auth/login");
   };
@@ -27,7 +32,7 @@ export default function Header() {
         />
       </div>
       <div className={styles.headerInfo}>
-        <div>부산 지점현황관리</div>
+        <div>{employee?.branchName} {employee?.positionName} {employee?.employeeName}</div>
         <button onClick={onLogoutClick}>로그아웃</button>
       </div>
     </header>

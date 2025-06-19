@@ -24,12 +24,6 @@ function EmployeeSignUpApprovalsSearch() {
     endUpdatedAt: "",
   });
 
-  const formatDate = (date: Date | string): string => {
-    if (!date) return ""; // 빈 값이면 빈 문자열 반환
-    const d = new Date(date);
-    return d.toISOString().split("T")[0];
-  };
-
   const [employeeApprovalList, setEmployeeApprovalList] = useState<
     EmployeeSignUpApprovalsResponseDto[]
   >([]);
@@ -53,8 +47,6 @@ function EmployeeSignUpApprovalsSearch() {
       ...searchForm,
       deniedReason:
         searchForm.deniedReason === "" ? undefined : searchForm.deniedReason,
-      startUpdatedAt: formatDate(searchForm.startUpdatedAt),
-      endUpdatedAt: formatDate(searchForm.endUpdatedAt),
     };
     const response = await employeeSignUpApprovalSearchRequest(
       requestBody,
@@ -81,6 +73,7 @@ function EmployeeSignUpApprovalsSearch() {
     });
 
     setEmployeeApprovalList([]);
+    setCurrentPage(1);
   };
 
   const paginatedEmployeeApprovalList = employeeApprovalList.slice(

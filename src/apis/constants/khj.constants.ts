@@ -97,44 +97,11 @@ const EMPLOYEE_EXIT_LOGS_MODULE_URL = `${ADMIN_MODULE_URL}/employee-exit-logs`;
 // 1) 지점, 직급, 권한 변경 로그
 export const GET_ALL_EMPLOYEE_CHANGE_LOGS_URL = `${EMPLOYEE_CHANGE_LOGS_MODULE_URL}`;
 
-// 2) 지점, 직급, 권한 변경 로그 조회 기준별
-
-// 2-2) 특정 조회 기준으로 조회(@RequestParam)
-export const GET_EMPLOYEE_CHANGE_LOGS_URL = (
-  employeeId: number,
-  changeType: string,
-  changedAt: Date
-) =>
-  `${EMPLOYEE_CHANGE_LOGS_MODULE_URL}?employeeId=${employeeId}&changeType=${changeType}&changedAt=${changedAt}`;
-
-// 3) 회원가입 승인 로그
+// 2) 회원가입 승인 로그
 export const GET_ALL_EMPLOYEE_SIGN_UP_APRROVALS_URL = `${EMPLOYEE_SIGN_UP_APRROVALS_MODULE_URL}`;
 
-// 4) 회원가입 승인 로그 조회 기준별
-// 4-1) 로그 id로 조회
-export const GET_EMPLOYEE_SIGN_UP_APRROVALS_BY_ID_URL = (approvalId: string) =>
-  `${EMPLOYEE_SIGN_UP_APRROVALS_MODULE_URL}/${approvalId}`;
-
-// 4-2) 특정 조회 기준으로 조회(@RequestParam)
-export const GET_EMPLOYEE_SIGN_UP_APRROVALS_URL = (
-  employeeId: number,
-  authorizerId: number,
-  status: string,
-  approvedDeniedAt: Date
-) =>
-  `${EMPLOYEE_SIGN_UP_APRROVALS_MODULE_URL}?employeeId=${employeeId}&authorizerId=${authorizerId}&status=${status}&approvedDeniedAt=${approvedDeniedAt}`;
-
-// 5) 직원 퇴사자 로그
+// 3) 직원 퇴사자 로그
 export const GET_ALL_EMPLOYEE_EXIT_LOGS_URL = `${EMPLOYEE_EXIT_LOGS_MODULE_URL}`;
-
-// 6) 직원 퇴사자 로그 조회 기준별
-// 6-1) 로그 id로 조회
-export const GET_EMPLOYEE_EXIT_LOGS_BY_ID_URL = (exitId: number) =>
-  `${EMPLOYEE_EXIT_LOGS_MODULE_URL}/${exitId}`;
-
-// 6-2) 특정 조회 기준으로 조회(@RequestParam)
-export const GET_EMPLOYEE_EXIT_LOGS_URL = (employeeId: string, exitAt: Date) =>
-  `${EMPLOYEE_EXIT_LOGS_MODULE_URL}?employeeId=${employeeId}&exitAt=${exitAt}`;
 
 
 export const GET_ALL_POSITION_URL = `${AUTH_MODULE_URL}/positions`;
