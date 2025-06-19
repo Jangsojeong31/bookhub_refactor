@@ -112,20 +112,14 @@ export const STOCK_LOG_DETAIL = (stockLogId: number) =>
   `${STOCK_LOG_BASE_URL}/${stockLogId}`;
 
 // & 그 외
-// 베이스 URL
-const CUSTOMER_ORDER_MODULE_URL_ADMIN = `${API_DOMAIN}/api/v1/${ADMIN}/statistics`;
-const CUSTOMER_ORDER_MODULE_URL_MANAGER = `${API_DOMAIN}/api/v1/${MANAGER}/statistics`;
-const CUSTOMER_ORDER_MODULE_URL_COMMON = `${API_DOMAIN}/api/v1/${COMMON}/statistics`;
+// 통계 베이스 URL
+const STATISTICS_BASE_URL_ADMIN = `${API_DOMAIN}/api/v1/${ADMIN}/statistics`;
+const STATISTICS_BASE_URL_MANAGER = `${API_DOMAIN}/api/v1/${MANAGER}/statistics`;
+const STATISTICS_BASE_URL_COMMON = `${API_DOMAIN}/api/v1/${COMMON}/statistics`;
 
-// 1) 주간 베스트셀러 조회
-export const GET_BESTSELLER_WEEKLY_URL = (startDate: Date, endDate: Date) => `${CUSTOMER_ORDER_MODULE_URL_ADMIN}/weekly?startDate=${startDate}&endDate=${endDate}`;
+//매출(Revenue) 통계 URL
+export const REVENUE_STATISTICS_BASE_URL = `${STATISTICS_BASE_URL_ADMIN}/revenue`
 
-// 1) 월간 베스트셀러 조회
-const GET_BESTSELLER_MONTHLY_URL = (startDate: Date, endDate: Date) => `${CUSTOMER_ORDER_MODULE_URL_ADMIN}/monthly?startDate=${startDate}&endDate=${endDate}`;
-
-// 1) 연간 베스트셀러 조회
-const GET_BESTSELLER_YEARLY_URL = (startDate: Date, endDate: Date) => `${CUSTOMER_ORDER_MODULE_URL_ADMIN}/yearly?startDate=${startDate}&endDate=${endDate}`;
-
-// 3) 할인항목별 판매데이터 조회
-const GET_CUSTOMER_ORDER_BY_DISCOUNT_URL = (policyId: number) => `${CUSTOMER_ORDER_MODULE_URL_COMMON}/by-category/${policyId}`;
+//1) 요일별 매출 통계(전체)
+export const REVENUE_STATISTICS_WEEKDAY_URL = `${REVENUE_STATISTICS_BASE_URL}/weekday`
 

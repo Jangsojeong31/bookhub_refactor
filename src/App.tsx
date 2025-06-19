@@ -1,6 +1,6 @@
 import Sidebar from "./layouts/sidebar";
 import Header from "./layouts/header";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { useEmployeeStore } from "./stores/employee.store";
 import { useEffect } from "react";
@@ -21,9 +21,13 @@ import 'react-datepicker/dist/react-datepicker.css';
 import PolicyPage from "./views/policy/PolicyPage";
 import LocationPage from "./views/location/LocationPage";
 import StockLog from "./views/stock-logs";
+import Revenue from "./views/statistics/revenue";
+
+
 
 
 function App() {
+
   const [cookies ] = useCookies(["accessToken"]);
 
   const setLogin = useEmployeeStore((state) => state.setLogin); 
@@ -61,6 +65,7 @@ function App() {
               <Route path="/policies/*" element={<PolicyPage />} />
              <Route path="/branch/:branchId/locations" element={<LocationPage />} />
              <Route path="/stock-logs/*" element={<StockLog />} />
+             <Route path="/statistics/revenue/*" element={<Revenue />} />
               {Main()}
               {/* {Alert()} */}
 
