@@ -160,7 +160,7 @@ function ElseAuthor() {
           key="/author/create"
           style={({isActive}) => ({
             backgroundColor: isActive? 'blue' : 'lightgray',
-            padding: '10px 20xp',
+            padding: '10px 20px',
             margin: '10px 10px'
           })}>
           등록
@@ -171,7 +171,7 @@ function ElseAuthor() {
           key="/author/else"
           style={({isActive}) => ({
             backgroundColor: isActive? 'blue' : 'lightgray',
-            padding: '10px 20xp',
+            padding: '10px 20px',
             margin: '10px 10px'
           })}>
           조회 / 수정 / 삭제

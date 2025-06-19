@@ -17,8 +17,9 @@ import Publisher from "./views/publisher";
 import PurchaseOrder from "./views/purchaseOrder";
 import Reception from "./views/reception";
 import StockStatistics from "./views/statistics";
-import 'react-datepicker/dist/react-datepicker.css';
+// import 'react-datepicker/dist/react-datepicker.css';
 import PolicyPage from "./views/policy/PolicyPage";
+import SalesQuantityStatistics from "./views/statistics/salesQuantity-statistics";
 
 
 function App() {
@@ -75,6 +76,7 @@ function App() {
               {Stocks()} */}
               {Author()}
               {PurchaseOrder()}
+              {SalesQuantityStatistics()}
               {Employee()}
             </Routes>
           </main>

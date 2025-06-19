@@ -4,7 +4,7 @@ export const commonMenu: SidebarMenu[] = [
   {
     title: '지점별 판매 현황',
     submenu: [
-      { label: '카테고리별 판매 현황', path: '' },
+      { label: '카테고리별 판매', path: '' },
       { label: '주간 판매 현황', path: '' },
       { label: '알림 관리 현황', path: '' },
     ],
@@ -48,8 +48,9 @@ export const commonMenu: SidebarMenu[] = [
   {
     title: '베스트 셀러',
     submenu: [
-      { label: '주간 베스트셀러 조회', path: '' },
-      { label: '월간 베스트셀러 조회', path: '' },
+      { label: '총합 베스트셀러', path: '/best-seller' },
+      { label: '기간별 베스트셀러', path: '/best-seller/period' },
+      { label: '카테고리별 베스트셀러', path: '/best-seller/category' },
     ],
   },
   {
