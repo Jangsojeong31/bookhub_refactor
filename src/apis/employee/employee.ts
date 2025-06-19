@@ -17,7 +17,7 @@ import {
 import { AxiosError } from "axios";
 import { EmployeeSignUpApprovalRequestDto } from "@/dtos/employee/request/employee-sign-up-Approval.request.dto";
 import { EmployeeDetailResponseDto } from "@/dtos/employee/response/employee-detail.response.dto";
-import { EmployeeSignUpListResponseDto } from "@/dtos/employee/response/employe-sign-up-list.response.dto copy";
+import { EmployeeSignUpListResponseDto } from "@/dtos/employee/response/employee-sign-up-list.response.dto copy";
 import { EmployeeChangeRequestDto } from "@/dtos/employee/request/employee-change.request.dto";
 import { EmployeeExitUpdateRequestDto } from "@/dtos/employee/request/employee-exit-update.request.dto";
 
@@ -112,7 +112,7 @@ export const employeeExitUpdateRequest = async (
   dto: EmployeeExitUpdateRequestDto,
   accessToken: string
 ): Promise<ResponseDto<void>> => {
-  try{ 
+  try {
     const response = await axiosInstance.put(
       PUT_EMPLOYEE_STATUS_URL(employeeId),
       dto,

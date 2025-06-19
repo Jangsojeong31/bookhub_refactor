@@ -4,7 +4,7 @@ import {
   employeeSignUpApprovalRequest,
   employeeSignUpListeRequest,
 } from "@/apis/employee/employee";
-import { EmployeeSignUpListResponseDto } from "@/dtos/employee/response/employe-sign-up-list.response.dto copy";
+import { EmployeeSignUpListResponseDto } from "@/dtos/employee/response/employee-sign-up-list.response.dto copy";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 
@@ -124,7 +124,7 @@ function EmployeeSignUpApprovals() {
 
     setModalStatus(false);
   };
-  
+
   const modalContent: React.ReactNode = (
     <>
       <h1>거절 사유</h1>
@@ -132,9 +132,6 @@ function EmployeeSignUpApprovals() {
         <option value="">거절 사유 선택</option>
         <option value="INVALID_EMPLOYEE_INFO">사원 정보 불일치</option>
         <option value="ACCOUNT_ALREADY_EXISTS">이미 계정이 발급된 사원</option>
-        <option value="CONTRACT_EMPLOYEE_RESTRICTED">
-          계약직/기간제 사용 제한
-        </option>
         <option value="PENDING_RESIGNATION">퇴사 예정자</option>
       </select>
       <br />
@@ -148,9 +145,9 @@ function EmployeeSignUpApprovals() {
       <table>
         <thead>
           <tr>
-            <th>지점 명</th>
             <th>사원 번호</th>
-            <th>이름</th>
+            <th>사원 명</th>
+            <th>지점 명</th>
             <th>이메일</th>
             <th>전화 번호</th>
             <th>회원가입 날짜</th>
