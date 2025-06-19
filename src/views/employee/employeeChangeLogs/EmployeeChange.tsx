@@ -7,6 +7,7 @@ import Modal from "@/apis/constants/Modal";
 import {
   employeeChangeRequestDto,
   employeeDetailRequest,
+  employeeExitUpdateRequest,
   employeeRequest,
 } from "@/apis/employee/employee";
 import { Authority } from "@/dtos/authority/authority";
@@ -44,6 +45,7 @@ function EmployeeChange() {
   const [positions, setPositions] = useState<Position[]>([]);
   const [authorities, setAuthorities] = useState<Authority[]>([]);
   const [modalStatus, setModalStatus] = useState(false);
+  const [modalExitStatus, setModalExitStatus] = useState(false);
   const [employee, setEmployee] = useState<EmployeeDetailResponseDto>({
     employeeId: 0,
     employeeNumber: 0,
@@ -65,6 +67,11 @@ function EmployeeChange() {
     branchId: 0,
     positionId: 0,
     authorityId: 0,
+  });
+
+  const [exit, setExit] = useState({
+    status: "EMPLOYED",
+    exitReason: "",
   });
 
   const totalPages = Math.ceil(employeeList.length / ITEMS_PER_PAGE);
@@ -105,6 +112,13 @@ function EmployeeChange() {
     setSearchForm({ ...searchForm, [name]: value });
   };
 
+  const onExitReasonSelectChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setExit({ ...exit, [name]: value });
+  };
+
   const onEmployeeChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -137,7 +151,7 @@ function EmployeeChange() {
     currentPage * ITEMS_PER_PAGE
   );
 
-  const onOpenModalClick = async (employee: EmployeeListResponseDto) => {
+  const onOpenModalUpdateClick = async (employee: EmployeeListResponseDto) => {
     if (!token) {
       alert("인증 토큰이 없습니다.");
       return;
@@ -159,6 +173,33 @@ function EmployeeChange() {
     }
 
     setModalStatus(true);
+  };
+
+  const onOpenModalExitUpdateClick = async (
+    employee: EmployeeListResponseDto
+  ) => {
+    if (!token) {
+      alert("인증 토큰이 없습니다.");
+      return;
+    }
+
+    if (employee.status === "EXITED") {
+      alert("이미 퇴사 처리 되었습니다.");
+      return;
+    }
+
+    const response = await employeeDetailRequest(employee.employeeId, token);
+    const { code, message, data } = response;
+
+    if (code === "SU" && data) {
+      setEmployee(data);
+      setExit({ status: data.status, exitReason: "" });
+    } else {
+      setMessage(message);
+      return;
+    }
+
+    setModalExitStatus(true);
   };
 
   const onUpdateClick = async () => {
@@ -187,6 +228,39 @@ function EmployeeChange() {
     }
 
     setModalStatus(false);
+
+    onSearchClick();
+  };
+
+  const onExitUpdateClick = async () => {
+    if (!token) {
+      alert("인증 토큰이 없습니다.");
+      return;
+    }
+
+    if (exit.exitReason == "") {
+      alert("항목을 선택해주세요");
+      return;
+    }
+
+    const response = await employeeExitUpdateRequest(
+      employee.employeeId,
+      {
+        status: "EXITED",
+        exitReason: exit.exitReason,
+      },
+      token
+    );
+
+    const { code, message } = response;
+
+    if (code === "SU") {
+      alert(message);
+    } else {
+      alert("이미 퇴사 처리 되었습니다.");
+    }
+
+    setModalExitStatus(false);
 
     onSearchClick();
   };
@@ -248,7 +322,25 @@ function EmployeeChange() {
       <p>입사 일자: {new Date(employee.createdAt || "").toLocaleString()}</p>
 
       <button onClick={onUpdateClick}>수정</button>
-      <button>취소</button>
+    </>
+  );
+
+  const modalExitContent: React.ReactNode = (
+    <>
+      <h1>퇴직 처리</h1>
+      <select
+        name="exitReason"
+        value={exit.exitReason}
+        onChange={onExitReasonSelectChange}
+      >
+        <option value="">퇴직 사유를 선택하세요</option>
+        <option value="RETIREMENT">정년 퇴직</option>
+        <option value="VOLUNTEER">자진 퇴사</option>
+        <option value="FORCED">권고 사직</option>
+        <option value="TERMINATED">해고</option>
+      </select>
+      <br />
+      <button onClick={onExitUpdateClick}>퇴사</button>
     </>
   );
 
@@ -333,7 +425,8 @@ function EmployeeChange() {
             <th>직급</th>
             <th>권한</th>
             <th>상태</th>
-            <th>세부 사항</th>
+            <th>정보 수정</th>
+            <th>퇴사 처리</th>
           </tr>
         </thead>
         <tbody>
@@ -346,7 +439,14 @@ function EmployeeChange() {
               <td>{emp.authorityName}</td>
               <td>{emp.status === "EXITED" ? "퇴사" : "재직"}</td>
               <td>
-                <button onClick={() => onOpenModalClick(emp)}>세부 사항</button>
+                <button onClick={() => onOpenModalUpdateClick(emp)}>
+                  정보 수정
+                </button>
+              </td>
+              <td>
+                <button onClick={() => onOpenModalExitUpdateClick(emp)}>
+                  퇴사 처리
+                </button>
               </td>
             </tr>
           ))}
@@ -379,6 +479,13 @@ function EmployeeChange() {
           isOpen={modalStatus}
           onClose={() => setModalStatus(false)}
           children={modalContent}
+        />
+      )}
+      {modalExitStatus && (
+        <Modal
+          isOpen={modalExitStatus}
+          onClose={() => setModalExitStatus(false)}
+          children={modalExitContent}
         />
       )}
     </div>

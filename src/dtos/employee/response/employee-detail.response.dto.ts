@@ -5,8 +5,8 @@ export interface EmployeeDetailResponseDto {
   branchId: number;
   branchName: string;
   positionId: number;
-  positionName: string;
   authorityId: number;
+  positionName: string;
   authorityName: string;
   email: string;
   phoneNumber: string;
