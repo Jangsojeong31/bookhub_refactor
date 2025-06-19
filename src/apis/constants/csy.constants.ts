@@ -96,8 +96,20 @@ export const PUT_POLICY_URL = (PolicyId : number) => `${POLICY_URL_ADMIN}/${Poli
 //5) 이벤트 삭제
 export const DELETE_POLICY_URL = (PolicyId : number) => `${POLICY_URL_ADMIN}/${PolicyId}`;
 
-
-
+//&Stock
+export const STOCK_LOG_BASE_URL =  `${API_DOMAIN}/api/v1/${ADMIN}/stock-logs`;
+export const STOCK_LOGS_BY_BRANCH = (branchId: number) =>
+  `${STOCK_LOG_BASE_URL}/branch/${branchId}`;
+export const STOCK_LOGS_BY_TYPE = (branchId: number, type: string) =>
+  `${STOCK_LOG_BASE_URL}/branch/${branchId}/type?type=${type}`;
+export const STOCK_LOGS_BY_DATE = (branchId: number, start: string, end: string) =>
+  `${STOCK_LOG_BASE_URL}/branch/${branchId}/date?start=${start}&end=${end}`;
+export const STOCK_LOGS_BY_EMPLOYEE = (employeeId: number) =>
+  `${STOCK_LOG_BASE_URL}/employee/${employeeId}`;
+export const STOCK_LOGS_BY_BOOK = (branchId: number, bookIsbn: string) =>
+  `${STOCK_LOG_BASE_URL}/branch/${branchId}/book/${bookIsbn}`;
+export const STOCK_LOG_DETAIL = (stockLogId: number) =>
+  `${STOCK_LOG_BASE_URL}/${stockLogId}`;
 
 // & 그 외
 // 베이스 URL

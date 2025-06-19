@@ -20,6 +20,7 @@ import StockStatistics from "./views/statistics";
 import 'react-datepicker/dist/react-datepicker.css';
 import PolicyPage from "./views/policy/PolicyPage";
 import LocationPage from "./views/location/LocationPage";
+import StockLog from "./views/stock-logs";
 
 
 function App() {
@@ -59,6 +60,7 @@ function App() {
               <Route path="/publishers/*" element={<Publisher />} />
               <Route path="/policies/*" element={<PolicyPage />} />
              <Route path="/branch/:branchId/locations" element={<LocationPage />} />
+             <Route path="/stock-logs/*" element={<StockLog />} />
               {Main()}
               {/* {Alert()} */}
 
