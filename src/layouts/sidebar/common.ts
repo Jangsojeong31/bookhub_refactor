@@ -19,7 +19,7 @@ export const commonMenu: SidebarMenu[] = [
   {
     title: '진열위치 관리',
     submenu: [
-      { label: '진열위치 등록', path: '' },
+      { label: '진열위치 등록', path: '/branch/${branchId}/locations' },
       { label: '진열위치 조회', path: '' },
     ],
   },

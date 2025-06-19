@@ -6,4 +6,4 @@ function BookLocation() {
   )
 }
 
-export default BookLocation 
+export default BookLocation;

@@ -1,3 +1,6 @@
+//src/dtos/stock/StockLog.response.dto.ts
+
+
 import { StockActionType } from "@/apis/enums/StockActionType";
 
 export interface StockLogResponseDto{
