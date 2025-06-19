@@ -1,6 +1,9 @@
 import { GET_BRANCH_URL } from "@/apis";
 import Modal from "@/apis/constants/Modal";
-import { employeeDetailRequest, employeeRequest } from "@/apis/employee/employee";
+import {
+  employeeDetailRequest,
+  employeeRequest,
+} from "@/apis/employee/employee";
 import { EmployeeDetailResponseDto } from "@/dtos/employee/response/employee-detail.response.dto";
 import { EmployeeListResponseDto } from "@/dtos/employee/response/employee-list.response.dto";
 import React, { useEffect, useState } from "react";
@@ -69,7 +72,6 @@ function EmployeeSearch() {
 
     if (code === "SU" && data) {
       setEmployeeList(data);
-      console.log(employeeList);
       setMessage("");
     } else {
       setEmployeeList([]);
@@ -81,6 +83,18 @@ function EmployeeSearch() {
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
+
+  const onResetClick = () => {
+    setSearchForm({
+      name: "",
+      branchName: "",
+      positionName: "",
+      authorityName: "",
+      status: "",
+    });
+
+    setEmployeeList([]);
+  };
 
   const onOpenModalClick = async (employee: EmployeeListResponseDto) => {
     const token = cookies.accessToken;
@@ -113,8 +127,10 @@ function EmployeeSearch() {
       <p>권한 명: {employee?.authorityName}</p>
       <p>이메일: {employee?.email}</p>
       <p>전화 번호: {employee?.phoneNumber}</p>
-      <p>생년월일: {new Date(employee?.birthDate || "").toLocaleDateString()}</p> 
-      <p>재직 상태: {employee?.status === "EXITED"? "퇴사": "재직"}</p>
+      <p>
+        생년월일: {new Date(employee?.birthDate || "").toLocaleDateString()}
+      </p>
+      <p>재직 상태: {employee?.status === "EXITED" ? "퇴사" : "재직"}</p>
       <p>입사 일자: {new Date(employee?.createdAt || "").toLocaleString()}</p>
     </>
   );
@@ -184,6 +200,7 @@ function EmployeeSearch() {
         </select>
 
         <button onClick={onSearchClick}>검색</button>
+        <button onClick={onResetClick}>초기화</button>
       </div>
 
       {message && <p style={{ color: "red" }}>{message}</p>}
