@@ -2,6 +2,7 @@
 // # URL 상수 정의
 
 import { PurchaseOrderStatus } from "@/dtos/purchaseOrderApproval/request/purchaseOrder-approve.request.dto";
+import { GrUserAdmin } from "react-icons/gr";
 
 const API_DOMAIN = 'http://localhost:8080';
 
@@ -114,18 +115,17 @@ export const GET_PURCHASE_ORDER_APPROVAL_BY_DATE = (startDate: string, endDate: 
 
 // & 그 외
 // 베이스 URL
-const CUSTOMER_ORDER_MODULE_URL_ADMIN = `${API_DOMAIN}/api/v1/${ADMIN}/statistics`;
-const CUSTOMER_ORDER_MODULE_URL_MANAGER = `${API_DOMAIN}/api/v1/${MANAGER}/statistics`;
+const BEST_SELLER_API = `${API_DOMAIN}/api/v1/${MANAGER}/statistics/sales-quantity/bestseller`;
+const SALES_QUANTITY_API = `${API_DOMAIN}/api/v1/${ADMIN}/statistics/sales-quantity`;
 const CUSTOMER_ORDER_MODULE_URL_COMMON = `${API_DOMAIN}/api/v1/${COMMON}/statistics`;
 
-// 1) 베스트셀러 조회
-export const GET_BESTSELLER_URL = (startDate: Date, endDate: Date) => `${CUSTOMER_ORDER_MODULE_URL_COMMON}/best-seller?startDate=${startDate}&endDate=${endDate}`;
-
-// 2) 베스트셀러작가 조회
-export const GET_BESTSELLER_AUTHOR_URL = (startDate: Date, endDate: Date) => `${CUSTOMER_ORDER_MODULE_URL_COMMON}/best-seller?startDate=${startDate}&endDate=${endDate}`;
-
-// 3) 할인항목별 판매데이터 조회
-export const GET_CUSTOMER_ORDER_BY_DISCOUNT_URL = (policyId: number) => `${CUSTOMER_ORDER_MODULE_URL_ADMIN}/by-discount/${policyId}`;
-
-// 4) 지점별 판매데이터 조회
-export const GET_CUSTOMER_ORDER_BY_BRANCHID_URL = (branchId: number) => `${CUSTOMER_ORDER_MODULE_URL_MANAGER}/${branchId}`;
+// 총합 베스트셀러
+export const GET_TOP_100_BEST_SELLERS = `${BEST_SELLER_API}`;
+// 기간별 베스트셀러 - 일주일
+export const GET_WEEKLY_BEST_SELLERS = `${BEST_SELLER_API}/weekly`;
+// 기간별 베스트셀러 - 한달
+export const GET_MONTHLY_BEST_SELLERS = `${BEST_SELLER_API}/monthly`;
+// 기간별 베스트셀러 - 일년
+export const GET_YEARLY_BEST_SELLERS = `${BEST_SELLER_API}/yearly`;
+// 카테고리별 베스트셀러
+export const GET_BEST_SELLERS_BY_CATEGORY = (categoryName: string) => `${BEST_SELLER_API}/category?categoryName=${encodeURIComponent(categoryName)}`;

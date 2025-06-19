@@ -114,7 +114,7 @@ function CreateAuthor() {
         key="/author/create"
         style={({isActive}) => ({
           backgroundColor: isActive? 'blue' : 'lightgray',
-          padding: '10px 20xp',
+          padding: '10px 20px',
           margin: '10px 10px'
         })}>
         등록
@@ -125,7 +125,7 @@ function CreateAuthor() {
         key="/author/else"
         style={({isActive}) => ({
           backgroundColor: isActive? 'blue' : 'lightgray',
-          padding: '10px 20xp',
+          padding: '10px 20px',
           margin: '10px 10px'
         })}>
         조회 / 수정 / 삭제
@@ -146,7 +146,7 @@ function CreateAuthor() {
         value={form.authorEmail}
         onChange={onInputChange}
         />
-      <button onClick={onAddAuthor}>추가</button>
+      <button onClick={onAddAuthor}>+</button>
       {message && <p>{message}</p>}
       <table>
         <thead>

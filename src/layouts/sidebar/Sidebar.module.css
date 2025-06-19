@@ -66,9 +66,9 @@
 }
  */
 
- .sidebar {
+.sidebar {
   position: relative;
-  width: 200px;
+  width: 230px;
   height: calc(100vh - 40px);
   margin: 20px 0 20px 20px;
   border-radius: 12px;
