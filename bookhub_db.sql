@@ -131,7 +131,7 @@ CREATE TABLE IF NOT EXISTS `employee_exit_logs` (
 	FOREIGN KEY (authorizer_id)
       REFERENCES employees(employee_id),
     CONSTRAINT chk_exit_reason
-      CHECK (exit_reason IN ('VOLUNTEER', 'FORCED', 'TERMINATED')) 
+      CHECK (exit_reason IN ('VOLUNTEER', 'FORCED', 'TERMINATED', 'RETIREMENT')) 
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 
