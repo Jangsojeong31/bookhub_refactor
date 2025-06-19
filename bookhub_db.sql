@@ -122,14 +122,17 @@ CREATE TABLE IF NOT EXISTS `employee_change_logs` (
 CREATE TABLE IF NOT EXISTS `employee_exit_logs` (
     exit_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     employee_id BIGINT NOT NULL,
+    applied_at DATETIME not null,
+    authorizer_id BIGINT NOT NULL,
     exit_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     exit_reason VARCHAR(25) NOT NULL,
     FOREIGN KEY (employee_id)
       REFERENCES employees(employee_id),
+	FOREIGN KEY (authorizer_id)
+      REFERENCES employees(employee_id),
     CONSTRAINT chk_exit_reason
       CHECK (exit_reason IN ('VOLUNTEER', 'FORCED', 'TERMINATED')) 
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-# 익명화: status = 'EXITED'이고 exit_at >= 3년 전인 경우 트리거 또는 배치 처리로 자동화 가능
 
 
 -- ===============================
