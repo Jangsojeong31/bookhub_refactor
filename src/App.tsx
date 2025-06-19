@@ -19,6 +19,7 @@ import Reception from "./views/reception";
 import StockStatistics from "./views/statistics";
 import 'react-datepicker/dist/react-datepicker.css';
 import PolicyPage from "./views/policy/PolicyPage";
+import LocationPage from "./views/location/LocationPage";
 
 
 function App() {
@@ -57,6 +58,7 @@ function App() {
 
               <Route path="/publishers/*" element={<Publisher />} />
               <Route path="/policies/*" element={<PolicyPage />} />
+             <Route path="/branch/:branchId/locations" element={<LocationPage />} />
               {Main()}
               {/* {Alert()} */}
 

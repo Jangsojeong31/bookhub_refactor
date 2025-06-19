@@ -29,22 +29,50 @@ export const PUT_PUBLISHER_URL = (publisherId: number) => `${PUBLISHER_MODULE_UR
 export const DELETE_PUBLISHER_URL = (publisherId: number) => `${PUBLISHER_MODULE_URL}/${publisherId}`;
 
 
-// & 2.book_display_locations
-// 베이스 URL
-const LOCATION_URL_MANAGER = `${API_DOMAIN}/api/v1/${MANAGER}/{books}/{branchId}`;
-const LOCATION_URL_COMMON = `${API_DOMAIN}/api/v1/${COMMON}/{books}/{branchId}`;
+// // & 2.book_display_locations
 
-// 1) 지점별 진열위치 등록
-export const POST_LOCATION_URL = `${LOCATION_URL_MANAGER}`;
+// const LOCATION_BRANCH_MANAGER = `${API_DOMAIN}/api/v1/${MANAGER}/branch`
+// const LOCATION_BRANCH_COMMON = `${API_DOMAIN}/api/v1/${COMMON}/branch`
+// // 베이스 URL
+// const LOCATION_URL_MANAGER = (branchId: number) => `${LOCATION_BRANCH_MANAGER}/${branchId}/locations`;
+// const LOCATION_URL_COMMON = (branchId: number) => `${LOCATION_BRANCH_COMMON}/${branchId}/locations`;
 
-// 2) 지점별 진열위치 조회
-export const GET_LOCATION_URL = `${LOCATION_URL_COMMON}`;
+// // 1) 지점별 진열위치 등록
+// export const POST_LOCATION_URL = `${LOCATION_URL_MANAGER}`;
 
-// 3) 지점별 진열위치 수정
-export const PUT_LOCATION_URL = (LocationId: number) => `${LOCATION_URL_MANAGER}/${LocationId}`;
+// // 2) 지점별 진열위치 조회
+// export const GET_All_LOCATIONS_URL = `${LOCATION_URL_COMMON}`;
+// //3)지점별 진열위치 단건조회
+// export const GET_LOCATION_URL = (LocationId: number) =>`${LOCATION_URL_COMMON}/${LocationId}`;
 
-// 4) 지점별 진열위치 삭제
-export const DELETE_LOCATION_URL = (LocationId: number) => `${LOCATION_URL_MANAGER}/${LocationId}`;
+// // 3) 지점별 진열위치 수정
+// export const PUT_LOCATION_URL = (LocationId: number) => `${LOCATION_URL_MANAGER}/${LocationId}`;
+
+// // 4) 지점별 진열위치 삭제
+// export const DELETE_LOCATION_URL = (LocationId: number) => `${LOCATION_URL_MANAGER}/${LocationId}`;
+// 공통·관리자 공통 도메인
+const LOCATION_BRANCH_MANAGER = `${API_DOMAIN}/api/v1/${MANAGER}/branch`
+const LOCATION_BRANCH_COMMON  = `${API_DOMAIN}/api/v1/${COMMON}/branch`
+
+// 1) 지점별 진열위치 등록 (POST)
+export const POST_LOCATION_URL = (branchId: number) =>
+  `${LOCATION_BRANCH_MANAGER}/${branchId}/locations`
+
+// 2) 지점별 진열위치 전체 조회 (GET 리스트)
+export const GET_ALL_LOCATIONS_URL = (branchId: number) =>
+  `${LOCATION_BRANCH_COMMON}/${branchId}/locations`
+
+// 3) 지점별 진열위치 단건 조회 (GET 상세)
+export const GET_LOCATION_URL = (branchId: number, locationId: number) =>
+  `${LOCATION_BRANCH_COMMON}/${branchId}/locations/${locationId}`
+
+// 4) 지점별 진열위치 수정 (PUT)
+export const PUT_LOCATION_URL = (branchId: number, locationId: number) =>
+  `${LOCATION_BRANCH_MANAGER}/${branchId}/locations/${locationId}`
+
+// 5) 지점별 진열위치 삭제 (DELETE)
+export const DELETE_LOCATION_URL = (branchId: number, locationId: number) =>
+  `${LOCATION_BRANCH_MANAGER}/${branchId}/locations/${locationId}`
 
 
 
