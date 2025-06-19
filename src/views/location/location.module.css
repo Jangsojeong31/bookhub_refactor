@@ -1,0 +1,82 @@
+.container {
+  padding: 20px;
+}
+.toolbar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table th, .table td {
+  padding: 8px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+.type {
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: #2b5480;
+  color: #fff;
+}
+.modalBackdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal {
+  background: #fff;
+  padding: 20px;
+  border-radius: 6px;
+  width: 400px;
+}
+.modal label {
+  display: block;
+  margin-top: 10px;
+}
+.modal input {
+  width: 100%;
+  padding: 6px;
+  margin-top: 4px;
+  box-sizing: border-box;
+}
+/* 버튼 그룹 */
+.buttons {
+  margin-top: 20px;
+  text-align: right;
+}
+
+/* 기본 버튼 스타일 */
+.buttons button {
+  padding: 6px 20px;
+  border: none;
+  border-radius: 8px;
+  margin-left: 8px;
+  font-weight: 600;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+  outline: none;
+}
+
+/* 수정 버튼: 초록 */
+.buttons .edit {
+  background-color: #30c772;
+}
+.buttons .edit:hover {
+  background-color: #259b56;
+}
+
+/* 삭제 버튼: 빨강 */
+.buttons .delete {
+  background-color: #ea4646;
+}
+.buttons .delete:hover {
+  background-color: #b63030;
+}
