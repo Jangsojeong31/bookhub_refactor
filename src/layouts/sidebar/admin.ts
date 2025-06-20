@@ -34,8 +34,8 @@ export const adminMenu: SidebarMenu[] = [
       { label: '사원정보 수정', path: '/employees/edit' },
       { label: '사원 정보 조회', path: '/employees' },
       { label: '퇴사자 로그 조회', path: '/employees/retired/logs' },
-      { label: '회원정보 로그 조회', path: '/members/logs' },
-      { label: '회원가입승인 로그 조회', path: '/members/approval/logs' },
+      { label: '회원정보 로그 조회', path: '/employees/logs' },
+      { label: '회원가입승인 로그 조회', path: '/employees/approval/logs' },
     ],
   },
   {

@@ -43,7 +43,7 @@ export const EMPLOYEE_UPDATE_URL = `${AUTH_MODULE_URL}/employees/approve`;
 const ADMIN_MODULE_URL = `${API_DOMAIN}/api/v1/${ADMIN}`;
 
 //? 지점 관련 기능
-const BRANCH_MODULE_URL = `${ADMIN_MODULE_URL}/ branches`;
+const BRANCH_MODULE_URL = `${ADMIN_MODULE_URL}/branches`;
 
 // 1) 지점 등록
 export const POST_BRANCH_URL = `${BRANCH_MODULE_URL}`;
@@ -51,11 +51,15 @@ export const POST_BRANCH_URL = `${BRANCH_MODULE_URL}`;
 // 2) 지점 조회
 export const GET_BRANCH_URL = `${AUTH_MODULE_URL}/branches`;
 
-// 3) 지점 수정
+// 3) 단건 조회
+export const GET_BRANCH_DETAIL_URL = (branchId: number) =>
+  `${BRANCH_MODULE_URL}/${branchId}`;
+
+// 4) 지점 수정
 export const PUT_BRANCH_URL = (branchId: number) =>
   `${BRANCH_MODULE_URL}/${branchId}`;
 
-// 4) 지점 삭제
+// 5) 지점 삭제
 export const DELETE_BRANCH_URL = (branchId: number) =>
   `${BRANCH_MODULE_URL}/${branchId}`;
 

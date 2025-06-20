@@ -8,7 +8,6 @@ import Main from "./views/main";
 import Alert from "./views/alert";
 import Auth from "./views/auth";
 import Author from "./views/author";
-import Branch from "./views/branch/Branch";
 import Book from "./views/book";
 import Category from "./views/category";
 import Employee from "./views/employee";
@@ -23,7 +22,11 @@ import SalesQuantityStatistics from "./views/statistics/salesQuantity-statistics
 import LocationPage from "./views/location/LocationPage";
 import StockLog from "./views/stock-logs";
 import Revenue from "./views/statistics/revenue";
+
 import StockStatistics from "./views/statistics/stockstatistics";
+
+import Branch from "./views/branch";
+
 
 
 
@@ -76,8 +79,8 @@ function App() {
               {/* {Publisher()} */}
 
               {Book()}
-              {/* {Branch()}
-              {BookLocation()*/}
+              {Branch()}
+              {/* {BookLocation() */}
               {Category()}
               {Reception()}
               {/*Policy()}
