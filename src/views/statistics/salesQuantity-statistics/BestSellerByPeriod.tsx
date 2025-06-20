@@ -95,9 +95,18 @@ function BestSellerByPeriod() {
 
   return (
     <div>
-      <button onClick={onWeeklyBestSellers}>주간 베스트셀러</button>
-      <button onClick={onMonthlyBestSellers}>월간 베스트셀러</button>
-      <button onClick={onYearlyBestSellers}>연간 베스트셀러</button>
+      <button 
+        className='searchAll'
+        style={{ 'backgroundColor': '#2b5480'}}
+        onClick={onWeeklyBestSellers}>주간 베스트셀러</button>
+      <button
+        className='searchAll'
+        style={{ 'backgroundColor': '#2b5480'}}
+        onClick={onMonthlyBestSellers}>월간 베스트셀러</button>
+      <button 
+        className='searchAll'
+        style={{ 'backgroundColor': '#2b5480'}}
+        onClick={onYearlyBestSellers}>연간 베스트셀러</button>
       {bestSeller && (
           <table>
             <thead>

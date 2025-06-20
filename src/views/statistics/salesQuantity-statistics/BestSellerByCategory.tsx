@@ -9,11 +9,12 @@ function BestSellerByCategory() {
   const [bestSeller, setBestSeller] = useState<BestSellerResponseDto[]>([]);
   const [cookies] = useCookies(["accessToken"]);
   const [topCategory, setTopCategory] = useState<"DOMESTIC" | "FOREIGN">("DOMESTIC");
-  const [bottomCategory, setBottomCategory] = useState("");
+  const [bottomCategoryId, setBottomCategoryId] = useState("");
   const [categoryList, setCategoryList] = useState<CategoryTreeResponseDto[]>([]);
   
   const token = cookies.accessToken;
 
+  // 상위 카테고리 선택하면 하위 카테고리 리스트 불러옴
   useEffect(() => {
     const fetchBottomCategory = async() => {
       const response = await getCategoryTree(topCategory, cookies.accessToken);
@@ -26,11 +27,7 @@ function BestSellerByCategory() {
     
       if (Array.isArray(data)) {
         setCategoryList(data);
-        if (data.length > 0) {
-          setBottomCategory(data[0].categoryName);
-        } else {
-          setBottomCategory("");
-        }
+        setBottomCategoryId("");
       } else {
         alert('잘못된 접근입니다.')
       }
@@ -48,7 +45,7 @@ function BestSellerByCategory() {
         return
       }
 
-      const response = await getBestSellersByCategory(bottomCategory, token);
+      const response = await getBestSellersByCategory(Number(bottomCategoryId), token);
       const {code, message, data} = response; 
 
       if(!code) {
@@ -66,25 +63,24 @@ function BestSellerByCategory() {
 
     fetchDataByCategory();
 
-  }, [bottomCategory]);
+  }, [bottomCategoryId]);
 
-  // 상위 카테고리 선택 (국내 / 해외) -> 하위 카테고리 리스트 불러옴
+  // 상위 카테고리 선택 핸들러 (국내 / 해외)
   const handleTopCategoryChange = async(event: React.ChangeEvent<HTMLSelectElement>) => {
     setTopCategory(event.target.value as 'DOMESTIC' | 'FOREIGN');
-
   };
 
-  // 하위 카테고리 선택
+  // 하위 카테고리 선택 핸들러
   const handleBottomCategoryChange = async(event: React.ChangeEvent<HTMLSelectElement>) => {
-    setBottomCategory(event.target.value)
+    setBottomCategoryId(event.target.value);
   };
 
   // 하위 카테고리 옵션 렌더링
   const categoryOption = categoryList.map((category, index) => {
     return (
-      <option key={index} value={category.categoryName}>
+      <option key={index} value={category.categoryId}>
         {category.categoryName}
-        </option>
+      </option>
     )
   })
 
@@ -114,12 +110,12 @@ function BestSellerByCategory() {
         <option value="FOREIGN">해외 도서</option>
       </select>
 
-      <p>하위분류</p>
-      <select id="bottomCategory" value={bottomCategory} onChange={handleBottomCategoryChange}>
+      <p>하위 카테고리</p>
+      <select id="bottomCategory" value={bottomCategoryId} onChange={handleBottomCategoryChange}>
+        {/* <option value="ALL">전체</option> */}
+        <option value="" disabled hidden>하위 카테고리를 선택해주세요</option>
         {categoryOption}
       </select>
-
-      <p>{topCategory} ▷ {bottomCategory}</p>
 
       {bestSeller && (
         <table>
