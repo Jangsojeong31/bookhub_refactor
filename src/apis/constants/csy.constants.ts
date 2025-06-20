@@ -114,12 +114,28 @@ export const STOCK_LOG_DETAIL = (stockLogId: number) =>
 // & 그 외
 // 통계 베이스 URL
 const STATISTICS_BASE_URL_ADMIN = `${API_DOMAIN}/api/v1/${ADMIN}/statistics`;
-const STATISTICS_BASE_URL_MANAGER = `${API_DOMAIN}/api/v1/${MANAGER}/statistics`;
-const STATISTICS_BASE_URL_COMMON = `${API_DOMAIN}/api/v1/${COMMON}/statistics`;
 
-//매출(Revenue) 통계 URL
+//*매출(Revenue) 통계 URL
 export const REVENUE_STATISTICS_BASE_URL = `${STATISTICS_BASE_URL_ADMIN}/revenue`
 
 //1) 요일별 매출 통계(전체)
 export const REVENUE_STATISTICS_WEEKDAY_URL = `${REVENUE_STATISTICS_BASE_URL}/weekday`
+//2) 주간 매출 통계
+export const REVENUE_STATISTICS_WEEKLY_URL = `${REVENUE_STATISTICS_BASE_URL}/weekly`
+//3) 월별 매출 통계 
+export const REVENUE_STATISTICS_MONTHLY_URL = `${REVENUE_STATISTICS_BASE_URL}/monthly`
+//4) 지점별 매출 통계
+export const REVENUE_STATISTICS_BRANCH_URL = `${REVENUE_STATISTICS_BASE_URL}/branch`
+
+//*Stock(Stock) 통계 URL
+export const STOCK_STATISTICS_BASE_URL = `${STATISTICS_BASE_URL_ADMIN}/stocks`
+
+//1)재고가 0인거의 통계
+export const STOCK_STATISTICS_ZERO_URL = `${STOCK_STATISTICS_BASE_URL}/zero`
+//2)지점별 in out loss
+export const STOCK_STATISTICS_BRANCH_URL = `${STOCK_STATISTICS_BASE_URL}/branch`
+//3)해당 년의 입고량 추이
+export const STOCK_STATISTICS_TIME_URL = `${STOCK_STATISTICS_BASE_URL}/time`
+//4)카테고리별 파이차트
+export const STOCK_STATISTICS_CATEGORY_URL = `${STOCK_STATISTICS_BASE_URL}/category`
 
