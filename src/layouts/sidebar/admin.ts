@@ -46,6 +46,12 @@ export const adminMenu: SidebarMenu[] = [
     ],
   },
   {
+    title: '수령 확인 관리',
+    submenu: [
+      { label: '수령 확인 내역', path: '/reception/logs' },
+    ],
+  },
+  {
     title: '판매 통계',
     submenu: [
       { label: '주간 판매 통계', path: '/stats/weekly' },

@@ -73,12 +73,17 @@ const RECEPTION_MANAGER_MODULE_URL = `${API_DOMAIN}/api/v1/manager/reception`;
 
 //? 수령 승인 관련 기능
 
-// 수령 승인 / 수령 취소
-export const POST_RECEPTION_URL = (purchaseOrderApprovalId : number) => `${RECEPTION_MANAGER_MODULE_URL}/${purchaseOrderApprovalId}`;
+// 수령 확인 (지점 관리자가 확인 버튼 누를 시)
+export const PUT_RECEPTION_URL = (purchaseOrderApprovalId : number) => `${RECEPTION_MANAGER_MODULE_URL}/approve/${purchaseOrderApprovalId}`;
 
-// 수령 승인 로그 조회
-export const GET_RECEPTION_URL = `${RECEPTION_ADMIN_MODULE_URL}`;
-// /${조회 기준} : bookReceptionApprovalId, employeeId, branchId, purchaseOrderApproalId, isReceptionApproved, receptionDateAt
+// 수령 대기 목록 조회(지점 관리자 전용)
+export const GET_PENDING_RECEPTION_URL = `${RECEPTION_MANAGER_MODULE_URL}/pending`;
+
+// 수령 완료 목록 조회(지점 관리자)
+export const GET_CONFIRMED_RECEPTION_URL = `${RECEPTION_MANAGER_MODULE_URL}/confirmed`
+
+// 관리자가 수령 승인 내역 조회(모든 지점)
+export const GET_ADMIN_RECEPTION_URL = `${RECEPTION_ADMIN_MODULE_URL}/logs`;
 
 //! 5. 알람 관련 요청 베이스 URL
 const ALERT_COMMON_MODULE_URL = `${API_DOMAIN}/api/v1/common/alerts`;

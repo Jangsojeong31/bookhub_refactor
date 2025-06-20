@@ -1,8 +1,15 @@
-import React from 'react'
+import { Route } from "react-router-dom"
+import ReceptionConfirm from "./ReceptionConfirm"
+import ReceptionPending from "./ReceptionPending"
+import AdminReceptionList from "./AdminReceptionList"
 
 function Reception() {
   return (
-    <div>index</div>
+    <>
+      <Route path="/reception/confirmed" element={<ReceptionConfirm />} />
+      <Route path="/reception/pending" element={<ReceptionPending />} />
+      <Route path="/reception/logs" element={<AdminReceptionList />} />
+    </>
   )
 }
 

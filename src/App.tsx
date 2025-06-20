@@ -77,9 +77,9 @@ function App() {
               {/* {Branch()}
               {BookLocation()*/}
               {Category()}
+              {Reception()}
               {/*Policy()}
               {Publisher()}
-              {Reception()}
               {Reception()}
               {StockStatistics()}
               {Stocks()} */}

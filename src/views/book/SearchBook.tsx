@@ -76,6 +76,7 @@ function SearchBook() {
               <th>카테고리</th>
               <th>출판사</th>
               <th>가격</th>
+              <th>출판일</th>
               <th>페이지 수</th>
               <th>언어</th>
               <th>판매상태</th>
@@ -102,6 +103,7 @@ function SearchBook() {
                 <td>{book.categoryName}</td>
                 <td>{book.publisherName}</td>
                 <td>{book.bookPrice.toLocaleString()}원</td>
+                <td>{new Date(book.publishedDate).toISOString().slice(0, 10)}</td>
                 <td>{book.pageCount}</td>
                 <td>{book.language}</td>
                 <td>{book.bookStatus}</td>
