@@ -62,8 +62,6 @@ function ApprovePurchaseOrder() {
         <td>{purchaseOrder.purchaseOrderStatus == PurchaseOrderStatus.REQUESTED ? '요청중' : purchaseOrder.purchaseOrderStatus === PurchaseOrderStatus.APPROVED ? '승인' : '거부'}</td>
         <td><button onClick={() => onPurchaseOrderApproveClick(purchaseOrder.purchaseOrderId)} >승인</button></td>
         <td><button onClick={() => onPurchaseOrderRejectClick(purchaseOrder.purchaseOrderId)} >승인 거부</button></td>
-        
-
         {/* <td>{purchaseOrder.purchaseOrderDateAt}</td> */} 
       </tr>
     )
@@ -127,7 +125,7 @@ function ApprovePurchaseOrder() {
 
   return (
     <div>
-      <button onClick={onGetAllPurchaseOrdersRequested}>발주 요청서 업데이트</button>
+      <button className='searchAll' onClick={onGetAllPurchaseOrdersRequested}>발주 요청서 업데이트</button>
       {purchaseOrders && (
           <table>
             <thead>

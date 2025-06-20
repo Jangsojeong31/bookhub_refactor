@@ -128,4 +128,10 @@ export const GET_MONTHLY_BEST_SELLERS = `${BEST_SELLER_API}/monthly`;
 // 기간별 베스트셀러 - 일년
 export const GET_YEARLY_BEST_SELLERS = `${BEST_SELLER_API}/yearly`;
 // 카테고리별 베스트셀러
-export const GET_BEST_SELLERS_BY_CATEGORY = (categoryName: string) => `${BEST_SELLER_API}/category?categoryName=${encodeURIComponent(categoryName)}`;
+export const GET_BEST_SELLERS_BY_CATEGORY = (categoryId: number) => `${BEST_SELLER_API}/category/${categoryId}`;
+
+// 판매량 차트
+// 지점별
+export const GET_SALES_QUANTITY_BY_BRANCH = `${SALES_QUANTITY_API}/branch`;
+// 할인항목별
+export const GET_SALES_QUANTITY_BY_DISCOUNT_POLICY = `${SALES_QUANTITY_API}/discount-policy;`

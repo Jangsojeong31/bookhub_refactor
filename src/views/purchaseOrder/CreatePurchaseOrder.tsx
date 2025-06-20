@@ -153,7 +153,10 @@ function CreatePurchaseOrder() {
         value={form.purchaseOrderAmount}
         onChange={onInputChange}
         />
-        <button onClick={onAddPurchaseOrder}>추가</button>
+        <button 
+        className='searchAll'
+        style={{ 'backgroundColor': '#2b5480'}}
+        onClick={onAddPurchaseOrder}>+</button>
         <table>
           <thead>
             <tr>
@@ -165,7 +168,9 @@ function CreatePurchaseOrder() {
             {reqeustPurchaseOrderList}
           </tbody>
         </table>
-        <button onClick={onCreatePurchaseOrderClick}>등록</button>
+        <button 
+          
+        onClick={onCreatePurchaseOrderClick}>등록</button>
         <br />
         
       {modalStatus &&

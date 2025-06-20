@@ -54,7 +54,7 @@ export const adminMenu: SidebarMenu[] = [
   {
     title: '판매 통계',
     submenu: [
-      { label: '주간 판매 통계', path: '/stats/weekly' },
+      { label: '주간 판매 통계', path: '/sales-quantity/branch' },
       { label: '월간 판매 통계', path: '/stats/monthly' },
       { label: '연간 판매 통계', path: '/stats/yearly' },
       { label: '할인항목별 판매 통계', path: '/stats/by-discount' },
