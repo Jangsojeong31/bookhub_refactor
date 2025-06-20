@@ -33,8 +33,8 @@ export const commonMenu: SidebarMenu[] = [
   {
     title: '수령 하기',
     submenu: [
-      { label: '수령 일자 확인[조회]', path: '' },
-      { label: '수령 확인[수령확인하는 페이지]', path: '' },
+      { label: '수령 내역 조회', path: 'reception/confirmed' },
+      { label: '수령 확인', path: 'reception/pending' },
     ],
   },
   {
