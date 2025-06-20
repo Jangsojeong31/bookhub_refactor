@@ -1,4 +1,9 @@
-import { branchCreateRequest, branchSearchRequest } from "@/apis/branch/branch";
+import {
+  branchCreateRequest,
+  branchDetailRequest,
+  branchSearchRequest,
+  branchUpdateRequest,
+} from "@/apis/branch/branch";
 import Modal from "@/apis/constants/Modal";
 import { BranchSearchResponseDto } from "@/dtos/branch/response/branch-search.respnse.dto";
 import React, { useState } from "react";
@@ -11,13 +16,20 @@ function CreateBranch() {
   const token = cookies.accessToken;
   const [searchForm, setSearchForm] = useState({ branchLocation: "" });
   const [branchList, setBranchList] = useState<BranchSearchResponseDto[]>([]);
+  const [branchDetail, setBranchDetail] = useState({
+    branchId: 0,
+    branchName: "",
+    branchLocation: "",
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(branchList.length / ITEMS_PAGE);
   const [createBranch, setCreateBranch] = useState({
     branchName: "",
     branchLocation: "",
   });
+
   const [modalStatus, setModalStatus] = useState(false);
+  const [modalUpdateStatus, setModalUpdateStatus] = useState(false);
 
   const onInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -31,6 +43,13 @@ function CreateBranch() {
   ) => {
     const { name, value } = e.target;
     setCreateBranch({ ...createBranch, [name]: value });
+  };
+
+  const onUpdateInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setBranchDetail({ ...branchDetail, [name]: value });
   };
 
   const onSearchClick = async () => {
@@ -111,6 +130,67 @@ function CreateBranch() {
     </>
   );
 
+  const onOpenUpdateModal = async (branch: BranchSearchResponseDto) => {
+    if (!token) {
+      alert("인증 토큰이 없습니다.");
+      return;
+    }
+
+    const response = await branchDetailRequest(branch.branchId, token);
+    const { code, message, data } = response;
+
+    if (code === "SU" && data) {
+      setBranchDetail(data);
+    } else {
+      alert(message);
+      return;
+    }
+    setModalUpdateStatus(true);
+  };
+  
+  const modalUpdateContent = (
+    <>
+      <h2>지점 수정</h2>
+      <input
+        type="text"
+        name="branchName"
+        value={branchDetail.branchName}
+        placeholder="지점 명"
+        onChange={onUpdateInputChange}
+        />
+      <br />
+      <input
+        type="text"
+        name="branchLocation"
+        value={branchDetail.branchLocation}
+        placeholder="지점 위치"
+        onChange={onUpdateInputChange}
+        />
+      <br />
+      <button onClick={() => onUpdateClick(branchDetail.branchId)}>수정</button>
+    </>
+  );
+  
+  const onUpdateClick = async (branchId: number) => {
+    if (!token) {
+      alert("인증 토큰이 없습니다.");
+      return;
+    }
+    
+    const response = await branchUpdateRequest(branchId, branchDetail, token);
+    const { code, message } = response;
+    
+    if (code === "SU") {
+      alert("지점이 수정되었습니다.");
+    } else {
+      alert(message);
+      return;
+    }
+    
+    setModalUpdateStatus(false);
+    onSearchClick();
+  };
+
   return (
     <div>
       <div>
@@ -144,7 +224,7 @@ function CreateBranch() {
               <td>{branch.branchLocation}</td>
               <td>{new Date(branch.createdAt).toLocaleString()}</td>
               <td>
-                <button>수정</button>
+                <button onClick={() => onOpenUpdateModal(branch)}>수정</button>
               </td>
               <td>
                 <button>삭제</button>
@@ -179,6 +259,13 @@ function CreateBranch() {
           isOpen={modalStatus}
           onClose={() => setModalStatus(false)}
           children={modalContent}
+        />
+      )}
+      {modalUpdateStatus && (
+        <Modal
+          isOpen={modalUpdateStatus}
+          onClose={() => setModalUpdateStatus(false)}
+          children={modalUpdateContent}
         />
       )}
     </div>
