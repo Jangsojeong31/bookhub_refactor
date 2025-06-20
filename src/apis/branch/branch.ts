@@ -6,8 +6,9 @@ import {
   responseErrorHandler,
   responseSuccessHandler,
 } from "../axiosConfig";
-import { GET_BRANCH_URL } from "../constants/khj.constants";
+import { GET_BRANCH_URL, POST_BRANCH_URL } from "../constants/khj.constants";
 import { AxiosError } from "axios";
+import { BranchCreateRequestDto } from "@/dtos/branch/request/branch-create.request.dto";
 
 interface searchParams {
   branchLocation: string;
@@ -22,6 +23,22 @@ export const branchSearchRequest = async (
       params,
       ...bearerAuthorization(accessToken),
     });
+    return responseSuccessHandler(response);
+  } catch (error) {
+    return responseErrorHandler(error as AxiosError<ResponseDto>);
+  }
+};
+
+export const branchCreateRequest = async (
+  dto: BranchCreateRequestDto,
+  accessToken: string
+): Promise<ResponseDto<void>> => {
+  try {
+    const response = await axiosInstance.post(
+      POST_BRANCH_URL,
+      dto,
+      bearerAuthorization(accessToken)
+    );
     return responseSuccessHandler(response);
   } catch (error) {
     return responseErrorHandler(error as AxiosError<ResponseDto>);
