@@ -43,7 +43,7 @@ export const EMPLOYEE_UPDATE_URL = `${AUTH_MODULE_URL}/employees/approve`;
 const ADMIN_MODULE_URL = `${API_DOMAIN}/api/v1/${ADMIN}`;
 
 //? 지점 관련 기능
-const BRANCH_MODULE_URL = `${ADMIN_MODULE_URL}/ branches`;
+const BRANCH_MODULE_URL = `${ADMIN_MODULE_URL}/branches`;
 
 // 1) 지점 등록
 export const POST_BRANCH_URL = `${BRANCH_MODULE_URL}`;
