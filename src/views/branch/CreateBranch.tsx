@@ -214,7 +214,6 @@ function CreateBranch() {
             <th>지점 주소</th>
             <th>등록 일자</th>
             <th>지점 수정</th>
-            <th>지점 삭제</th>
           </tr>
         </thead>
         <tbody>
@@ -225,9 +224,6 @@ function CreateBranch() {
               <td>{new Date(branch.createdAt).toLocaleString()}</td>
               <td>
                 <button onClick={() => onOpenUpdateModal(branch)}>수정</button>
-              </td>
-              <td>
-                <button>삭제</button>
               </td>
             </tr>
           ))}
