@@ -26,6 +26,7 @@ import Revenue from "./views/statistics/revenue";
 import StockStatistics from "./views/statistics/stockstatistics";
 
 import Branch from "./views/branch";
+import AlertPage from "./views/alert/AlertPage";
 
 
 
@@ -65,13 +66,14 @@ function App() {
             <Routes>
               <Route path = "/" element={<Navigate to = "/main"/>}/>
               {/* <Route path="/publishers" element={<Publisher />} /> */}
+              <Route path="/alerts/*" element={<AlertPage />} />
 
               <Route path="/publishers/*" element={<Publisher />} />
               <Route path="/policies/*" element={<PolicyPage />} />
-             <Route path="/branch/:branchId/locations" element={<LocationPage />} />
-             <Route path="/stock-logs/*" element={<StockLog />} />
-             <Route path="/statistics/revenue/*" element={<Revenue />} />
-             <Route path="/statistics/stocks/*" element={<StockStatistics />} />
+              <Route path="/branch/:branchId/locations" element={<LocationPage />} />
+              <Route path="/stock-logs/*" element={<StockLog />} />
+              <Route path="/statistics/revenue/*" element={<Revenue />} />
+              <Route path="/statistics/stocks/*" element={<StockStatistics />} />
               {Main()}
               {/* {Alert()} */}
 
@@ -85,7 +87,6 @@ function App() {
               {Reception()}
               {/*Policy()}
               {Publisher()}
-              {Reception()}
               {StockStatistics()}
               {Stocks()} */}
               {Author()}
