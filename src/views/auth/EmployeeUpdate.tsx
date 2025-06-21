@@ -94,7 +94,7 @@ const EmployeeUpdate = () => {
   };
 
   useEffect(() => {
-    fetch(`${GET_BRANCH_URL}?branchLocation=전체`, {
+    fetch(`${GET_BRANCH_URL}?branchLocation`, {
       method: "GET",
     })
       .then((res) => res.json())

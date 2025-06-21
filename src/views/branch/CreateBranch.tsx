@@ -84,6 +84,11 @@ function CreateBranch() {
       alert("인증 토큰이 없습니다.");
       return;
     }
+    
+    setCreateBranch({
+      branchName: "",
+      branchLocation: ""
+    })
 
     setModalStatus(true);
   };

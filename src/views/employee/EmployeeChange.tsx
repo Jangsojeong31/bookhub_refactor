@@ -77,7 +77,7 @@ function EmployeeChange() {
   const totalPages = Math.ceil(employeeList.length / ITEMS_PER_PAGE);
 
   useEffect(() => {
-    fetch(`${GET_BRANCH_URL}?branchLocation=전체`, {
+    fetch(`${GET_BRANCH_URL}?branchLocation`, {
       method: "GET",
     })
       .then((res) => res.json())
