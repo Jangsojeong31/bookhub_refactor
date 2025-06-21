@@ -34,8 +34,8 @@ export const adminMenu: SidebarMenu[] = [
       { label: '사원정보 수정', path: '/employees/edit' },
       { label: '사원 정보 조회', path: '/employees' },
       { label: '퇴사자 로그 조회', path: '/employees/retired/logs' },
-      { label: '회원정보 로그 조회', path: '/members/logs' },
-      { label: '회원가입승인 로그 조회', path: '/members/approval/logs' },
+      { label: '회원정보 로그 조회', path: '/employees/logs' },
+      { label: '회원가입승인 로그 조회', path: '/employees/approval/logs' },
     ],
   },
   {
@@ -54,10 +54,10 @@ export const adminMenu: SidebarMenu[] = [
   {
     title: '판매 통계',
     submenu: [
-      { label: '매출 통계', path: '' },
-      { label: '판매 수량 통계', path: '/statistics/sales-quantity/period' },
-      { label: '월간 판매 통계', path: '/stats/monthly' },
-      { label: '연간 판매 통계', path: '/stats/yearly' },
+      { label: '매출 통계', path: '/statistics/revenue' },
+      { label: '재고 통계', path: '/statistics/stocks' },
+      { label: '판매량 통계', path: '/statistics/sales-quantity/period' },
+      { label: '발주량 판매 통계', path: '/statistics/' },
     ],
   },
 ];

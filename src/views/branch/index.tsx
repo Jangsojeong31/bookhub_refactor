@@ -1,13 +1,16 @@
 import React from "react";
 import { Route } from "react-router-dom";
-import Branch from "./Branch";
+import BranchSearch from "./BranchSearch";
+import CreateBranch from "./CreateBranch";
 
-function index() {
+
+function Branch() {
   return (
     <>
-      <Route path="/auth/branches" element={<Branch />} />
+      <Route path="/branches" element={<BranchSearch />} />
+      <Route path="/branches/manage" element={<CreateBranch />} />
     </>
   );
 }
 
-export default index;
+export default Branch;

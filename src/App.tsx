@@ -8,7 +8,6 @@ import Main from "./views/main";
 import Alert from "./views/alert";
 import Auth from "./views/auth";
 import Author from "./views/author";
-import Branch from "./views/branch/Branch";
 import Book from "./views/book";
 import Category from "./views/category";
 import Employee from "./views/employee";
@@ -16,13 +15,18 @@ import Policy from './views/policy';
 import Publisher from "./views/publisher";
 import PurchaseOrder from "./views/purchaseOrder";
 import Reception from "./views/reception";
-import StockStatistics from "./views/statistics";
+
 // import 'react-datepicker/dist/react-datepicker.css';
 import PolicyPage from "./views/policy/PolicyPage";
 import SalesQuantityStatistics from "./views/statistics/salesQuantity-statistics";
 import LocationPage from "./views/location/LocationPage";
 import StockLog from "./views/stock-logs";
 import Revenue from "./views/statistics/revenue";
+
+import StockStatistics from "./views/statistics/stockstatistics";
+
+import Branch from "./views/branch";
+
 
 
 
@@ -67,6 +71,7 @@ function App() {
              <Route path="/branch/:branchId/locations" element={<LocationPage />} />
              <Route path="/stock-logs/*" element={<StockLog />} />
              <Route path="/statistics/revenue/*" element={<Revenue />} />
+             <Route path="/statistics/stocks/*" element={<StockStatistics />} />
               {Main()}
               {/* {Alert()} */}
 
@@ -74,8 +79,8 @@ function App() {
               {/* {Publisher()} */}
 
               {Book()}
-              {/* {Branch()}
-              {BookLocation()*/}
+              {Branch()}
+              {/* {BookLocation() */}
               {Category()}
               {Reception()}
               {/*Policy()}
