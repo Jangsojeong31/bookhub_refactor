@@ -5,6 +5,7 @@ import com.bookhub.bookhub_back.common.constants.ResponseMessageKorean;
 import com.bookhub.bookhub_back.common.enums.StockActionType;
 import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.statistics.projection.CategoryStockProjection;
+import com.bookhub.bookhub_back.dto.statistics.projection.TimeStockChartProjection;
 import com.bookhub.bookhub_back.dto.statistics.response.stocks.BranchStockBarChartDto;
 import com.bookhub.bookhub_back.dto.statistics.response.stocks.CategoryStockResponseDto;
 import com.bookhub.bookhub_back.dto.statistics.response.stocks.TimeStockChartResponseDto;
@@ -16,6 +17,7 @@ import com.bookhub.bookhub_back.service.statistics.StocksStaticsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,18 +59,45 @@ public class StockStatisticsServiceImpl implements StocksStaticsService {
         }
 
         resultList.add(BranchStockBarChartDto.builder()
-                .branchName("전체 합계")
-                .inAmount(totalIn)
-                .outAmount(totalOut)
-                .lossAmount(totalLoss)
-                .build());
+            .branchName("전체 합계")
+            .inAmount(totalIn)
+            .outAmount(totalOut)
+            .lossAmount(totalLoss)
+            .build());
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, resultList);
     }
 
     @Override
-    public ResponseDto<List<TimeStockChartResponseDto>> getTimeStockStatistics(int year) {
-        return null;
+    public ResponseDto<List<TimeStockChartResponseDto>> getTimeStockStatistics(Long year) {
+        List<TimeStockChartProjection> projections = stocksStatisticsRepository.findTimeStockStatisticsByYear(year);
+
+        int currentMonth = (LocalDate.now().getYear() == year ? LocalDate.now().getMonthValue() : 12);
+
+        List<Branch> allBranches = branchRepository.findAll();
+
+        List<TimeStockChartResponseDto> result = new ArrayList<>();
+
+        for (Branch branch : allBranches) {
+            for (long month = 1; month <= currentMonth; month++) {
+                long finalMonth = month;
+                TimeStockChartProjection projection = projections.stream()
+                    .filter(timeStockChartProjection -> timeStockChartProjection.getBranchName().equals(branch.getBranchName()) && timeStockChartProjection.getMonth().equals(finalMonth))
+                    .findFirst()
+                    .orElse(null);
+
+                if (projection != null && projection.getInAmount() != null && projection.getLossAmount() != null) {
+                    result.add(TimeStockChartResponseDto.builder()
+                        .branchName(branch.getBranchName())
+                        .month(month)
+                        .inAmount(projection.getInAmount())
+                        .lossAmount(projection.getLossAmount())
+                        .build());
+                }
+            }
+        }
+
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, result);
     }
 
     @Override

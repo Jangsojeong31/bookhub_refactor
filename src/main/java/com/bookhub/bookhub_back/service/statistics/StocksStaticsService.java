@@ -11,7 +11,7 @@ import java.util.List;
 public interface StocksStaticsService {
     ResponseDto<List<BranchStockBarChartDto>> getBranchStockBarChart(int year, int month);
 
-    ResponseDto<List<TimeStockChartResponseDto>> getTimeStockStatistics(int year);
+    ResponseDto<List<TimeStockChartResponseDto>> getTimeStockStatistics(Long year);
 
     ResponseDto<List<ZeroStockResponseDto>> getZeroStockBooks();
 
