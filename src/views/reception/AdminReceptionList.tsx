@@ -17,7 +17,7 @@ function AdminReceptionList() {
   const [logs, setLogs] = useState<ReceptionListResponseDto[]>([]);
 
   useEffect(() => {
-  fetch(`${GET_BRANCH_URL}?branchLocation=전체`)
+  fetch(`${GET_BRANCH_URL}?branchLocation`)
     .then((res) => {
       console.log("응답 상태:", res.status);
       return res.json();
