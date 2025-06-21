@@ -113,12 +113,12 @@ export const GET_PURCHASE_ORDER_APPROVAL_BY_DATE = (startDate: string, endDate: 
   return `${PURCHASE_APPROVAL_MODULE_URL}/date?${queryParams.toString()}`;
 }
 
-// & 그 외
+// & 4. sales-quantity statistics
 // 베이스 URL
 const BEST_SELLER_API = `${API_DOMAIN}/api/v1/${MANAGER}/statistics/sales-quantity/bestseller`;
 const SALES_QUANTITY_API = `${API_DOMAIN}/api/v1/${ADMIN}/statistics/sales-quantity`;
-const CUSTOMER_ORDER_MODULE_URL_COMMON = `${API_DOMAIN}/api/v1/${COMMON}/statistics`;
 
+// 베스트셀러
 // 총합 베스트셀러
 export const GET_TOP_100_BEST_SELLERS = `${BEST_SELLER_API}`;
 // 기간별 베스트셀러 - 일주일
@@ -131,7 +131,29 @@ export const GET_YEARLY_BEST_SELLERS = `${BEST_SELLER_API}/yearly`;
 export const GET_BEST_SELLERS_BY_CATEGORY = (categoryId: number) => `${BEST_SELLER_API}/category/${categoryId}`;
 
 // 판매량 차트
+// 기간별
+// 1) daily
+export const GET_DAILY_SALES_QUANTITY = `${SALES_QUANTITY_API}/daily`;
+// 2) weekly
+export const GET_WEEKLY_SALES_QUANTITY = `${SALES_QUANTITY_API}/weekly`;
+// 3) montly
+export const GET_MONTHLY_SALES_QUANTITY = (year: number) => `${SALES_QUANTITY_API}/monthly?year=${year}`;
+
 // 지점별
-export const GET_SALES_QUANTITY_BY_BRANCH = `${SALES_QUANTITY_API}/branch`;
+export const GET_SALES_QUANTITY_BY_BRANCH = (year: number, month: number) => {
+  const queryParams = new URLSearchParams();
+
+  queryParams.append("year", year.toString());
+  queryParams.append("month", month.toString());
+
+  return `${SALES_QUANTITY_API}/branch?${queryParams}`;
+}
 // 할인항목별
-export const GET_SALES_QUANTITY_BY_DISCOUNT_POLICY = `${SALES_QUANTITY_API}/discount-policy;`
+export const GET_SALES_QUANTITY_BY_DISCOUNT_POLICY = (year: number, quarter: number) => {
+  const queryParams = new URLSearchParams();
+
+  queryParams.append("year", year.toString());
+  queryParams.append("quarter", quarter.toString());
+
+  return `${SALES_QUANTITY_API}/discount-policy?${queryParams}`;
+};
