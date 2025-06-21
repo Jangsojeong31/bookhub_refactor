@@ -10,4 +10,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 public class TimeStockChartResponseDto {
+    private String branchName;
+    private Long month;
+    private Long inAmount;
+    private Long lossAmount;
 }

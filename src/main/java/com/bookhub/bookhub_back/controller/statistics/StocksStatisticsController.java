@@ -19,7 +19,7 @@ import java.util.List;
 
 //재고별 통계기능 컨트롤러
 @RestController
-@RequestMapping(ApiMappingPattern.BASIC_API+ApiMappingPattern.ADMIN_API+"/statistics/stocks")
+@RequestMapping(ApiMappingPattern.BASIC_API + ApiMappingPattern.ADMIN_API + "/statistics/stocks")
 @RequiredArgsConstructor
 public class StocksStatisticsController {
     private final StocksStaticsService stocksStaticsService;
@@ -32,10 +32,10 @@ public class StocksStatisticsController {
     //  하나는 해당 지점의 총 출고량) => StockLog 에서 Out amount 전부 긁어오기
     @GetMapping("/branch")
     public ResponseEntity<ResponseDto<List<BranchStockBarChartDto>>> getBranchStockBarChart(
-            @RequestParam int year,
-            @RequestParam int month
-    ){
-        ResponseDto<List<BranchStockBarChartDto>> stockStatistics = stocksStaticsService.getBranchStockBarChart(year,month);
+        @RequestParam int year,
+        @RequestParam int month
+    ) {
+        ResponseDto<List<BranchStockBarChartDto>> stockStatistics = stocksStaticsService.getBranchStockBarChart(year, month);
         return ResponseEntity.status(HttpStatus.OK).body(stockStatistics);
     }
 
@@ -48,8 +48,8 @@ public class StocksStatisticsController {
     //y축 : 입고량
     @GetMapping("/time")
     public ResponseEntity<ResponseDto<List<TimeStockChartResponseDto>>> getTimeStockStatistics(
-            @RequestParam int year
-    ){
+        @RequestParam Long year
+    ) {
         ResponseDto<List<TimeStockChartResponseDto>> revenue = stocksStaticsService.getTimeStockStatistics(year);
         return ResponseEntity.status(HttpStatus.OK).body(revenue);
     }
@@ -59,9 +59,7 @@ public class StocksStatisticsController {
     //y축 : 책의 수
     //stockRepository에서 amount를 받아와서 count 한다
     @GetMapping("/zero")
-    public ResponseEntity<ResponseDto<List<ZeroStockResponseDto>>> getZeroStockBooks(
-
-    ){
+    public ResponseEntity<ResponseDto<List<ZeroStockResponseDto>>> getZeroStockBooks() {
         ResponseDto<List<ZeroStockResponseDto>> revenue = stocksStaticsService.getZeroStockBooks();
         return ResponseEntity.status(HttpStatus.OK).body(revenue);
     }
@@ -74,7 +72,7 @@ public class StocksStatisticsController {
     @GetMapping("/category")
     public ResponseEntity<ResponseDto<List<CategoryStockResponseDto>>> getCategoryStocks(
         @RequestParam String branchName
-    ){
+    ) {
         ResponseDto<List<CategoryStockResponseDto>> revenue = stocksStaticsService.getCategoryStocks(branchName);
         return ResponseEntity.status(HttpStatus.OK).body(revenue);
     }
