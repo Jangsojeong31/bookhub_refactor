@@ -1,8 +1,10 @@
 import React from 'react'
+import { Route } from 'react-router-dom'
+import AlertPage from './AlertPage'
 
 function Alert() {
   return (
-    <div>index</div>
+    <Route path="/alert" element={<AlertPage />} />
   )
 }
 

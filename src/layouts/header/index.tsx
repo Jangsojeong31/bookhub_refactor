@@ -4,6 +4,7 @@ import { logoutRequest } from "@/apis/auth/auth";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { useEmployeeStore } from "@/stores/employee.store";
+import AlertIcon from "@/apis/constants/AlertIcon";
 import Employee from "@/views/employee";
 import { GET_BRANCH_URL } from "@/apis";
 
@@ -32,6 +33,7 @@ export default function Header() {
         />
       </div>
       <div className={styles.headerInfo}>
+        <AlertIcon />
         <div>{employee?.branchName} {employee?.positionName} {employee?.employeeName}</div>
         <button onClick={onLogoutClick}>로그아웃</button>
       </div>

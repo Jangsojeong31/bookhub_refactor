@@ -17,7 +17,7 @@ function AdminReceptionList() {
   const [logs, setLogs] = useState<ReceptionListResponseDto[]>([]);
 
   useEffect(() => {
-  fetch(`${GET_BRANCH_URL}?branchLocation=전체`)
+  fetch(`${GET_BRANCH_URL}?branchLocation`)
     .then((res) => {
       console.log("응답 상태:", res.status);
       return res.json();
@@ -25,7 +25,7 @@ function AdminReceptionList() {
     .then((data) => {
       console.log("실제 응답 데이터:", data);
 
-      if (!data.data || data.data.length === 0) {
+      if (!data || !data.data || data.data.length === 0) {
         console.warn("지점이 없습니다.");
       } else {
         setBranches(data.data);
@@ -35,7 +35,8 @@ function AdminReceptionList() {
 }, []);
 
 
-  //로그 조회
+
+  // 수령 확인 로그 조회
   const fetchLogs = async () => {
     const token = cookies.accessToken;
     if (!token) return alert("토큰 없음");
