@@ -111,16 +111,16 @@ function CategoryStockStatistics() {
       </select>
       <button onClick={onSearchClick}>조회</button>
       {data.length > 0 && (
-        <PieChart width={700} height={650}>
+        <PieChart width={600} height={600}>
           <Pie
             data={data}
             dataKey="percent"
             nameKey="categoryName"
             cx="50%"
             cy="50%"
-            outerRadius={140}
+            outerRadius={180}
             label={({ categoryName, percent, rank }) =>
-              `${rank}위 ${categoryName} ${percent.toFixed(1)}%`
+              `${rank}. ${categoryName} ${percent.toFixed(1)}%`
             }
           >
             {data.map((entry, index) => (
