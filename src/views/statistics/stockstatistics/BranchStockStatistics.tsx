@@ -18,8 +18,8 @@ function BranchStockStatistics() {
   const token = cookies.accessToken;
 
   const [searchParams, setSearchParams] = useState({
-    year: new Date().getFullYear(),
-    month: new Date().getMonth() + 1,
+    year: "",
+    month: "",
   });
   const [data, setData] = useState<BranchStockBarChartResponseDto[]>([]);
   const [loading, setLoading] = useState(false);
@@ -27,15 +27,21 @@ function BranchStockStatistics() {
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const [year, month] = e.target.value.split("-");
     setSearchParams({
-      year: parseInt(year),
-      month: parseInt(month),
+      year: year,
+      month: month,
     });
   };
 
   const onSearchClick = async () => {
     setLoading(true);
 
-    const response = await branchStockBarChartRequest(searchParams, token);
+    const response = await branchStockBarChartRequest(
+      {
+        year: parseInt(searchParams.year),
+        month: parseInt(searchParams.month),
+      },
+      token
+    );
     const { code, message, data } = response;
 
     if (code == "SU" && data) {
@@ -56,7 +62,9 @@ function BranchStockStatistics() {
       <div>
         <input
           type="month"
-          value={`${searchParams.year}-${searchParams.month.toString().padStart(2, "0")}`}
+          value={`${searchParams.year}-${searchParams.month
+            .toString()
+            .padStart(2, "0")}`}
           onChange={onInputChange}
         />
         <button onClick={onSearchClick}>검색</button>

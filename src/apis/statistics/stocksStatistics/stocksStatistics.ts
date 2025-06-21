@@ -7,10 +7,12 @@ import {
 import {
   STOCK_STATISTICS_BRANCH_URL,
   STOCK_STATISTICS_CATEGORY_URL,
+  STOCK_STATISTICS_TIME_URL,
 } from "@/apis/constants/csy.constants";
 import { ResponseDto } from "@/dtos";
 import { BranchStockBarChartResponseDto } from "@/dtos/statistics/StocksStatistics/response/branchStockBarChart.response.dto";
 import { CategoryStockResponseDto } from "@/dtos/statistics/StocksStatistics/response/categoryStock.response.dto";
+import { TimeStockChartResponseDto } from "@/dtos/statistics/StocksStatistics/response/timestockchart.response.dto";
 import { AxiosError } from "axios";
 
 interface searchDateParams {
@@ -20,6 +22,10 @@ interface searchDateParams {
 
 interface searchBranchParams {
   branchName: string;
+}
+
+interface searcYearParams {
+  year: number;
 }
 
 export const branchStockBarChartRequest = async (
@@ -43,6 +49,21 @@ export const categoryStockRequest = async (
 ): Promise<ResponseDto<CategoryStockResponseDto[]>> => {
   try {
     const response = await axiosInstance.get(STOCK_STATISTICS_CATEGORY_URL, {
+      params,
+      ...bearerAuthorization(accessToken),
+    });
+    return responseSuccessHandler(response);
+  } catch (error) {
+    return responseErrorHandler(error as AxiosError<ResponseDto>);
+  }
+};
+
+export const timeStockChartrequest = async (
+  params: searcYearParams,
+  accessToken: string
+): Promise<ResponseDto<TimeStockChartResponseDto[]>> => {
+  try {
+    const response = await axiosInstance.get(STOCK_STATISTICS_TIME_URL, {
       params,
       ...bearerAuthorization(accessToken),
     });
