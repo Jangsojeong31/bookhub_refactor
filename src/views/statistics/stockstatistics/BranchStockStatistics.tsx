@@ -69,46 +69,50 @@ function BranchStockStatistics() {
         />
         <button onClick={onSearchClick}>검색</button>
       </div>
-      <div style={{ overflowX: "auto", width: 1200, overflowY: "clip" }}>
-        <div style={{ width: `${data.length * 100}px`, height: 700 }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={data}
-              margin={{ top: 20, right: 30, left: 10, bottom: 10 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis
-                dataKey="branchName"
-                interval={0}
-                angle={-25}
-                textAnchor="end"
-                height={100}
-              />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar
-                dataKey="inAmount"
-                stackId="a"
-                fill="#4CAF50"
-                name="입고량"
-              />
-              <Bar
-                dataKey="outAmount"
-                stackId="b"
-                fill="#FF9800"
-                name="출고량"
-              />
-              <Bar
-                dataKey="lossAmount"
-                stackId="c"
-                fill="#9E9E9E"
-                name="손실량"
-              />
-            </BarChart>
-          </ResponsiveContainer>
+      {loading ? (
+        <div>불러오는 중...</div>
+      ) : (
+        <div style={{ overflowX: "auto", width: 1200, overflowY: "clip" }}>
+          <div style={{ width: `${data.length * 100}px`, height: 700 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={data}
+                margin={{ top: 20, right: 30, left: 10, bottom: 10 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="branchName"
+                  interval={0}
+                  angle={-25}
+                  textAnchor="end"
+                  height={100}
+                />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar
+                  dataKey="inAmount"
+                  stackId="a"
+                  fill="#4CAF50"
+                  name="입고량"
+                />
+                <Bar
+                  dataKey="outAmount"
+                  stackId="b"
+                  fill="#FF9800"
+                  name="출고량"
+                />
+                <Bar
+                  dataKey="lossAmount"
+                  stackId="c"
+                  fill="#9E9E9E"
+                  name="손실량"
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 }
