@@ -44,9 +44,6 @@ const PURCHASE_ORDER_MODULE_URL_ADMIN = `${API_DOMAIN}/api/v1/${ADMIN}/purchase-
 // 발주 요청서 작성
 export const POST_PURCHASE_ORDER_URL = `${PURCHASE_ORDER_MODULE_URL_MANAGER}`;
 
-// // 발주 요청서 전체 조회
-// export const GET_ALL_PURCHASE_ORDER_URL = `${PURCHASE_ORDER_MODULE_URL_MANAGER}`;
-
 // 발주 요청서 단건 조회
 export const GET_PURCHASE_ORDER_URL = (purchaseOrderId: number) => `${PURCHASE_ORDER_MODULE_URL_MANAGER}/${purchaseOrderId}`;
 
@@ -59,13 +56,13 @@ export const DELETE_PURCHASE_ORDER_URL = (purchaseOrderId: number) => `${PURCHAS
 // 발주 요청서 조건으로 조회 (발주 담당자, 책 제목, 승인 여부)
 export const GET_PURCHASE_ORDER_BY_CRITERIA = (
   employeeName: string,
-  bookTitle: string,
+  bookIsbn: string,
   purchaseOrderStatus: PurchaseOrderStatus | null
 ) => {
   const queryParams = new URLSearchParams();
   
   if (employeeName) queryParams.append("employeeName", employeeName);
-  if (bookTitle) queryParams.append("bookTitle", bookTitle);
+  if (bookIsbn) queryParams.append("bookIsbn", bookIsbn);
   if (purchaseOrderStatus) queryParams.append("purchaseOrderStatus", purchaseOrderStatus);
 
   console.log(queryParams.toString());
@@ -83,9 +80,6 @@ export const GET_ALL_PURCHASE_ORDER_REQUESTED_URL = `${PURCHASE_ORDER_MODULE_URL
 
 // 발주 승인 / 승인 취소 (발주 요청서 수정)
 export const PUT_PURCHASE_ORDER_STATUS_URL = (purchaseOrderId: number) => `${PURCHASE_ORDER_MODULE_URL_ADMIN}/approval/${purchaseOrderId}`;
-
-// // 발주 승인 로그 전체 조회
-// export const GET_ALL_PURCHASE_ORDER_APPROVAL_URL = `${PURCHASE_APPROVAL_MODULE_URL}`;
 
 // 조회 기준으로 조회 (승인 담당자, 승인 여부)
 export const GET_PURCHASE_ORDER_APPROVAL_BY_CRITERIA_URL = (
@@ -138,6 +132,9 @@ export const GET_DAILY_SALES_QUANTITY = `${SALES_QUANTITY_API}/daily`;
 export const GET_WEEKLY_SALES_QUANTITY = `${SALES_QUANTITY_API}/weekly`;
 // 3) montly
 export const GET_MONTHLY_SALES_QUANTITY = (year: number) => `${SALES_QUANTITY_API}/monthly?year=${year}`;
+
+// 카테고리별
+export const GET_SALES_QUANTITY_BY_CATEGORY = `${SALES_QUANTITY_API}/category`;
 
 // 지점별
 export const GET_SALES_QUANTITY_BY_BRANCH = (year: number, month: number) => {

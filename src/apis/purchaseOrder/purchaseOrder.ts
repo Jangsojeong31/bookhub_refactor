@@ -29,9 +29,9 @@ export const createPurchaseOrder = async(dto: PurchaseOrderCreateRequestDto, acc
 // }
 
 // 조회 기준으로 조회(발주 담당 사원, isbn, 승인 상태)
-export const getAllPurchaseOrderByCriteria = async(employeeName: string, bookTitle: string, purchaseOrderStatus: PurchaseOrderStatus | null, accessToken: string): Promise<ResponseDto<PurchaseOrderResponseDto[]>> => {
+export const getAllPurchaseOrderByCriteria = async(employeeName: string, bookIsbn: string, purchaseOrderStatus: PurchaseOrderStatus | null, accessToken: string): Promise<ResponseDto<PurchaseOrderResponseDto[]>> => {
   try{
-    const response = await axiosInstance.get(GET_PURCHASE_ORDER_BY_CRITERIA(employeeName, bookTitle, purchaseOrderStatus), bearerAuthorization(accessToken));
+    const response = await axiosInstance.get(GET_PURCHASE_ORDER_BY_CRITERIA(employeeName, bookIsbn, purchaseOrderStatus), bearerAuthorization(accessToken));
     return responseSuccessHandler(response);
   }catch(error){
     return responseErrorHandler(error as AxiosError<ResponseDto>)

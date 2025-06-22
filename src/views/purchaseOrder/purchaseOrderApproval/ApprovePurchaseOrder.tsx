@@ -31,18 +31,25 @@ function ApprovePurchaseOrder() {
         alert('인증 토큰이 없습니다.')
         return
       }
-      const response = await getAllPurchaseOrderRequested(token);
-      const {code, message, data} = response; 
-  
-      if(!code) {
-        setMessage(message);
-        return;
-      }
-  
-      if (Array.isArray(data) && data?.length > 0) {
-        setPurchaseOrders(data);
-      } else {
-        setMessage("발주 요청건이 존재하지 않습니다.");
+
+      try{
+
+        const response = await getAllPurchaseOrderRequested(token);
+        const {code, message, data} = response; 
+        
+        if(!code) {
+          setMessage(message);
+          return;
+        }
+        
+        if (Array.isArray(data) && data?.length > 0) {
+          setPurchaseOrders(data);
+        } else {
+          setMessage("발주 요청건이 존재하지 않습니다.");
+        }
+      } catch (error) {
+        console.error(error);
+        alert("오류가 발생했습니다. 다시 한 번 시도해주세요.")
       }
     }
   
@@ -58,11 +65,14 @@ function ApprovePurchaseOrder() {
         <td>{purchaseOrder.bookPrice}</td>
         <td>{purchaseOrder.purchaseOrderAmount}</td>
         <td>{purchaseOrder.purchaseOrderPrice}</td>
-        <td>{purchaseOrder.purchaseOrderDateAt}</td>
+        <td>{new Date(purchaseOrder.purchaseOrderDateAt).toLocaleString(
+              "ko-KR"
+            )}</td>
         <td>{purchaseOrder.purchaseOrderStatus == PurchaseOrderStatus.REQUESTED ? '요청중' : purchaseOrder.purchaseOrderStatus === PurchaseOrderStatus.APPROVED ? '승인' : '거부'}</td>
-        <td><button onClick={() => onPurchaseOrderApproveClick(purchaseOrder.purchaseOrderId)} >승인</button></td>
-        <td><button onClick={() => onPurchaseOrderRejectClick(purchaseOrder.purchaseOrderId)} >승인 거부</button></td>
-        {/* <td>{purchaseOrder.purchaseOrderDateAt}</td> */} 
+        <td>
+          <button onClick={() => onPurchaseOrderApproveClick(purchaseOrder.purchaseOrderId)} >승인</button>
+          <button onClick={() => onPurchaseOrderRejectClick(purchaseOrder.purchaseOrderId)} >승인 거부</button>
+        </td>
       </tr>
     )
   })
@@ -79,19 +89,23 @@ function ApprovePurchaseOrder() {
         return
       }
 
-    const response = await updatePurchaseOrderStatus(purchaseOrderId, dto, token)
-    const { code, message } = response;
+    try {
 
-    if(!code) {
-      setMessage(message);
-      return
+      const response = await updatePurchaseOrderStatus(purchaseOrderId, dto, token)
+      const { code, message } = response;
+      
+      if(!code) {
+        setMessage(message);
+        return
+      }
+      
+      alert("승인되었습니다.")
+      setPurchaseOrders(purchaseOrders);
+      onGetAllPurchaseOrdersRequested();
+    } catch (error) {
+      console.error(error);
+      alert("오류가 발생했습니다.");
     }
-
-    // '승인하시겠습니까?' 모달창 띄우기
-
-    alert("승인되었습니다.")
-    setPurchaseOrders(purchaseOrders);
-    onGetAllPurchaseOrdersRequested();
   }
 
   //* 승인 거절 버튼
@@ -106,19 +120,25 @@ function ApprovePurchaseOrder() {
         return
       }
 
-    const response = await updatePurchaseOrderStatus(purchaseOrderId, dto, token)
-    const { code, message } = response;
+    try {
 
-    if(!code) {
-      setMessage(message);
-      return
+      const response = await updatePurchaseOrderStatus(purchaseOrderId, dto, token)
+      const { code, message } = response;
+      
+      if(!code) {
+        setMessage(message);
+        return
+      }
+      
+      // '승인 거부 하시겠습니까?' 모달창 띄우기
+      
+      alert("승인 거부되었습니다.")
+      setPurchaseOrders(purchaseOrders);
+      onGetAllPurchaseOrdersRequested();
+    } catch (error) {
+      console.error(error);
+      alert("오류가 발생했습니다.");
     }
-
-    // '승인 거부 하시겠습니까?' 모달창 띄우기
-    
-    alert("승인 거부되었습니다.")
-    setPurchaseOrders(purchaseOrders);
-    onGetAllPurchaseOrdersRequested();
   }
 
   //* 승인 로그 전체 조회
@@ -140,6 +160,7 @@ function ApprovePurchaseOrder() {
                 <th>발주 가격</th>
                 <th>발주 일자</th>
                 <th>승인 상태</th>
+                <th>작업</th>
               </tr>
             </thead>
             <tbody>

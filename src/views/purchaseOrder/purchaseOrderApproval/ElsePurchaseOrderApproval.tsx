@@ -1,8 +1,11 @@
-import { getAllPurchaseOrderApprovalByCriteria, getAllPurchaseOrderApprovalByDate } from '@/apis/purchaseOrder/purchaseOrderApproval'
-import { PurchaseOrderStatus } from '@/dtos/purchaseOrderApproval/request/purchaseOrder-approve.request.dto';
-import { PurchaseOrderApprovalResponseDto } from '@/dtos/purchaseOrderApproval/response/purchaseOrderApproval.respose.dto';
-import React, { useState } from 'react'
-import { useCookies } from 'react-cookie';
+import {
+  getAllPurchaseOrderApprovalByCriteria,
+  getAllPurchaseOrderApprovalByDate,
+} from "@/apis/purchaseOrder/purchaseOrderApproval";
+import { PurchaseOrderStatus } from "@/dtos/purchaseOrderApproval/request/purchaseOrder-approve.request.dto";
+import { PurchaseOrderApprovalResponseDto } from "@/dtos/purchaseOrderApproval/response/purchaseOrderApproval.respose.dto";
+import React, { useState } from "react";
+import { useCookies } from "react-cookie";
 
 function ElsePurchaseOrderApproval() {
   const [searchForm, setSearchForm] = useState<{
@@ -10,22 +13,24 @@ function ElsePurchaseOrderApproval() {
     isApproved: boolean | null;
   }>({
     employeeName: "",
-    isApproved: null
-  })
+    isApproved: null,
+  });
 
   const [dateForm, setDateForm] = useState({
     startDate: "",
-    endDate: ""
-  })
+    endDate: "",
+  });
 
   const [cookies] = useCookies(["accessToken"]);
-  const [message, setMessage] = useState('');
-  const [purchaseOrderApprovals, setPurchaseOrderApprovals] = useState<PurchaseOrderApprovalResponseDto[]>([]);    
-  
+  const [message, setMessage] = useState("");
+  const [purchaseOrderApprovals, setPurchaseOrderApprovals] = useState<
+    PurchaseOrderApprovalResponseDto[]
+  >([]);
+
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const {name, value} = e.target;
-    setDateForm({...dateForm, [name]: value})
-  }
+    const { name, value } = e.target;
+    setDateForm({ ...dateForm, [name]: value });
+  };
 
   // //* 전체 조회
   // const onGetAllPurchaseOrderApprovals = async() => {
@@ -37,7 +42,7 @@ function ElsePurchaseOrderApproval() {
   //   }
 
   //   const response = await getAllPurchaseOrderApproval(token);
-  //   const {code, message, data} = response; 
+  //   const {code, message, data} = response;
 
   //   if(!code) {
   //     setMessage(message);
@@ -52,20 +57,24 @@ function ElsePurchaseOrderApproval() {
   // }
 
   //* 조회 조건으로 조회 -- 조건 선택안하면 전체 조회
-  const onGetPurchaseOrderByCriteria = async() => {
+  const onGetPurchaseOrderByCriteria = async () => {
     setPurchaseOrderApprovals([]);
-    const{employeeName, isApproved} = searchForm;
+    const { employeeName, isApproved } = searchForm;
     const token = cookies.accessToken;
 
-    if(!token){
-      alert('인증 토큰이 없습니다.')
-      return
+    if (!token) {
+      alert("인증 토큰이 없습니다.");
+      return;
     }
 
-    const response = await getAllPurchaseOrderApprovalByCriteria(employeeName, isApproved, token);
-    const {code, message, data} = response; 
+    const response = await getAllPurchaseOrderApprovalByCriteria(
+      employeeName,
+      isApproved,
+      token
+    );
+    const { code, message, data } = response;
 
-    if(!code) {
+    if (!code) {
       setMessage(message);
       return;
     }
@@ -76,23 +85,27 @@ function ElsePurchaseOrderApproval() {
     } else {
       setMessage("올바른 검색 조건을 입력해주세요.");
     }
-  }
-  
+  };
+
   // * 날짜로 조회
-  const onGetPurchaseOrderApprovalByDate = async() => {
+  const onGetPurchaseOrderApprovalByDate = async () => {
     setPurchaseOrderApprovals([]);
-    const{startDate, endDate} = dateForm;
+    const { startDate, endDate } = dateForm;
     const token = cookies.accessToken;
 
-    if(!token){
-      alert('인증 토큰이 없습니다.')
-      return
+    if (!token) {
+      alert("인증 토큰이 없습니다.");
+      return;
     }
 
-    const response = await getAllPurchaseOrderApprovalByDate(startDate, endDate, token);
-    const {code, message, data} = response; 
+    const response = await getAllPurchaseOrderApprovalByDate(
+      startDate,
+      endDate,
+      token
+    );
+    const { code, message, data } = response;
 
-    if(!code) {
+    if (!code) {
       setMessage(message);
       return;
     }
@@ -103,82 +116,129 @@ function ElsePurchaseOrderApproval() {
     } else {
       setMessage("올바른 검색 조건을 입력해주세요.");
     }
-  }
+  };
 
   // *노출 리스트
-  const responsePurchaseOrderApprovalList = purchaseOrderApprovals.map((purchaseOrderApproval, index) => {
-    return (
-      <tr key={index}>
-        <td>{purchaseOrderApproval.employeeName}</td>
-        <td>{purchaseOrderApproval.isApproved ? "승인" : "승인 거부"}</td>
-        <td>{purchaseOrderApproval.approvedDateAt}</td>
-        
-        <td>[발주서 사항]</td>
-        <td>{purchaseOrderApproval.poDetail.branchName}</td>
-        <td>{purchaseOrderApproval.poDetail.employeeName}</td>
-        <td>{purchaseOrderApproval.poDetail.isbn}</td>
-        <td>{purchaseOrderApproval.poDetail.bookTitle}</td>
-        <td>{purchaseOrderApproval.poDetail.bookPrice}</td>
-        <td>{purchaseOrderApproval.poDetail.purchaseOrderAmount}</td>
-        <td>{purchaseOrderApproval.poDetail.purchaseOrderStatus == PurchaseOrderStatus.REQUESTED ? '요청중' : purchaseOrderApproval.poDetail.purchaseOrderStatus === PurchaseOrderStatus.APPROVED ? '승인' : '거부'}</td>
-      </tr>
-    )
-  })
+  const responsePurchaseOrderApprovalList = purchaseOrderApprovals.map(
+    (purchaseOrderApproval, index) => {
+      return (
+        <tr key={index}>
+          <td>{purchaseOrderApproval.employeeName}</td>
+          <td>{purchaseOrderApproval.isApproved ? "승인" : "승인 거부"}</td>
+          <td>
+            {new Date(purchaseOrderApproval.approvedDateAt).toLocaleString(
+              "ko-KR"
+            )}
+          </td>
+
+          <td>[발주서 사항]</td>
+          <td>{purchaseOrderApproval.poDetail.branchName}</td>
+          <td>{purchaseOrderApproval.poDetail.employeeName}</td>
+          <td>{purchaseOrderApproval.poDetail.isbn}</td>
+          <td>{purchaseOrderApproval.poDetail.bookTitle}</td>
+          <td>{purchaseOrderApproval.poDetail.bookPrice}</td>
+          <td>{purchaseOrderApproval.poDetail.purchaseOrderAmount}</td>
+          <td>
+            {purchaseOrderApproval.poDetail.purchaseOrderStatus ==
+            PurchaseOrderStatus.REQUESTED
+              ? "요청중"
+              : purchaseOrderApproval.poDetail.purchaseOrderStatus ===
+                PurchaseOrderStatus.APPROVED
+              ? "승인"
+              : "거부"}
+          </td>
+        </tr>
+      );
+    }
+  );
 
   return (
     <div>
-      <input 
-          type="text"
-          name="employeeName"
-          value={searchForm.employeeName}
-          placeholder="승인담당자(검색창)" 
-          onInput={(e:React.ChangeEvent<HTMLInputElement>) => {setSearchForm({...searchForm, employeeName: e.target.value})}}
-        />
-      <select
-        name="isApproved"
-        value={searchForm.isApproved == null ? "" : String(searchForm.isApproved)}
-        onChange={(e) =>
-          setSearchForm({ ...searchForm, isApproved: e.target.value == "" ? null : 
-            e.target.value === "true" ? true : false})
-        }
-      >
-        <option value="">전체</option>
-        <option value="true">승인</option>
-        <option value="false">승인 거부</option>
-      </select>
-      <button onClick={onGetPurchaseOrderByCriteria}>조회</button>
+      <div style={{ display: "flex" }}>
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            gap: "12px",
+            marginBottom: "16px",
+          }}
+        >
+          <input
+            type="text"
+            name="employeeName"
+            value={searchForm.employeeName}
+            placeholder="승인담당자(검색창)"
+            onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setSearchForm({ ...searchForm, employeeName: e.target.value });
+            }}
+          />
+          <select
+            name="isApproved"
+            value={
+              searchForm.isApproved == null ? "" : String(searchForm.isApproved)
+            }
+            onChange={(e) =>
+              setSearchForm({
+                ...searchForm,
+                isApproved:
+                  e.target.value == ""
+                    ? null
+                    : e.target.value === "true"
+                    ? true
+                    : false,
+              })
+            }
+          >
+            <option value="">전체 (승인여부)</option>
+            <option value="true">승인</option>
+            <option value="false">승인 거부</option>
+          </select>
+          <button onClick={onGetPurchaseOrderByCriteria}>조회</button>
+        </div>
 
-      <input 
-        type="date"
-        name='startDate'
-        value={dateForm.startDate}  
-        placeholder='시작일'
-        onInput={onInputChange}
-      />
-      <input 
-        type="date"
-        name='endDate'
-        value={dateForm.endDate}  
-        placeholder='종료일'
-        onInput={onInputChange}
-      />
-      <button onClick={onGetPurchaseOrderApprovalByDate}>조회</button>
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            gap: "12px",
+            marginBottom: "16px",
+          }}
+        >
+          <input
+            type="date"
+            name="startDate"
+            value={dateForm.startDate}
+            placeholder="시작일"
+            onInput={onInputChange}
+          />
+          <input
+            type="date"
+            name="endDate"
+            value={dateForm.endDate}
+            placeholder="종료일"
+            onInput={onInputChange}
+          />
 
-      {/* <button onClick={onGetAllPurchaseOrderApprovals}>전체 조회</button> */}
-      
-      {purchaseOrderApprovals && 
-        <table style={{
-          border: '1px solid black',
-          borderCollapse: 'collapse', 
-          width: '100%',
-          fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-          fontSize: '14px'}}>
+          <button onClick={onGetPurchaseOrderByCriteria}>조회</button>
+        </div>
+      </div>
+
+      {purchaseOrderApprovals && (
+        <table
+          style={{
+            border: "1px solid black",
+            borderCollapse: "collapse",
+            width: "100%",
+            fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+            fontSize: "14px",
+          }}
+        >
           <thead>
             <tr>
               <th>승인 담당자</th>
               <th>승인 여부</th>
               <th>승인 일자</th>
-              
+
               <th>[발주서 사항]</th>
               <th>지점명</th>
               <th>발주 담당자</th>
@@ -189,15 +249,12 @@ function ElsePurchaseOrderApproval() {
               <th>승인 상태</th>
             </tr>
           </thead>
-          <tbody>
-          {responsePurchaseOrderApprovalList}
-          </tbody>
-        </table> 
-      }
+          <tbody>{responsePurchaseOrderApprovalList}</tbody>
+        </table>
+      )}
       {message && <p>{message}</p>}
-      
     </div>
-  )
+  );
 }
 
-export default ElsePurchaseOrderApproval
+export default ElsePurchaseOrderApproval;
