@@ -4,6 +4,7 @@ import { useEmployeeStore } from "@/stores/employee.store";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
+import "@/styles/auth/Auth.css";
 
 function SignIn() {
   const navigate = useNavigate();
@@ -39,14 +40,14 @@ function SignIn() {
     const { code, message, data } = response;
 
     if (code != "SU" || !data) {
-      setMessage("로그인에 실패하였습니다.");
+      alert("로그인에 실패하였습니다.");
       return;
     }
 
     const { token, exprTime, employee } = data;
 
     if (!employee) {
-      setMessage("로그인 정보가 없습니다.");
+      console.error("로그인 정보가 없습니다.");
       return;
     }
 
@@ -68,35 +69,38 @@ function SignIn() {
   };
 
   return (
-    <div>
-      <h1>로그인</h1>
-      <form onSubmit={onSubmit}>
-        <input
-          type="text"
-          name="loginId"
-          value={form.loginId}
-          placeholder="아이디"
-          onChange={onInputChange}
-        />
-        <br />
-        <input
-          type="password"
-          name="password"
-          value={form.password}
-          placeholder="비밀번호"
-          onChange={onInputChange}
-        />
-        <br />
-        <button type="submit">로그인</button>
-      </form>
-      <br />
-      <p>
-        <a href="/auth/sign-up">회원가입</a> |{" "}
-        <a href="/auth/login-id-find/email">아이디 찾기</a> |{" "}
-        <a href="/auth/password-change/email">비밀번호 변경</a>
-      </p>
-
-      {message && <p>{message}</p>}
+    <div className="container">
+      <img
+        src="/src/apis/constants/북허브_로그_로그인창.png"
+        alt="BookHub 로고"
+        className="logo-img"
+      />
+      <div className="form-box">
+        <h2>LOGIN</h2>
+        <form onSubmit={onSubmit}>
+          <input
+            type="text"
+            name="loginId"
+            value={form.loginId}
+            placeholder="아이디"
+            onChange={onInputChange}
+          />
+          <input
+            type="password"
+            name="password"
+            value={form.password}
+            placeholder="비밀번호"
+            onChange={onInputChange}
+          />
+          {message && <p className="failP">{message}</p>}
+          <button type="submit">로그인</button>
+        </form>
+        <p>
+          <a href="/auth/sign-up">회원가입</a>
+          <a href="/auth/login-id-find/email">아이디 찾기</a>
+          <a href="/auth/password-change/email">비밀번호 변경</a>
+        </p>
+      </div>
     </div>
   );
 }
