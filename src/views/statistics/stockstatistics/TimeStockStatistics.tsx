@@ -104,6 +104,10 @@ function TimeStockStatistics() {
     return monthData;
   });
 
+  const formatTooltip = (value: number) => {
+    return `${value.toLocaleString()}개 입고`
+  }
+
   return (
     <div>
       <div>
@@ -127,7 +131,7 @@ function TimeStockStatistics() {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" />
               <YAxis />
-              <Tooltip />
+              <Tooltip formatter={formatTooltip}/>
               <Legend />
               {branches.map((branch, idx) => (
                 <Line
