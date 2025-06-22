@@ -2,10 +2,10 @@ package com.bookhub.bookhub_back.controller.statistics;
 
 import com.bookhub.bookhub_back.common.constants.ApiMappingPattern;
 import com.bookhub.bookhub_back.dto.ResponseDto;
+import com.bookhub.bookhub_back.dto.statistics.projection.ZeroStockProjection;
 import com.bookhub.bookhub_back.dto.statistics.response.stocks.BranchStockBarChartDto;
 import com.bookhub.bookhub_back.dto.statistics.response.stocks.CategoryStockResponseDto;
 import com.bookhub.bookhub_back.dto.statistics.response.stocks.TimeStockChartResponseDto;
-import com.bookhub.bookhub_back.dto.statistics.response.stocks.ZeroStockResponseDto;
 import com.bookhub.bookhub_back.service.statistics.StocksStaticsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -59,8 +59,8 @@ public class StocksStatisticsController {
     //y축 : 책의 수
     //stockRepository에서 amount를 받아와서 count 한다
     @GetMapping("/zero")
-    public ResponseEntity<ResponseDto<List<ZeroStockResponseDto>>> getZeroStockBooks() {
-        ResponseDto<List<ZeroStockResponseDto>> revenue = stocksStaticsService.getZeroStockBooks();
+    public ResponseEntity<ResponseDto<List<ZeroStockProjection>>> getZeroStockBooks() {
+        ResponseDto<List<ZeroStockProjection>> revenue = stocksStaticsService.getZeroStockBooks();
         return ResponseEntity.status(HttpStatus.OK).body(revenue);
     }
 

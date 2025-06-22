@@ -3,6 +3,7 @@ package com.bookhub.bookhub_back.repository.statistics;
 import com.bookhub.bookhub_back.common.enums.StockActionType;
 import com.bookhub.bookhub_back.dto.statistics.projection.CategoryStockProjection;
 import com.bookhub.bookhub_back.dto.statistics.projection.TimeStockChartProjection;
+import com.bookhub.bookhub_back.dto.statistics.projection.ZeroStockProjection;
 import com.bookhub.bookhub_back.entity.StockLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -40,6 +41,13 @@ public interface StocksStatisticsRepository extends JpaRepository<StockLog, Long
         """)
     List<TimeStockChartProjection> findTimeStockStatisticsByYear(@Param("year") Long year);
 
+    @Query("""
+            SELECT s.branchId.branchName AS branchName, COUNT(s) AS zeroStockCount
+            FROM Stock s
+            WHERE s.bookAmount = 0
+            GROUP BY s.branchId.branchName
+        """)
+    List<ZeroStockProjection> findZeroStockStatistics();
 
     @Query("""
             SELECT c.categoryName AS categoryName, SUM(sl.bookAmount) AS totalAmount

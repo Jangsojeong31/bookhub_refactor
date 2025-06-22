@@ -6,10 +6,10 @@ import com.bookhub.bookhub_back.common.enums.StockActionType;
 import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.statistics.projection.CategoryStockProjection;
 import com.bookhub.bookhub_back.dto.statistics.projection.TimeStockChartProjection;
+import com.bookhub.bookhub_back.dto.statistics.projection.ZeroStockProjection;
 import com.bookhub.bookhub_back.dto.statistics.response.stocks.BranchStockBarChartDto;
 import com.bookhub.bookhub_back.dto.statistics.response.stocks.CategoryStockResponseDto;
 import com.bookhub.bookhub_back.dto.statistics.response.stocks.TimeStockChartResponseDto;
-import com.bookhub.bookhub_back.dto.statistics.response.stocks.ZeroStockResponseDto;
 import com.bookhub.bookhub_back.entity.Branch;
 import com.bookhub.bookhub_back.repository.BranchRepository;
 import com.bookhub.bookhub_back.repository.statistics.StocksStatisticsRepository;
@@ -101,8 +101,9 @@ public class StockStatisticsServiceImpl implements StocksStaticsService {
     }
 
     @Override
-    public ResponseDto<List<ZeroStockResponseDto>> getZeroStockBooks() {
-        return null;
+    public ResponseDto<List<ZeroStockProjection>> getZeroStockBooks() {
+        List<ZeroStockProjection> projections = stocksStatisticsRepository.findZeroStockStatistics();
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, projections);
     }
 
     @Override
