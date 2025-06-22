@@ -1,13 +1,14 @@
 package com.bookhub.bookhub_back.repository;
 
+import com.bookhub.bookhub_back.common.enums.ExitReason;
 import com.bookhub.bookhub_back.common.enums.PurchaseOrderStatus;
-import com.bookhub.bookhub_back.entity.Book;
-import com.bookhub.bookhub_back.entity.Branch;
-import com.bookhub.bookhub_back.entity.Employee;
-import com.bookhub.bookhub_back.entity.PurchaseOrder;
+import com.bookhub.bookhub_back.entity.*;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -22,6 +23,4 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Lo
     List<PurchaseOrder> findByBookIsbnAndPurchaseOrderStatus(Book book, PurchaseOrderStatus purchaseOrderStatus);
 
     List<PurchaseOrder> findByEmployeeIdAndBookIsbnAndPurchaseOrderStatus(Employee employee, Book book, PurchaseOrderStatus purchaseOrderStatus);
-
-    List<PurchaseOrder> findAllByBranchId(Branch branch);
 }

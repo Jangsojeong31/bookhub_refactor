@@ -3,6 +3,7 @@ package com.bookhub.bookhub_back.controller.statistics;
 import com.bookhub.bookhub_back.common.constants.ApiMappingPattern;
 import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.statistics.projection.BestSellerProjection;
+import com.bookhub.bookhub_back.dto.statistics.projection.CategorySalesQuantityProjection;
 import com.bookhub.bookhub_back.dto.statistics.projection.SalesQuantityStatisticsProjection;
 import com.bookhub.bookhub_back.dto.statistics.projection.YearlySalesQuantityProjection;
 import com.bookhub.bookhub_back.service.statistics.SalesQuantityStatisticsService;
@@ -89,8 +90,8 @@ public class SalesQuantityStatisticsController {
 
     // 카테고리별 (일주일간)
     @GetMapping(SALES_QUANTITY_API + ("/category"))
-    public ResponseEntity<ResponseDto<List<SalesQuantityStatisticsProjection>>> getSalesQuantityByCategory() {
-        ResponseDto<List<SalesQuantityStatisticsProjection>> response = salesQuantityStatisticsService.getSalesQuantityByCategory();
+    public ResponseEntity<ResponseDto<List<CategorySalesQuantityProjection>>> getSalesQuantityByCategory() {
+        ResponseDto<List<CategorySalesQuantityProjection>> response = salesQuantityStatisticsService.getSalesQuantityByCategory();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

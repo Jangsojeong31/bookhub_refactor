@@ -54,14 +54,13 @@ public class PurchaseOrderController {
 
     // 4) 발주 요청서 조회 - 조회 기준: 발주담당사원, isbn, 승인 상태 (사용자 소속 지점 해당 발주서만)
     @GetMapping(ApiMappingPattern.MANAGER_API + "/purchase-orders")
-    public ResponseEntity<ResponseDto<List<PurchaseOrderResponseDto>>> getPurchaseOrderByEmployeeNameAndIsbnAndPurchaseOrderStatus(
+    public ResponseEntity<ResponseDto<List<PurchaseOrderResponseDto>>> searchPurchaseOrder(
             @AuthenticationPrincipal String loginId,
             @RequestParam(required = false) String employeeName,
-            @RequestParam(required = false) String bookTitle,
+            @RequestParam(required = false) String bookIsbn,
             @RequestParam(required = false) PurchaseOrderStatus purchaseOrderStatus
-            // api 형식: GET /search?category=xxx&writer=yyy
     ) {
-        ResponseDto<List<PurchaseOrderResponseDto>> response = purchaseOrderService.getPurchaseOrderByEmployeeNameAndBookTitleAndPurchaseOrderStatus(loginId, employeeName, bookTitle, purchaseOrderStatus);
+        ResponseDto<List<PurchaseOrderResponseDto>> response = purchaseOrderService.searchPurchaseOrder(loginId, employeeName, bookIsbn, purchaseOrderStatus);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -82,8 +81,8 @@ public class PurchaseOrderController {
     public ResponseEntity<ResponseDto<Void>> deletePurchaseOrder(
             @PathVariable Long purchaseOrderId
     ) {
-        purchaseOrderService.deletePurchaseOrder(purchaseOrderId);
-        return ResponseEntity.noContent().build();
+        ResponseDto<Void> response = purchaseOrderService.deletePurchaseOrder(purchaseOrderId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     /*

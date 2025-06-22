@@ -89,6 +89,7 @@ public class PurchaseOrderApprovalServiceImpl implements PurchaseOrderApprovalSe
         purchaseOrderApprovals = purchaseOrderApprovalRepository.findByCreatedAtBetween(start, end);
 
         responseDtos = purchaseOrderApprovals.stream()
+                .sorted(Comparator.comparing(PurchaseOrderApproval::getCreatedAt).reversed())
                 .map(purchaseOrderApproval -> changeToResponseDto(purchaseOrderApproval))
                 .collect(Collectors.toList());
 
@@ -105,6 +106,7 @@ public class PurchaseOrderApprovalServiceImpl implements PurchaseOrderApprovalSe
         purchaseOrderApprovals = purchaseOrderApprovalRepository.findByIsApproved(isApproved);
 
         responseDtos = purchaseOrderApprovals.stream()
+                .sorted(Comparator.comparing(PurchaseOrderApproval::getCreatedAt).reversed())
                 .map(purchaseOrderApproval -> changeToResponseDto(purchaseOrderApproval))
                 .collect(Collectors.toList());
 
@@ -134,6 +136,7 @@ public class PurchaseOrderApprovalServiceImpl implements PurchaseOrderApprovalSe
         }
 
         responseDtos = purchaseOrderApprovals.stream()
+                .sorted(Comparator.comparing(PurchaseOrderApproval::getCreatedAt).reversed())
                 .map(approval -> changeToResponseDto(approval))
                 .collect(Collectors.toList());
 
