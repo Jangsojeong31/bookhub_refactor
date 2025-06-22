@@ -1,7 +1,8 @@
 import { axiosInstance, bearerAuthorization, responseSuccessHandler, responseErrorHandler } from "@/apis/axiosConfig";
-import { GET_BEST_SELLERS_BY_CATEGORY, GET_DAILY_SALES_QUANTITY, GET_MONTHLY_BEST_SELLERS, GET_MONTHLY_SALES_QUANTITY, GET_SALES_QUANTITY_BY_BRANCH, GET_SALES_QUANTITY_BY_DISCOUNT_POLICY, GET_TOP_100_BEST_SELLERS, GET_WEEKLY_BEST_SELLERS, GET_WEEKLY_SALES_QUANTITY, GET_YEARLY_BEST_SELLERS } from "@/apis/constants/jsj.constants";
+import { GET_BEST_SELLERS_BY_CATEGORY, GET_DAILY_SALES_QUANTITY, GET_MONTHLY_BEST_SELLERS, GET_MONTHLY_SALES_QUANTITY, GET_SALES_QUANTITY_BY_BRANCH, GET_SALES_QUANTITY_BY_CATEGORY, GET_SALES_QUANTITY_BY_DISCOUNT_POLICY, GET_TOP_100_BEST_SELLERS, GET_WEEKLY_BEST_SELLERS, GET_WEEKLY_SALES_QUANTITY, GET_YEARLY_BEST_SELLERS } from "@/apis/constants/jsj.constants";
 import { ResponseDto } from "@/dtos";
 import { BestSellerResponseDto } from "@/dtos/statistics/salesQuantityStatistics/response/bestSeller.reponse.dto";
+import { CategorySalesQuantityResponseDto } from "@/dtos/statistics/salesQuantityStatistics/response/categorySalesQuantity.response.dto";
 import { SalesQuantityStatisticsReponseDto } from "@/dtos/statistics/salesQuantityStatistics/response/salesQuantity.response.dto";
 import { AxiosError } from "axios";
 
@@ -82,6 +83,16 @@ export const getWeeklySalesQuantity = async(accessToken: string): Promise<Respon
 export const getMonthlySalesQuantity = async(year: number, accessToken: string): Promise<ResponseDto<SalesQuantityStatisticsReponseDto[]>> => {
   try{
     const response = await axiosInstance.get(GET_MONTHLY_SALES_QUANTITY(year), bearerAuthorization(accessToken));
+    return responseSuccessHandler(response);
+  }catch(error){
+    return responseErrorHandler(error as AxiosError<ResponseDto>)
+  }
+}
+
+// 카테고리별
+export const getSalesQuantityByCategory = async(accessToken: string): Promise<ResponseDto<CategorySalesQuantityResponseDto[]>> => {
+  try{
+    const response = await axiosInstance.get(GET_SALES_QUANTITY_BY_CATEGORY, bearerAuthorization(accessToken));
     return responseSuccessHandler(response);
   }catch(error){
     return responseErrorHandler(error as AxiosError<ResponseDto>)

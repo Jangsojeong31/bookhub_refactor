@@ -1,225 +1,283 @@
-import Modal from '@/apis/constants/Modal';
-import { deletePurchaseOrder, getAllPurchaseOrderByCriteria, updatePurchaseOrder } from '@/apis/purchaseOrder/purchaseOrder';
-import { PurchaseOrderResponseDto } from '@/dtos/purchaseOrder/response/purchaseOrder.response.dto';
-import { PurchaseOrderStatus } from '@/dtos/purchaseOrderApproval/request/purchaseOrder-approve.request.dto';
-import React, { useState } from 'react'
-import { useCookies } from 'react-cookie';
+import Modal from "@/apis/constants/Modal";
+import {
+  deletePurchaseOrder,
+  getAllPurchaseOrderByCriteria,
+  updatePurchaseOrder,
+} from "@/apis/purchaseOrder/purchaseOrder";
+import { PurchaseOrderResponseDto } from "@/dtos/purchaseOrder/response/purchaseOrder.response.dto";
+import { PurchaseOrderStatus } from "@/dtos/purchaseOrderApproval/request/purchaseOrder-approve.request.dto";
+import React, { useState } from "react";
+import { useCookies } from "react-cookie";
 
 function ElsePurchaseOrder() {
   const [searchForm, setSearchForm] = useState<{
     employeeName: string;
-    bookTitle: string;
+    bookIsbn: string;
     approvalStatus: PurchaseOrderStatus | null;
   }>({
     employeeName: "",
-    bookTitle: "",
-    approvalStatus: null
-  })
-  
+    bookIsbn: "",
+    approvalStatus: null,
+  });
+
   const [updateForm, setUpdateForm] = useState({
     isbn: "",
-    purchaseOrderAmount: 0
-  })
+    purchaseOrderAmount: 0,
+  });
 
   const [cookies] = useCookies(["accessToken"]);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [purchaseOrderId, setPurchaseOrderId] = useState<number>(0);
-  const [purchaseOrders, setPurchaseOrders] = useState<PurchaseOrderResponseDto[]>([]);    
+  const [purchaseOrders, setPurchaseOrders] = useState<
+    PurchaseOrderResponseDto[]
+  >([]);
   const [modalStatus, setModalStatus] = useState(false);
 
-  const onSearchInputChange = (e:React.ChangeEvent<HTMLInputElement>) => {
-    const {name, value} = e.target;
-    setSearchForm({...searchForm, [name]: value});
-  }
+  const onSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setSearchForm({ ...searchForm, [name]: value });
+  };
 
-  const onUpdateInputChange = (e:React.ChangeEvent<HTMLInputElement>) => {
-    const {name, value} = e.target;
-    setUpdateForm({...updateForm, [name]: value});
-  }
-
-  // * 전체 조회
-  // const onGetAllPurchaseOrders = async() => {
-  //   const token = cookies.accessToken;
-    
-  //   if(!token){
-  //     alert('인증 토큰이 없습니다.')
-  //     return
-  //   }
-  //   const response = await getAllPurchaseOrder(token);
-  //   const {code, message, data} = response; 
-
-  //   if(!code) {
-  //     setMessage(message);
-  //     return;
-  //   }
-
-  //   if (Array.isArray(data)) {
-  //     setPurchaseOrders(data);
-  //     setMessage("");
-  //   } else {
-  //     setMessage("데이터 형식이 올바르지 않습니다.");
-  //   }
-  // }  
+  const onUpdateInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUpdateForm({ ...updateForm, [name]: value });
+  };
 
   //* 조회 조건으로 조회(발주 담당자, 책 제목, 승인 여부) -- 조건 없을 시 전체 조회
-  const onGetPurchaseOrderByCriteria = async() => {
+  const onGetPurchaseOrderByCriteria = async () => {
     setPurchaseOrders([]);
-    const {employeeName, bookTitle, approvalStatus} = searchForm;
+    const { employeeName, bookIsbn, approvalStatus } = searchForm;
     const token = cookies.accessToken;
 
-    if(!token){
-      alert('인증 토큰이 없습니다.')
-      return
-    }
-
-    const response = await getAllPurchaseOrderByCriteria(employeeName,  bookTitle, approvalStatus, token);
-    const {code, message, data} = response; 
-
-    if(!code) {
-      setMessage(message);
+    if (!token) {
+      alert("인증 토큰이 없습니다.");
       return;
     }
 
-    if (Array.isArray(data)) {
-      setPurchaseOrders(data);
-      setMessage("");
-    } else {
-      setMessage("올바른 검색 조건을 입력해주세요.");
-    }
-  }
+    try {
+      const response = await getAllPurchaseOrderByCriteria(
+        employeeName,
+        bookIsbn,
+        approvalStatus,
+        token
+      );
+      const { code, message, data } = response;
 
-  //* 수정 모달창
-  const openUpdateModal = (purchaseOrder: PurchaseOrderResponseDto) => {
-      if(purchaseOrder.purchaseOrderStatus === "APPROVED" ||  purchaseOrder.purchaseOrderStatus === "DENIED") {
-        alert("이미 승인(또는 승인거절)된 요청입니다.")
-        return;
-      }
-      setPurchaseOrderId(purchaseOrder.purchaseOrderId); 
-      setUpdateForm({isbn: purchaseOrder.isbn, purchaseOrderAmount: purchaseOrder.purchaseOrderAmount})
-      setModalStatus(true);
-    }
-
-  // * 수정 모달창 내용
-  const modalContent: React.ReactNode = (
-      <div>
-        <h3>발주량 수정 모달</h3>
-        <h5>ISBN: {updateForm.isbn}</h5>
-        <input
-          type="text"
-          name="purchaseOrderAmount"
-          value={updateForm.purchaseOrderAmount}
-          onChange={onUpdateInputChange}
-          placeholder="수정할 발주량을 입력하세요"
-        />
-        <button onClick={() => onUpdatePurchaseOrderAmountClick(purchaseOrderId)}>수정</button>
-      </div>
-    );
-
-  //* 수정 (발주량만 수정 가능하도록)
-  const onUpdatePurchaseOrderAmountClick = async (purchaseOrderId: number) => {
-      const dto = {
-        isbn : updateForm.isbn,
-        purchaseOrderAmount: updateForm.purchaseOrderAmount
-      }
-      const token = cookies.accessToken;
-  
-      if(!token){
-        alert('인증 토큰이 없습니다.')
-        return
-      }
-    
-      const response = await updatePurchaseOrder(purchaseOrderId, dto, token);
-      const { code, message } = response;
-    
-      if (!code) {
+      if (code != "SU") {
         setMessage(message);
         return;
       }
-    
-      alert("수정되었습니다.");
-      setPurchaseOrders(purchaseOrders);
 
-      // 수정 후 리스트 업데이트
-      const updatedPurchaseOrders = purchaseOrders.map(order =>
-          order.purchaseOrderId === purchaseOrderId
-            ? { ...order, purchaseOrderAmount: updateForm.purchaseOrderAmount, purchaseOrderPrice: order.bookPrice*updateForm.purchaseOrderAmount }
-            : order
-        );
-      setPurchaseOrders(updatedPurchaseOrders);
-
-      setModalStatus(false);
-    };
-
-  //* 삭제
-  const onDeletePurchaseOrderClick = async(purchaseOrder: PurchaseOrderResponseDto, purchaseOrderId: number) => {
-    if(purchaseOrder.purchaseOrderStatus === "APPROVED" ||  purchaseOrder.purchaseOrderStatus === "DENIED") {
-        alert("이미 승인(또는 승인거절)된 요청입니다.")
-        return;
+      if (Array.isArray(data) && data.length > 0) {
+        setPurchaseOrders(data);
+        setMessage("");
+      } else {
+        setMessage("올바른 검색 조건을 입력해주세요.");
       }
-
-    const token = cookies.accessToken;
-    
-    if(!token){
-      alert('인증 토큰이 없습니다.')
-      return
+    } catch (error) {
+      console.error(error);
+      alert("조회 중 오류가 발생했습니다.");
     }
+  };
 
-    const response = await deletePurchaseOrder(purchaseOrderId, token);
-    const {code, message} = response;
+  //* 수정 모달창
+  const openUpdateModal = (purchaseOrder: PurchaseOrderResponseDto) => {
+    if (
+      purchaseOrder.purchaseOrderStatus === "APPROVED" ||
+      purchaseOrder.purchaseOrderStatus === "DENIED"
+    ) {
+      alert("이미 승인(또는 승인거절)된 요청입니다.");
+      return;
+    }
+    setPurchaseOrderId(purchaseOrder.purchaseOrderId);
+    setUpdateForm({
+      isbn: purchaseOrder.isbn,
+      purchaseOrderAmount: purchaseOrder.purchaseOrderAmount,
+    });
+    setModalStatus(true);
+  };
 
-    if(!code) {
-      setMessage(message);
+  // * 수정 모달창 내용
+  const modalContent: React.ReactNode = (
+    <div>
+      <h3>발주량 수정 모달</h3>
+      <h5>ISBN: {updateForm.isbn}</h5>
+      <input
+        type="text"
+        name="purchaseOrderAmount"
+        value={updateForm.purchaseOrderAmount}
+        onChange={onUpdateInputChange}
+        placeholder="수정할 발주량을 입력하세요"
+      />
+      <button onClick={() => onUpdatePurchaseOrderAmountClick(purchaseOrderId)}>
+        수정
+      </button>
+    </div>
+  );
+
+  //* 수정 (발주량만 수정 가능하도록)
+  const onUpdatePurchaseOrderAmountClick = async (purchaseOrderId: number) => {
+    const dto = {
+      isbn: updateForm.isbn,
+      purchaseOrderAmount: updateForm.purchaseOrderAmount,
+    };
+    const token = cookies.accessToken;
+
+    if (!token) {
+      alert("인증 토큰이 없습니다.");
       return;
     }
 
-    alert('삭제되었습니다.')
+    try {
+      const response = await updatePurchaseOrder(purchaseOrderId, dto, token);
+      const { code, message } = response;
 
-    const updatedPurchaseOrders = purchaseOrders.filter(purchaseOrder => purchaseOrder.purchaseOrderId !== purchaseOrderId);
-    setPurchaseOrders(updatedPurchaseOrders);
-  }
+      if (code != "SU") {
+        setMessage(message);
+        return;
+      }
+
+      // 수정 후 리스트 업데이트
+      const updatedPurchaseOrders = purchaseOrders.map((order) =>
+        order.purchaseOrderId === purchaseOrderId
+          ? {
+              ...order,
+              purchaseOrderAmount: updateForm.purchaseOrderAmount,
+              purchaseOrderPrice:
+                order.bookPrice * updateForm.purchaseOrderAmount,
+            }
+          : order
+      );
+      setPurchaseOrders(updatedPurchaseOrders);
+
+      alert("수정되었습니다.");
+      setModalStatus(false);
+    } catch (error) {
+      console.error(error);
+      alert("수정 중 오류가 발생했습니다.");
+    }
+  };
+
+  //* 삭제
+  const onDeletePurchaseOrderClick = async (
+    purchaseOrder: PurchaseOrderResponseDto,
+    purchaseOrderId: number
+  ) => {
+    if (
+      purchaseOrder.purchaseOrderStatus === "APPROVED" ||
+      purchaseOrder.purchaseOrderStatus === "DENIED"
+    ) {
+      alert("이미 승인(또는 승인거절)된 요청입니다.");
+      return;
+    }
+
+    const token = cookies.accessToken;
+
+    if (!token) {
+      alert("인증 토큰이 없습니다.");
+      return;
+    }
+
+    try {
+      const response = await deletePurchaseOrder(purchaseOrderId, token);
+      const { code, message } = response;
+
+      if (code != "SU") {
+        setMessage(message);
+        return;
+      }
+
+      const updatedPurchaseOrders = purchaseOrders.filter(
+        (order) => order.purchaseOrderId !== purchaseOrderId
+      );
+      setPurchaseOrders(updatedPurchaseOrders);
+
+      alert("삭제되었습니다.");
+    } catch (error) {
+      console.error(error);
+      alert("삭제 중 오류가 발생했습니다.");
+    }
+  };
 
   // *노출 리스트
-  const responsePurchaseOrderList = purchaseOrders.map((purchaseOrder, index) => {
-    return (
-      <tr key={index}>
-        <td>{purchaseOrder.branchName}</td>
-        <td>{purchaseOrder.branchLocation}</td>
-        <td>{purchaseOrder.employeeName}</td>
-        <td>{purchaseOrder.isbn}</td>
-        <td>{purchaseOrder.bookTitle}</td>
-        <td>{purchaseOrder.bookPrice}</td>
-        <td>{purchaseOrder.purchaseOrderAmount}</td>
-        <td>{purchaseOrder.purchaseOrderPrice}</td>
-        <td>{purchaseOrder.purchaseOrderDateAt}</td> 
-        <td>{purchaseOrder.purchaseOrderStatus == PurchaseOrderStatus.REQUESTED ? '요청중' : purchaseOrder.purchaseOrderStatus === PurchaseOrderStatus.APPROVED ? '승인' : '거부'}</td>
-        <td><button onClick={() => openUpdateModal(purchaseOrder)}>수정</button></td>
-        <td><button onClick={() => onDeletePurchaseOrderClick(purchaseOrder, purchaseOrder.purchaseOrderId)}>삭제</button></td>
-      </tr>
-    )
-  })
+  const responsePurchaseOrderList = purchaseOrders.map(
+    (purchaseOrder, index) => {
+      return (
+        <tr key={index}>
+          <td>{purchaseOrder.branchName}</td>
+          <td>{purchaseOrder.branchLocation}</td>
+          <td>{purchaseOrder.employeeName}</td>
+          <td>{purchaseOrder.isbn}</td>
+          <td>{purchaseOrder.bookTitle}</td>
+          <td>{purchaseOrder.bookPrice}</td>
+          <td>{purchaseOrder.purchaseOrderAmount}</td>
+          <td>{purchaseOrder.purchaseOrderPrice}</td>
+          <td>
+            {new Date(purchaseOrder.purchaseOrderDateAt).toLocaleString(
+              "ko-KR"
+            )}
+          </td>
+          <td>
+            {purchaseOrder.purchaseOrderStatus == PurchaseOrderStatus.REQUESTED
+              ? "요청중"
+              : purchaseOrder.purchaseOrderStatus ===
+                PurchaseOrderStatus.APPROVED
+              ? "승인"
+              : "거부"}
+          </td>
+          <td>
+            <button onClick={() => openUpdateModal(purchaseOrder)}>수정</button>
+            <button
+              onClick={() =>
+                onDeletePurchaseOrderClick(
+                  purchaseOrder,
+                  purchaseOrder.purchaseOrderId
+                )
+              }
+            >
+              삭제
+            </button>
+          </td>
+        </tr>
+      );
+    }
+  );
 
   return (
     <div>
-      <input 
+      <input
         type="text"
         name="employeeName"
         value={searchForm.employeeName}
-        placeholder="발주담당자(검색창)" 
+        placeholder="발주담당자(검색창)"
         onInput={onSearchInputChange}
       />
-      <input 
+      <input
         type="text"
-        name="bookTitle"
-        value={searchForm.bookTitle}
-        placeholder="책 제목(검색창)" 
+        name="bookIsbn"
+        value={searchForm.bookIsbn}
+        placeholder="ISBN(검색창)"
         onInput={onSearchInputChange}
       />
       <select
         name="approvalStatus"
-        value={searchForm.approvalStatus == null ? "" : String(searchForm.approvalStatus)}
+        value={
+          searchForm.approvalStatus == null
+            ? ""
+            : String(searchForm.approvalStatus)
+        }
         onChange={(e) =>
-          setSearchForm({ ...searchForm, approvalStatus: e.target.value == "" ? null : 
-            e.target.value === "REQUESTED" ? PurchaseOrderStatus.REQUESTED : e.target.value === "APPROVED" ? PurchaseOrderStatus.APPROVED : PurchaseOrderStatus.REJECTED})
+          setSearchForm({
+            ...searchForm,
+            approvalStatus:
+              e.target.value == ""
+                ? null
+                : e.target.value === "REQUESTED"
+                ? PurchaseOrderStatus.REQUESTED
+                : e.target.value === "APPROVED"
+                ? PurchaseOrderStatus.APPROVED
+                : PurchaseOrderStatus.REJECTED,
+          })
         }
       >
         <option value="">전체</option>
@@ -230,39 +288,38 @@ function ElsePurchaseOrder() {
       <button onClick={onGetPurchaseOrderByCriteria}>조회</button>
       {/* <button onClick={onGetAllPurchaseOrders}>전체 조회</button> */}
       {purchaseOrders && (
-          <table>
-            <thead>
-              <tr>
-                <th>지점명</th>
-                <th>지점 주소</th>
-                <th>발주 담당 사원</th>
-                <th>ISBN</th>
-                <th>책 제목</th>
-                <th>책 가격</th>
-                <th>발주 수량</th>
-                <th>발주 가격</th>
-                <th>발주 일자</th>
-                <th>승인 상태</th>
-              </tr>
-            </thead>
-            <tbody>
-              {responsePurchaseOrderList}
-            </tbody>
-          </table>
-        )}
-        {modalStatus && 
-          <Modal 
-            isOpen={modalStatus}
-            onClose={() => {
-              setModalStatus(false);
-              setMessage("");
-            }}
-            children={modalContent}
-          />
-        }
-        {message && <p>{message}</p>}
+        <table>
+          <thead>
+            <tr>
+              <th>지점명</th>
+              <th>지점 주소</th>
+              <th>발주 담당 사원</th>
+              <th>ISBN</th>
+              <th>책 제목</th>
+              <th>책 가격</th>
+              <th>발주 수량</th>
+              <th>총 가격</th>
+              <th>발주 일자</th>
+              <th>승인 상태</th>
+              <th>작업</th>
+            </tr>
+          </thead>
+          <tbody>{responsePurchaseOrderList}</tbody>
+        </table>
+      )}
+      {modalStatus && (
+        <Modal
+          isOpen={modalStatus}
+          onClose={() => {
+            setModalStatus(false);
+            setMessage("");
+          }}
+          children={modalContent}
+        />
+      )}
+      {message && <p>{message}</p>}
     </div>
-  )
+  );
 }
 
-export default ElsePurchaseOrder
+export default ElsePurchaseOrder;

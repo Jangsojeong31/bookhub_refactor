@@ -1,11 +1,12 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
-import TotalBestSeller from './BestSellertotal'
+import TotalBestSeller from './BestSellerTotal'
 import BestSellerByPeriod from './BestSellerByPeriod'
 import BestSellerByCategory from './BestSellerByCategory'
 import SalesQuantityByPeriod from './SalesQuantityByPeriod'
 import SaleQuantityByBranch from './SalesQauntityByBranch'
 import SalesQuantityByDiscountPolicy from './SalesQuantityByDiscountPolicy'
+import SalesQuantityByCategory from './SalesQuantityByCategory'
 
 function SalesQuantityStatistics() {
   return (
@@ -17,6 +18,7 @@ function SalesQuantityStatistics() {
       <Route path="/statistics/sales-quantity/branch" element={<SaleQuantityByBranch />} />
       <Route path="/statistics/sales-quantity/period" element={<SalesQuantityByPeriod />} />
       <Route path="/statistics/sales-quantity/discount-policy" element={<SalesQuantityByDiscountPolicy />} />
+      <Route path="/statistics/sales-quantity/category" element={<SalesQuantityByCategory />} />
     </>
   )
 }
