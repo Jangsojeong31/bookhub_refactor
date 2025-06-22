@@ -2,6 +2,7 @@ package com.bookhub.bookhub_back.service.statistics;
 
 import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.statistics.projection.BestSellerProjection;
+import com.bookhub.bookhub_back.dto.statistics.projection.CategorySalesQuantityProjection;
 import com.bookhub.bookhub_back.dto.statistics.projection.SalesQuantityStatisticsProjection;
 import com.bookhub.bookhub_back.dto.statistics.projection.YearlySalesQuantityProjection;
 
@@ -18,7 +19,7 @@ public interface SalesQuantityStatisticsService {
 
     ResponseDto<List<BestSellerProjection>> getBestSellersByCategory(Long categoryId);
 
-    ResponseDto<List<SalesQuantityStatisticsProjection>> getSalesQuantityByCategory();
+    ResponseDto<List<CategorySalesQuantityProjection>> getSalesQuantityByCategory();
 
     ResponseDto<List<SalesQuantityStatisticsProjection>> getSalesQuantityByDiscountPolicy(int year, int quarter);
 

@@ -69,7 +69,7 @@ public class AuthorController {
     public ResponseEntity<ResponseDto<Void>> deleteAuthor(
             @PathVariable Long authorId
     ) {
-        authorService.deleteAuthor(authorId);
-        return ResponseEntity.noContent().build();
+        ResponseDto<Void> response = authorService.deleteAuthor(authorId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

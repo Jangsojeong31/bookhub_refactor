@@ -33,6 +33,4 @@ public interface BookRepository extends JpaRepository<Book, String> {
     List<Book> searchAllByKeyword(@Param("keyword") String keyword);
 
     Optional<Book> findByIsbn(@NotBlank String isbn);
-
-    Optional<Book> findByBookTitle(@NotBlank String bookTitle);
 }

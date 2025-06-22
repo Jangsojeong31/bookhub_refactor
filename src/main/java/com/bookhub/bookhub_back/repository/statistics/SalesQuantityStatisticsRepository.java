@@ -1,6 +1,7 @@
 package com.bookhub.bookhub_back.repository.statistics;
 
 import com.bookhub.bookhub_back.dto.statistics.projection.BestSellerProjection;
+import com.bookhub.bookhub_back.dto.statistics.projection.CategorySalesQuantityProjection;
 import com.bookhub.bookhub_back.dto.statistics.projection.SalesQuantityStatisticsProjection;
 import com.bookhub.bookhub_back.dto.statistics.projection.YearlySalesQuantityProjection;
 import com.bookhub.bookhub_back.entity.CustomerOrder;
@@ -161,19 +162,6 @@ public interface SalesQuantityStatisticsRepository extends JpaRepository<Custome
         """, nativeQuery = true)
     List<SalesQuantityStatisticsProjection> findMonthlySalesQuantity(@Param("year") int year);
 
-    // 카테고리별
-    @Query(value = """
-            SELECT bc.category_name AS categoryName, 
-                   SUM(cod.amount) AS totalSales
-                 FROM customer_orders_detail cod
-                 JOIN customer_orders co ON cod.customer_order_id = co.customer_order_id
-                 JOIN books b ON cod.book_isbn = b.book_isbn
-                 JOIN book_categories bc ON b.category_id = bc.category_id
-                 WHERE co.customer_order_date_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
-                 GROUP BY bc.category_name
-                 ORDER BY totalSales DESC;
-        """, nativeQuery = true)
-    List<SalesQuantityStatisticsProjection> findSalesQuantityByCategory();
 
     // 할인항목별
     @Query(value = """
@@ -206,4 +194,33 @@ public interface SalesQuantityStatisticsRepository extends JpaRepository<Custome
             ORDER BY totalSales DESC
     """, nativeQuery = true)
     List<SalesQuantityStatisticsProjection> findSalesQuantityByBranch(@Param("year") int year, @Param("month") int month);
+
+    // 카테고리별
+    @Query(value = """
+            SELECT
+                  bc_top.category_type,
+                  bc_top.category_id AS categoryId,
+                  bc_top.category_name AS categoryName,
+                  COALESCE(SUM(
+                          CASE
+                          WHEN co.customer_order_date_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+                          THEN cod.amount
+                          ELSE 0
+                          END
+                        ), 0) AS totalSales
+                FROM book_categories bc_top
+                LEFT JOIN book_categories bc_leaf
+                    ON bc_leaf.parent_category_id = bc_top.category_id
+                LEFT JOIN books b
+                    ON b.category_id = bc_leaf.category_id     
+                LEFT JOIN customer_orders_detail cod
+                    ON cod.book_isbn = b.book_isbn
+                LEFT JOIN customer_orders co
+                    ON co.customer_order_id = cod.customer_order_id    
+                WHERE bc_top.parent_category_id IS NULL
+                   
+                GROUP BY bc_top.category_type, bc_top.category_id, bc_top.category_name
+                ORDER BY bc_top.category_type, totalSales DESC;
+        """, nativeQuery = true)
+    List<CategorySalesQuantityProjection> findSalesQuantityByCategory();
 }

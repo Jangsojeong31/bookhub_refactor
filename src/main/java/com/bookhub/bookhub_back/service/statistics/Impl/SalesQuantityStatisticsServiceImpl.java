@@ -4,6 +4,7 @@ import com.bookhub.bookhub_back.common.constants.ResponseCode;
 import com.bookhub.bookhub_back.common.constants.ResponseMessage;
 import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.statistics.projection.BestSellerProjection;
+import com.bookhub.bookhub_back.dto.statistics.projection.CategorySalesQuantityProjection;
 import com.bookhub.bookhub_back.dto.statistics.projection.SalesQuantityStatisticsProjection;
 import com.bookhub.bookhub_back.dto.statistics.projection.YearlySalesQuantityProjection;
 import com.bookhub.bookhub_back.repository.statistics.SalesQuantityStatisticsRepository;
@@ -49,8 +50,8 @@ public class SalesQuantityStatisticsServiceImpl implements SalesQuantityStatisti
     }
 
     @Override
-    public ResponseDto<List<SalesQuantityStatisticsProjection>> getSalesQuantityByCategory() {
-        List<SalesQuantityStatisticsProjection> responseDtos = salesQuantityStatisticsRepository.findSalesQuantityByCategory();
+    public ResponseDto<List<CategorySalesQuantityProjection>> getSalesQuantityByCategory() {
+        List<CategorySalesQuantityProjection> responseDtos = salesQuantityStatisticsRepository.findSalesQuantityByCategory();
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
     }
 

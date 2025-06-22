@@ -136,42 +136,42 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     // 4) 발주 요청서 조회 - 조회 기준: 발주담당사원, isbn, 승인 상태
     @Override
-    public ResponseDto<List<PurchaseOrderResponseDto>> getPurchaseOrderByEmployeeNameAndBookTitleAndPurchaseOrderStatus(
-            String loginId, String employeeName, String bookTitle, PurchaseOrderStatus purchaseOrderStatus
+    public ResponseDto<List<PurchaseOrderResponseDto>> searchPurchaseOrder(
+            String loginId, String employeeName, String bookIsbn, PurchaseOrderStatus purchaseOrderStatus
     ) {
         List<PurchaseOrderResponseDto> responseDtos = null;
         List<PurchaseOrder> purchaseOrders = null;
 
-        if(employeeName == null && bookTitle == null && purchaseOrderStatus == null) {
+        if(employeeName == null && bookIsbn == null && purchaseOrderStatus == null) {
             purchaseOrders = purchaseOrderRepository.findAll();
-        } else if(bookTitle == null && purchaseOrderStatus == null) {
+        } else if(bookIsbn == null && purchaseOrderStatus == null) {
             Employee employee = employeeRepository.findByName(employeeName)
                     .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
             purchaseOrders = purchaseOrderRepository.findByEmployeeId(employee);
         } else if (employeeName == null && purchaseOrderStatus == null) {
-            Book book = bookRepository.findByBookTitle(bookTitle)
+            Book book = bookRepository.findById(bookIsbn)
                     .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
             purchaseOrders = purchaseOrderRepository.findByBookIsbn(book);
-        } else if (employeeName == null && bookTitle == null) {
+        } else if (employeeName == null && bookIsbn == null) {
             purchaseOrders = purchaseOrderRepository.findByPurchaseOrderStatus(purchaseOrderStatus);
         } else if (purchaseOrderStatus == null) {
             Employee employee = employeeRepository.findByName(employeeName)
                     .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
-            Book book = bookRepository.findByBookTitle(bookTitle)
+            Book book = bookRepository.findById(bookIsbn)
                     .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
             purchaseOrders = purchaseOrderRepository.findByEmployeeIdAndBookIsbn(employee, book);
-        } else if (bookTitle == null) {
+        } else if (bookIsbn == null) {
             Employee employee = employeeRepository.findByName(employeeName)
                     .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
             purchaseOrders = purchaseOrderRepository.findByEmployeeIdAndPurchaseOrderStatus(employee, purchaseOrderStatus);
         } else if (employeeName == null) {
-            Book book = bookRepository.findByBookTitle(bookTitle)
+            Book book = bookRepository.findById(bookIsbn)
                     .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
             purchaseOrders = purchaseOrderRepository.findByBookIsbnAndPurchaseOrderStatus(book, purchaseOrderStatus);
         } else {
             Employee employee = employeeRepository.findByName(employeeName)
                     .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
-            Book book = bookRepository.findByBookTitle(bookTitle)
+            Book book = bookRepository.findById(bookIsbn)
                     .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
             purchaseOrders = purchaseOrderRepository.findByEmployeeIdAndBookIsbnAndPurchaseOrderStatus(employee, book, purchaseOrderStatus);
         }
