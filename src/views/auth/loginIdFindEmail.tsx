@@ -2,6 +2,7 @@ import { loginIdFindSendEmailRequest } from "@/apis/auth/auth";
 import { LoginIdFindSendEmailRequestDto } from "@/dtos/auth/request/login-id-find-email.request.dto";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "@/styles/auth/Auth.css";
 
 function LoginIdFindEmail() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ function LoginIdFindEmail() {
   useEffect(() => {
     setMessage("");
     return;
-  },[form])
+  }, [form]);
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -23,15 +24,12 @@ function LoginIdFindEmail() {
   };
 
   const onEmailSendClick = async () => {
-    const { email, phoneNumber } = form;
-
-    if (!email || !phoneNumber) {
+    if (!form.email || !form.phoneNumber) {
       setMessage("모든 항목을 입력하세요");
       return;
     }
 
-    const requestBody: LoginIdFindSendEmailRequestDto = { email, phoneNumber };
-    const response = await loginIdFindSendEmailRequest(requestBody);
+    const response = await loginIdFindSendEmailRequest(form);
     const { code, message, data } = response;
 
     if (code != "SU") {
@@ -43,27 +41,37 @@ function LoginIdFindEmail() {
     }
   };
 
+  const onLogoClick = () => {
+    navigate("/auth/login");
+  };
+
   return (
-    <div>
-      <h1>아이디 찾기</h1>
-      <input
-        type="email"
-        placeholder="이메일"
-        name="email"
-        value={form.email}
-        onChange={onInputChange}
+    <div className="container">
+      <img
+        src="/src/apis/constants/북허브_로그_로그인창.png"
+        alt="BookHub 로고"
+        className="logo-img"
+        onClick={onLogoClick}
       />
-      <br />
-      <input
-        type="tel"
-        placeholder="전화번호"
-        name="phoneNumber"
-        value={form.phoneNumber}
-        onChange={onInputChange}
-      />
-      <br />
-      <button onClick={onEmailSendClick}>이메일 전송</button>
-      {message && <p>{message}</p>}
+      <div className="form-box">
+        <h2>아이디 찾기</h2>
+        <input
+          type="email"
+          placeholder="이메일"
+          name="email"
+          value={form.email}
+          onChange={onInputChange}
+        />
+        <input
+          type="tel"
+          placeholder="전화번호"
+          name="phoneNumber"
+          value={form.phoneNumber}
+          onChange={onInputChange}
+        />
+        {message && <p className="failP">{message}</p>}
+        <button onClick={onEmailSendClick}>이메일 전송</button>
+      </div>
     </div>
   );
 }

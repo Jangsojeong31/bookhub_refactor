@@ -2,6 +2,7 @@ import { GET_BRANCH_URL } from "@/apis";
 import { employeeUpdateRequest, verifyTokenEmployee } from "@/apis/auth/auth";
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import "@/styles/auth/Auth.css"
 
 interface Branch {
   branchId: number;
@@ -110,9 +111,14 @@ const EmployeeUpdate = () => {
   };
 
   return (
-    <div>
+    <div className="container">
+      <img
+        src="/src/apis/constants/북허브_로그_로그인창.png"
+        alt="BookHub 로고"
+        className="logo-img"
+      />
       {!loading && verified && (
-        <>
+        <div className="form-box">
           <h2>회원 가입 정보 변경</h2>
           <input
             type="tel"
@@ -122,7 +128,6 @@ const EmployeeUpdate = () => {
             onChange={onInputChange}
             required
           />
-          <br />
           <input
             type="date"
             placeholder="생년월일"
@@ -130,8 +135,7 @@ const EmployeeUpdate = () => {
             value={form.birthDate}
             onChange={onInputChange}
           />
-          <br />
-          <select value={form.branchId} onChange={onSelectChange}>
+          <select value={form.branchId} onChange={onSelectChange} className="custom-select">
             <option value={0}>지점을 선택하세요</option>
             {branches.map((branch) => (
               <option key={branch.branchId} value={branch.branchId}>
@@ -139,10 +143,9 @@ const EmployeeUpdate = () => {
               </option>
             ))}
           </select>
-          <br />
+          {message && <p className="failP">{message}</p>}
           <button onClick={onButtonClick}>변경</button>
-          {message && <p>{message}</p>}
-        </>
+        </div>
       )}
       {!loading && !verified && <p>{message}</p>}
     </div>

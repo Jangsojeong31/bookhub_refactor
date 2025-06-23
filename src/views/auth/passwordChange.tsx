@@ -1,6 +1,7 @@
 import { passwordChangeRequest, verifyToken } from "@/apis/auth/auth";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import "@/styles/auth/Auth.css";
 
 const PasswordChange = () => {
   const [searchParams] = useSearchParams();
@@ -41,7 +42,7 @@ const PasswordChange = () => {
     };
     fetchPasswordChange();
     setMessage("");
-  }, [token]);
+  }, [token, form]);
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -85,9 +86,14 @@ const PasswordChange = () => {
   };
 
   return (
-    <div>
+    <div className="container">
+      <img
+        src="/src/apis/constants/북허브_로그_로그인창.png"
+        alt="BookHub 로고"
+        className="logo-img"
+      />
       {!loading && verified && (
-        <>
+        <div className="form-box">
           <h2>비밀번호 변경</h2>
           <input
             type="password"
@@ -97,7 +103,6 @@ const PasswordChange = () => {
             onChange={onInputChange}
             required
           />
-          <br />
           <input
             type="password"
             placeholder="새 비밀번호 확인"
@@ -105,11 +110,10 @@ const PasswordChange = () => {
             value={form.confirmPassword}
             onChange={onInputChange}
             required
-          />
-          <br />
+            />
+            {message && <p className="failP">{message}</p>}
           <button onClick={onButtonClick}>비밀번호 변경</button>
-          {message && <p>{message}</p>}
-        </>
+        </div>
       )}
       {!loading && !verified && <p>{message}</p>}
     </div>

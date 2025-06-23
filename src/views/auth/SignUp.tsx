@@ -111,12 +111,6 @@ function SignUp() {
 
   const onSignUpClick = async () => {
     if (
-      !form.loginId ||
-      !form.password ||
-      !form.confirmPassword ||
-      !form.name ||
-      !form.email ||
-      !form.phoneNumber ||
       !form.birthDate ||
       !form.branchId ||
       form.branchId === 0
@@ -148,103 +142,101 @@ function SignUp() {
   };
 
   return (
-    <>
-      <div className="container">
-        <img
-          src="/src/apis/constants/북허브_로그_로그인창.png"
-          alt="BookHub 로고"
-          onClick={onLogoClick}
-          className="logo-img"
+    <div className="container">
+      <img
+        src="/src/apis/constants/북허브_로그_로그인창.png"
+        alt="BookHub 로고"
+        onClick={onLogoClick}
+        className="logo-img"
+      />
+      <div className="form-box">
+        <h2>SIGN UP</h2>
+        <input
+          type="text"
+          placeholder="아이디 (영문으로 시작, 4~12자 영문/숫자 조합)"
+          name="loginId"
+          value={form.loginId}
+          onChange={onInputChange}
+          onBlur={onCheckLoginIdBlur}
         />
-        <div className="form-box">
-          <h2>SIGN UP</h2>
-          <input
-            type="text"
-            placeholder="아이디 (영문으로 시작, 4~12자 영문/숫자 조합)"
-            name="loginId"
-            value={form.loginId}
-            onChange={onInputChange}
-            onBlur={onCheckLoginIdBlur}
-          />
-          <br />
-          {loginIdFailMessage && <p className="failP">{loginIdFailMessage}</p>}
-          {loginIdSuccessMessage && (
-            <p className="successP">{loginIdSuccessMessage}</p>
-          )}
-          <input
-            type="password"
-            placeholder="비밀번호 (8~16자 영문, 숫자, 특수문자 모두 포함)"
-            name="password"
-            value={form.password}
-            onChange={onInputChange}
-            onBlur={onPasswordBlur}
-          />
-          <br />
-          <input
-            type="password"
-            placeholder="비밀번호 확인"
-            name="confirmPassword"
-            value={form.confirmPassword}
-            onChange={onInputChange}
-            onBlur={onPasswordBlur}
-          />
-          <br />
-          {passwordFailCheckMessage && (
-            <p className="failP">{passwordFailCheckMessage}</p>
-          )}
-          {passwordSuccessCheckMessage && (
-            <p className="successP">{passwordSuccessCheckMessage}</p>
-          )}
-          <input
-            type="text"
-            placeholder="이름"
-            name="name"
-            value={form.name}
-            onChange={onInputChange}
-          />
-          <br />
-          <input
-            type="email"
-            placeholder="이메일"
-            name="email"
-            value={form.email}
-            onChange={onInputChange}
-          />
-          <br />
-          <input
-            type="tel"
-            placeholder="전화번호"
-            name="phoneNumber"
-            value={form.phoneNumber}
-            onChange={onInputChange}
-          />
-          <br />
-          <input
-            type="date"
-            placeholder="생년월일"
-            name="birthDate"
-            value={form.birthDate}
-            onChange={onInputChange}
-          />
-          <br />
-          <select
-            value={form.branchId}
-            onChange={onSelectChange}
-            className="custom-select"
-          >
-            <option value={0}>지점을 선택하세요</option>
-            {branches.map((branch) => (
-              <option key={branch.branchId} value={branch.branchId}>
-                {branch.branchName}
-              </option>
-            ))}
-          </select>
-          <br />
-          {message && <p className="failP">{message}</p>}
-          <button onClick={onSignUpClick}>회원가입</button>
-        </div>
+        <br />
+        {loginIdFailMessage && <p className="failP">{loginIdFailMessage}</p>}
+        {loginIdSuccessMessage && (
+          <p className="successP">{loginIdSuccessMessage}</p>
+        )}
+        <input
+          type="password"
+          placeholder="비밀번호 (8~16자 영문, 숫자, 특수문자 모두 포함)"
+          name="password"
+          value={form.password}
+          onChange={onInputChange}
+          onBlur={onPasswordBlur}
+        />
+        <br />
+        <input
+          type="password"
+          placeholder="비밀번호 확인"
+          name="confirmPassword"
+          value={form.confirmPassword}
+          onChange={onInputChange}
+          onBlur={onPasswordBlur}
+        />
+        <br />
+        {passwordFailCheckMessage && (
+          <p className="failP">{passwordFailCheckMessage}</p>
+        )}
+        {passwordSuccessCheckMessage && (
+          <p className="successP">{passwordSuccessCheckMessage}</p>
+        )}
+        <input
+          type="text"
+          placeholder="이름"
+          name="name"
+          value={form.name}
+          onChange={onInputChange}
+        />
+        <br />
+        <input
+          type="email"
+          placeholder="이메일"
+          name="email"
+          value={form.email}
+          onChange={onInputChange}
+        />
+        <br />
+        <input
+          type="tel"
+          placeholder="전화번호"
+          name="phoneNumber"
+          value={form.phoneNumber}
+          onChange={onInputChange}
+        />
+        <br />
+        <input
+          type="date"
+          placeholder="생년월일"
+          name="birthDate"
+          value={form.birthDate}
+          onChange={onInputChange}
+        />
+        <br />
+        <select
+          value={form.branchId}
+          onChange={onSelectChange}
+          className="custom-select"
+        >
+          <option value={0}>지점을 선택하세요</option>
+          {branches.map((branch) => (
+            <option key={branch.branchId} value={branch.branchId}>
+              {branch.branchName}
+            </option>
+          ))}
+        </select>
+        <br />
+        {message && <p className="failP">{message}</p>}
+        <button onClick={onSignUpClick}>회원가입</button>
       </div>
-    </>
+    </div>
   );
 }
 
