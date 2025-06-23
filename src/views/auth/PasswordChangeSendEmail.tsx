@@ -42,6 +42,7 @@ function PasswordChangeSendEmail() {
 
     if (code != "SU") {
       setMessage("이메일 전송 실패: " + message);
+      console.log(code);
       return;
     } else {
       alert(data);

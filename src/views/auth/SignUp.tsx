@@ -110,12 +110,14 @@ function SignUp() {
   };
 
   const onSignUpClick = async () => {
-    if (
-      !form.birthDate ||
-      !form.branchId ||
-      form.branchId === 0
-    ) {
+    if (!form.birthDate && (!form.branchId || form.branchId === 0)) {
       setMessage("모든 항목을 입력해 주세요");
+      return;
+    } else if (!form.birthDate) {
+      setMessage("생일을 입력해 주세요");
+      return;
+    } else if (!form.branchId || form.branchId === 0) {
+      setMessage("지점을 선택해 주세요");
       return;
     }
 
@@ -127,9 +129,14 @@ function SignUp() {
     const response = await signUpRequest(form);
     const { code, message } = response;
 
-    if (code != "SU") {
+    if (code !== "SU") {
       alert("회원가입에 실패");
-      setMessage(message);
+      if (code === "NMPW" || code === "DI") {
+        return;
+      } else {
+        setMessage(message);
+      }
+      console.log(code + " " + message);
       return;
     } else {
       alert("회원가입을 성공하였습니다.");
