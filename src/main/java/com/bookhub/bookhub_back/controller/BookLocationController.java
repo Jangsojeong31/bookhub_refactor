@@ -25,18 +25,18 @@ public class BookLocationController {
     private final BookLocationService bookLocationService;
 
     //1)책의 위치 생성
-    @PostMapping(ApiMappingPattern.MANAGER_API+"/branch/{branchId}/locations")
+    @PostMapping(ApiMappingPattern.MANAGER_API+"/branch/locations")
     public ResponseEntity<ResponseDto<LocationCreateResponseDto>> createLocation(
-            @PathVariable Long branchId,
+            @RequestParam Long branchId,
             @Valid @RequestBody LocationCreateRequestDto dto){
         ResponseDto<LocationCreateResponseDto> location = bookLocationService.createLocation(branchId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(location);
     }
 
     //2)책의 위치 수정
-    @PutMapping(ApiMappingPattern.MANAGER_API+"/branch/{branchId}/locations/{locationId}")
+    @PutMapping(ApiMappingPattern.MANAGER_API+"/branch/locations/{locationId}")
     public ResponseEntity<ResponseDto<LocationUpdateResponseDto>> updateLocation(
-            @PathVariable Long branchId,
+            @RequestParam Long branchId,
             @PathVariable Long locationId,
             @Valid @RequestBody LocationUpdateRequestDto dto){
         ResponseDto<LocationUpdateResponseDto> changeLocation = bookLocationService.updateLocation(branchId,locationId, dto);
@@ -44,27 +44,27 @@ public class BookLocationController {
     }
 
     //3)책을 검색하여 하여 책 리스트 반환
-    @GetMapping(ApiMappingPattern.COMMON_API+"/branch/{branchId}/locations")
+    @GetMapping(ApiMappingPattern.COMMON_API+"/branch/locations")
     public ResponseEntity<ResponseDto<List<LocationResponseDto>>> searchBranchBooksByTitle(
-            @PathVariable Long branchId,
-            @RequestParam String bookTitle){
+            @RequestParam Long branchId,
+            @RequestParam(required = false, defaultValue = "")  String bookTitle){
         ResponseDto<List<LocationResponseDto>> books = bookLocationService.searchBranchBooksByTitle(branchId,bookTitle);
         return ResponseEntity.status(HttpStatus.OK).body(books);
     }
 
     //4)해당 책을 클릭하여 위치 반환
-    @GetMapping(ApiMappingPattern.COMMON_API+"/branch/{branchId}/locations/{locationId}")
+    @GetMapping(ApiMappingPattern.COMMON_API+"/branch/locations/{locationId}")
     public ResponseEntity<ResponseDto<LocationDetailResponseDto>> getLocation(
-            @PathVariable Long branchId,
+            @RequestParam Long branchId,
             @PathVariable Long locationId){
         ResponseDto<LocationDetailResponseDto> location = bookLocationService.getLocation(branchId,locationId);
         return ResponseEntity.status(HttpStatus.OK).body(location);
     }
 
     //5)위치 삭제하기
-    @DeleteMapping(ApiMappingPattern.MANAGER_API+"/branch/{branchId}/locations/{locationId}")
+    @DeleteMapping(ApiMappingPattern.MANAGER_API+"/branch/locations/{locationId}")
     public ResponseEntity<ResponseDto<Void>> deleteLocation(
-            @PathVariable Long branchId,
+            @RequestParam Long branchId,
             @PathVariable Long locationId){
         ResponseDto<Void> responseDto = bookLocationService.deleteLocation(branchId, locationId);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);

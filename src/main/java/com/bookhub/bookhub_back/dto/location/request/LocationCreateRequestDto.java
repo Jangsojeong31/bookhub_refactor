@@ -11,6 +11,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Builder
 public class LocationCreateRequestDto {
+
     private String bookIsbn;
     private String floor;
     private String hall;
