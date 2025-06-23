@@ -45,10 +45,13 @@ public class MailServiceImpl implements MailService {
         return Mono.fromCallable(() -> {
 
             Employee employee = employeeRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
+                .orElse(null);
+            if (employee == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDto.fail(ResponseCode.NO_EXIST_USER_EMAIL, ResponseMessageKorean.NO_EXIST_USER_EMAIL));
+            }
 
             if (!employee.getPhoneNumber().equals(dto.getPhoneNumber())) {
-                throw new IllegalArgumentException("사용자의 전화번호와 일치하지 않습니다.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDto.fail(ResponseCode.NOT_MATCH_USER_TEL, ResponseMessageKorean.NO_EXIST_USER_TEL));
             }
 
             String token = UUID.randomUUID().toString();
@@ -102,14 +105,17 @@ public class MailServiceImpl implements MailService {
     public Mono<ResponseEntity<ResponseDto<String>>> sendEmailResetPassword(PasswordFindSendEmailReqestDto dto) {
         return Mono.fromCallable(() -> {
             Employee employee = employeeRepository.findByLoginId(dto.getLoginId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사원입니다."));
+                .orElse(null);
+            if (employee == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDto.fail(ResponseCode.NO_EXIST_USER_ID, ResponseMessageKorean.NO_EXIST_USER_ID));
+            }
 
             if (!employee.getEmail().equals(dto.getEmail())) {
-                throw new IllegalArgumentException("사용자의 이메일과 일치하지 않습니다.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDto.fail(ResponseCode.NOT_MATCH_USER_EMAIL, ResponseMessageKorean.NOT_MATCH_USER_EMAIL));
             }
 
             if (!employee.getPhoneNumber().equals(dto.getPhoneNumber())) {
-                throw new IllegalArgumentException("사용자의 전화번호와 일치하지 않습니다.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDto.fail(ResponseCode.NOT_MATCH_USER_TEL, ResponseMessageKorean.NOT_MATCH_USER_TEL));
             }
 
             String token = UUID.randomUUID().toString();

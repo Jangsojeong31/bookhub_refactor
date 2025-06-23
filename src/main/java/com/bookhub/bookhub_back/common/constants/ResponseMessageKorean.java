@@ -32,6 +32,8 @@ public interface ResponseMessageKorean {
     String USER_ALREADY_EXISTS = "이미 가입된 사용자입니다.";
     String NO_EXIST_USER_EMAIL = "존재하지 않는 이메일입니다.";
     String NO_EXIST_USER_TEL = "존재하지 않는 전화번호입니다.";
+    String NOT_MATCH_USER_TEL = "사용자의 전화번호가 일치하지 않습니다.";
+    String NOT_MATCH_USER_EMAIL = "사용자의 이메일이 일치하지 않습니다.";
 
     // 리소스 관련
     String NO_EXIST_TOOL = "존재하지 않는 도구입니다.";
