@@ -9,7 +9,7 @@ export const axiosInstance = axios.create({
   // : REACT 프로젝트에서 환경 변수를 사용하는 방식
   // > 프로젝트 루트에 .env 파일을 생성하여 데이터 저장
   baseURL: import.meta.env.REACT_APP_API_DOMAIN || "http://localhost:8080",
-  timeout: 5000, // 5초 타입아웃 설정
+  timeout: 8000,
 });
 
 // 공통 응답 처리 (응답 핸들러)
