@@ -117,6 +117,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
         responseDtos = purchaseOrders.stream()
                 .filter(order -> order.getPurchaseOrderStatus() == PurchaseOrderStatus.REQUESTED)
+                .sorted(Comparator.comparing(PurchaseOrder::getPurchaseOrderDateAt).reversed())
                 .map(order -> changeToPurchaseOrderResponseDto(order))
                 .collect(Collectors.toList());
 
