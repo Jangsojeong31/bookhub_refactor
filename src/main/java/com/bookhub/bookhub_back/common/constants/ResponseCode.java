@@ -32,6 +32,8 @@ public interface ResponseCode {
     String NOT_MATCH_PASSWORD = "NMPW";
     String NO_EXIST_USER_EMAIL = "NEUE";
     String NO_EXIST_USER_TEL = "NEUT";
+    String NOT_MATCH_USER_TEL = "NMUT";
+    String NOT_MATCH_USER_EMAIL = "NMUE";
 
     // 리소스 관련
     String NO_EXIST_TOOL = "NT"; // 존재하지 않는 도구
