@@ -51,28 +51,28 @@ export const DELETE_PUBLISHER_URL = (publisherId: number) => `${PUBLISHER_MODULE
 // // 4) 지점별 진열위치 삭제
 // export const DELETE_LOCATION_URL = (LocationId: number) => `${LOCATION_URL_MANAGER}/${LocationId}`;
 // 공통·관리자 공통 도메인
-const LOCATION_BRANCH_MANAGER = `${API_DOMAIN}/api/v1/${MANAGER}/branch`
-const LOCATION_BRANCH_COMMON  = `${API_DOMAIN}/api/v1/${COMMON}/branch`
+const LOCATION_BRANCH_MANAGER = `${API_DOMAIN}/api/v1/${MANAGER}/branch/locations`
+const LOCATION_BRANCH_COMMON  = `${API_DOMAIN}/api/v1/${COMMON}/branch/locations`
 
 // 1) 지점별 진열위치 등록 (POST)
-export const POST_LOCATION_URL = (branchId: number) =>
-  `${LOCATION_BRANCH_MANAGER}/${branchId}/locations`
+export const POST_LOCATION_URL = 
+  `${LOCATION_BRANCH_MANAGER}`
 
 // 2) 지점별 진열위치 전체 조회 (GET 리스트)
-export const GET_ALL_LOCATIONS_URL = (branchId: number) =>
-  `${LOCATION_BRANCH_COMMON}/${branchId}/locations`
+export const GET_ALL_LOCATIONS_URL = 
+  `${LOCATION_BRANCH_COMMON}`
 
 // 3) 지점별 진열위치 단건 조회 (GET 상세)
-export const GET_LOCATION_URL = (branchId: number, locationId: number) =>
-  `${LOCATION_BRANCH_COMMON}/${branchId}/locations/${locationId}`
+export const GET_LOCATION_URL = ( locationId: number) =>
+  `${LOCATION_BRANCH_COMMON}/${locationId}`
 
 // 4) 지점별 진열위치 수정 (PUT)
-export const PUT_LOCATION_URL = (branchId: number, locationId: number) =>
-  `${LOCATION_BRANCH_MANAGER}/${branchId}/locations/${locationId}`
+export const PUT_LOCATION_URL = ( locationId: number) =>
+  `${LOCATION_BRANCH_MANAGER}/${locationId}`
 
 // 5) 지점별 진열위치 삭제 (DELETE)
-export const DELETE_LOCATION_URL = (branchId: number, locationId: number) =>
-  `${LOCATION_BRANCH_MANAGER}/${branchId}/locations/${locationId}`
+export const DELETE_LOCATION_URL = ( locationId: number) =>
+  `${LOCATION_BRANCH_MANAGER}/${locationId}`
 
 
 
