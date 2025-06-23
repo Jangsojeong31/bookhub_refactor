@@ -9,7 +9,7 @@ public interface RegexConstants {
         "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%*?])[A-Za-z\\d!@#$%*?]{8,16}$";
 
     // 회원 이메일 정규식
-    public static final String EMAIL_REGEX = "^[A-Za-Z][A-Za-Z\\d]+@[A-Za-Z\\d.-]+\\.[A-Za-z]{2,}$";
+    public static final String EMAIL_REGEX = "^[A-Za-z][A-Za-z\\d]+@[A-Za-z\\d.-]+\\.[A-Za-z]{2,}$";
 
     // 회원 전화번호 정규식
     public static final String PHONE_REGEX = "^010\\d{8}";

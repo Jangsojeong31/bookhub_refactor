@@ -69,7 +69,7 @@ public class MailServiceImpl implements MailService {
                             <p>본 이메일은 인증 목적으로 발송되었습니다. 인증을 원하지 않으시면 무시하셔도 됩니다.</p>
                 """.formatted(token);
 
-            helper.setText(htmlContent, true);  // true: HTML 형식
+            helper.setText(htmlContent, true);
 
             mailSender.send(message);
 
@@ -130,7 +130,7 @@ public class MailServiceImpl implements MailService {
                             <p>본 이메일은 인증 목적으로 발송되었습니다. 인증을 원하지 않으시면 무시하셔도 됩니다.</p>
                 """.formatted(token);
 
-            helper.setText(htmlContent, true);  // true: HTML 형식
+            helper.setText(htmlContent, true);
 
             mailSender.send(message);
 
@@ -210,7 +210,7 @@ public class MailServiceImpl implements MailService {
                                     회원가입이 승인되었습니다.
                                 </p>
                     """;
-                helper.setText(htmlContent, true);  // true: HTML 형식
+                helper.setText(htmlContent, true);
 
                 mailSender.send(message);
 
@@ -239,7 +239,7 @@ public class MailServiceImpl implements MailService {
                                 <p>본 이메일은 인증 목적으로 발송되었습니다. 인증을 원하지 않으시면 무시하셔도 됩니다.</p>
                     """.formatted(token);
 
-                helper.setText(htmlContent, true);  // true: HTML 형식
+                helper.setText(htmlContent, true);
 
                 mailSender.send(message);
 
@@ -276,7 +276,7 @@ public class MailServiceImpl implements MailService {
                                     거절 사유: %s
                                 </p>
                     """.formatted(reasonLabel);
-                helper.setText(htmlContent, true);  // true: HTML 형식
+                helper.setText(htmlContent, true);
 
                 mailSender.send(message);
 
