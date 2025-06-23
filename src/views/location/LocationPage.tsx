@@ -1,127 +1,90 @@
-import React, { useEffect, useState } from 'react';
+import { getLocations, deleteLocation } from "@/apis/location/location";
+import { LocationResponseDto } from "@/dtos/location/location.dto";
+import { useEmployeeStore } from "@/stores/employee.store";
+import { useState, useEffect } from "react";
+import { useCookies } from "react-cookie";
+import { CreateLocation } from "./CreateLocation";
+import { LocationTable } from "./LocationTable";
+import { UpdateLocation } from "./UpdateLocation";
 
-import CreateLocation from './CreateLocation';
-import UpdateLocation from './UpdateLocation';
-import styles from './location.module.css';
-import { deleteLocation, getLocations } from '@/apis/location/location';
-import { LocationResponseDto } from '@/dtos/location/location.response.dto';
-import { useParams } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
-import Modal from '@/apis/constants/Modal';
 
 export default function LocationPage() {
-  // 1. 라우터 파라미터로 branchId 받기 (string → number 변환)
-  const { branchId } = useParams<{ branchId: string }>();
-  const branchIdNum = branchId ? Number(branchId) : 0;
-
-  // 2. 쿠키에서 accessToken 가져오기
-  const [cookies] = useCookies(['accessToken']);
-  const accessToken = cookies.accessToken;
-
-  // 3. 상태 선언
-  const [list, setList] = useState<LocationResponseDto[]>([]);
-  const [search, setSearch] = useState('');
+  const [cookies] = useCookies(["accessToken"]);
+  const branchId = useEmployeeStore(state => state.employee?.branchId);
+  const [data, setData] = useState<LocationResponseDto[]>([]);
+  const [keyword, setKeyword] = useState("");
+  const [createOpen, setCreateOpen] = useState(false);
+  const [updateOpen, setUpdateOpen] = useState(false);
+  const [detailOpen, setDetailOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [showCreate, setShowCreate] = useState(false);
-  const [showUpdate, setShowUpdate] = useState(false);
 
-  // 4. 데이터 불러오기 함수
-  const fetch = async () => {
-    if (!branchIdNum || !accessToken) return; // 필수 값 체크
-    try {
-      const { data } = await getLocations(accessToken, branchIdNum, search);
-      setList(data ?? []);
-    } catch (e) {
-      console.error(e);
-      setList([]);
-    }
+  // 지점별 진열 위치 조회
+  const fetchData = async () => {
+    if (!branchId) return;
+    const res = await getLocations(cookies.accessToken, branchId, keyword);
+    if (res.data) setData(res.data);
   };
 
   useEffect(() => {
-    fetch();
-    // eslint-disable-next-line
-  }, [search, branchIdNum]);
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [branchId]);
 
-  // 5. 삭제 함수
-  const onDelete = async (locationId: number) => {
-    if (!window.confirm('정말 삭제하시겠어요?')) return;
-    if (!accessToken || !branchIdNum) return;
-    await deleteLocation(locationId, accessToken, branchIdNum);
-    fetch();
+  // 검색 핸들러
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    fetchData();
+  };
+
+  // 삭제 핸들러
+  const handleDelete = async (id: number) => {
+    if (!branchId) return;
+    if (!window.confirm("정말 삭제하시겠습니까?")) return;
+    await deleteLocation(id, cookies.accessToken, branchId);
+    fetchData();
   };
 
   return (
-    <div className={styles.container}>
-      <h2>진열 위치 목록</h2>
-      <div className={styles.toolbar}>
+    <section style={{ padding: "1rem" }}>
+      <h1>책 진열 위치 관리</h1>
+
+      {/* 검색 + 등록 */}
+      <form onSubmit={handleSearch} style={{ marginBottom: "1rem" }}>
         <input
-          placeholder="책 제목으로 검색"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
+          placeholder="책 제목 검색"
+          value={keyword}
+          onChange={e => setKeyword(e.target.value)}
+          style={{ marginRight: "0.5rem" }}
         />
-        <button onClick={() => setShowCreate(true)}>진열 위치 등록</button>
-      </div>
+        <button type="submit" style={{ marginRight: "0.5rem" }}>검색</button>
+        <button type="button" onClick={() => setCreateOpen(true)}>등록</button>
+      </form>
 
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>제목</th>
-            <th>층</th>
-            <th>타입</th>
-            <th>관리</th>
-          </tr>
-        </thead>
-        <tbody>
-          {list.map(loc => (
-            <tr key={loc.locationId}>
-              <td>{loc.locationId}</td>
-              <td>{loc.bookTitle}</td>
-              <td>{loc.floor}</td>
-              <td>
-                <span className={styles.type}>{loc.type}</span>
-              </td>
-              
-              <td>
-                <button className={styles.edit}
-                  onClick={() => {
-                    setSelectedId(loc.locationId);
-                    setShowUpdate(true);
-                  }}
-                >
-                  수정
-                </button>
-                <button className={styles.delete} onClick={() => onDelete(loc.locationId)}>삭제</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {/* 목록 테이블 */}
+      <LocationTable
+        data={data}
+        onView={id => { setSelectedId(id); setDetailOpen(true); }}
+        onEdit={id => { setSelectedId(id); setUpdateOpen(true); }}
+        onDelete={handleDelete}
+      />
 
-    {/* 진열 위치 등록 모달 */}
-      <Modal isOpen={showCreate} onClose={() => setShowCreate(false)}>
-        <CreateLocation
-          branchId={branchIdNum}
-          onClose={() => {
-            setShowCreate(false);
-            fetch();
-          }}
-        />
-      </Modal>
-
-      {/* 진열 위치 수정 모달 */}
-      <Modal isOpen={showUpdate} onClose={() => setShowUpdate(false)}>
-        {selectedId != null && (
-          <UpdateLocation
-            branchId={branchIdNum}
-            locationId={selectedId}
-            onClose={() => {
-              setShowUpdate(false);
-              fetch();
-            }}
-          />
-        )}
-      </Modal>
-    </div>
+      {/* 모달 컴포넌트들 */}
+      <CreateLocation
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+        onSuccess={fetchData}
+      />
+      <UpdateLocation
+        locationId={selectedId}
+        open={updateOpen}
+        onClose={() => setUpdateOpen(false)}
+        onSuccess={fetchData}
+      />
+      {/* <LocationDetail
+        locationId={selectedId}
+        open={detailOpen}
+        onClose={() => setDetailOpen(false)}
+      /> */}
+    </section>
   );
 }

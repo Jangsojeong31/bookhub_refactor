@@ -26,7 +26,6 @@ import Reception from "./views/reception";
 // import 'react-datepicker/dist/react-datepicker.css';
 import PolicyPage from "./views/policy/PolicyPage";
 import SalesQuantityStatistics from "./views/statistics/salesQuantity-statistics";
-import LocationPage from "./views/location/LocationPage";
 import StockLog from "./views/stock-logs";
 import Revenue from "./views/statistics/revenue";
 
@@ -34,6 +33,7 @@ import StockStatistics from "./views/statistics/stockstatistics";
 
 import Branch from "./views/branch";
 import AlertPage from "./views/alert/AlertPage";
+import LocationPage from "./views/location/LocationPage";
 
 function App() {
   const [cookies] = useCookies(["accessToken"]);
@@ -100,7 +100,7 @@ function App() {
               <Route path="/publishers/*" element={<Publisher />} />
               <Route path="/policies/*" element={<PolicyPage />} />
               <Route
-                path="/branch/:branchId/locations"
+                path="/branch/locations"
                 element={<LocationPage />}
               />
               <Route path="/stock-logs/*" element={<StockLog />} />

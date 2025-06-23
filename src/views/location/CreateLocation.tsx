@@ -1,62 +1,219 @@
-import React, { useState } from 'react';
-import styles from './location.module.css';
-import { createLocation } from '@/apis/location/location';
-import { DisplayType } from '@/apis/enums/DisplayType';
-import { useCookies } from 'react-cookie';
+import { DisplayType } from "@/apis/enums/DisplayType";
+import { createLocation } from "@/apis/location/location";
+import { LocationCreateRequestDto } from "@/dtos/location/location.dto";
+import { useEmployeeStore } from "@/stores/employee.store";
+import { useRef, useState, useEffect } from "react";
+import { useCookies } from "react-cookie";
 
 interface Props {
-  branchId: number;
+  open: boolean;
   onClose: () => void;
+  onSuccess: () => Promise<void>;
 }
 
-export default function CreateLocation({ branchId, onClose }: Props) {
-  const [form, setForm] = useState({
-    bookIsbn: '', floor: '', hall: '', section: '', displayType: '', note: ''
+export function CreateLocation({ open, onClose, onSuccess }: Props) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [cookies] = useCookies(["accessToken"]);
+  // 로그인된 직원에서 branchId 꺼내기
+  const branchId = useEmployeeStore(state => state.employee?.branchId);
+
+  const [form, setForm] = useState<LocationCreateRequestDto>({
+    bookIsbn: "",
+    floor: "",
+    hall: "",
+    section: "",
+    displayType: DisplayType.BOOK_SHELF,
+    note: null,
   });
 
-  const [cookies] = useCookies(['accessToken']);
-  const accessToken = cookies.accessToken;
+  useEffect(() => {
+    if (open) dialogRef.current?.showModal();
+    else dialogRef.current?.close();
+  }, [open]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-const onSubmit = async (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // displayType이 빈값일 경우 방지 (필수 값 체크)
-    if (!form.displayType) {
-      alert('진열위치를 선택하세요.');
+    if (!branchId) {
+      alert("지점 정보가 없습니다.");
       return;
     }
-    await createLocation(form, accessToken, branchId); // 시그니처 맞게!
+    await createLocation(form, cookies.accessToken, branchId);
+    await onSuccess();
     onClose();
   };
+
   return (
-    <div className={styles.modalBackdrop}>
-      <form className={styles.modal} onSubmit={onSubmit}>
-        <h3>진열 위치 등록</h3>
-        <label>ISBN</label>
-        <input name="bookIsbn" value={form.bookIsbn} onChange={handleChange} required />
-        <label>층</label>
-        <input name="floor" value={form.floor} onChange={handleChange} required />
-        <label>홀</label>
-        <input name="hall" value={form.hall} onChange={handleChange} required />
-        <label>구역</label>
-        <input name="section" value={form.section} onChange={handleChange} required />
-        <label>진열위치</label>
-        <select name="displayType" value={form.displayType} onChange={handleChange} required>
-          <option value="">선택</option>
-          <option value={DisplayType.BOOK_SHELF}>책장 진열</option>
-          <option value={DisplayType.DISPLAY_TABLE}>평대 진열</option>
-        </select>
-        <label>설명</label>
-        <input name="note" value={form.note} onChange={handleChange} />
-        <div className={styles.buttons}>
-          <button type="button" onClick={onClose}>취소</button>
+    <dialog ref={dialogRef} onClose={onClose}>
+      <h3>책 위치 등록</h3>
+      <form onSubmit={submit}>
+        <div>
+          <label>
+            ISBN:
+            <input
+              name="bookIsbn"
+              value={form.bookIsbn}
+              onChange={handleChange}
+              required
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            층:
+            <input name="floor" value={form.floor} onChange={handleChange} />
+          </label>
+        </div>
+        <div>
+          <label>
+            홀:
+            <input name="hall" value={form.hall} onChange={handleChange} />
+          </label>
+        </div>
+        <div>
+          <label>
+            섹션:
+            <input name="section" value={form.section} onChange={handleChange} />
+          </label>
+        </div>
+        <div>
+          <label>
+            진열 타입:
+            <select
+              name="displayType"
+              value={form.displayType}
+              onChange={handleChange}
+            >
+              {Object.entries(DisplayType).map(([key, val]) => (
+                <option key={key} value={val}>
+                  {val}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <div>
+          <label>
+            비고:
+            <input
+              name="note"
+              value={form.note ?? ""}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+        <div style={{ marginTop: "1rem" }}>
+          <button type="button" onClick={onClose}>
+            취소
+          </button>
           <button type="submit">등록</button>
         </div>
       </form>
-    </div>
+    </dialog>
   );
 }
+
+
+// import { DisplayType } from "@/apis/enums/DisplayType";
+// import { createLocation } from "@/apis/location/location";
+// import { LocationCreateRequestDto } from "@/dtos/location/location.dto";
+// import { useEmployeeStore } from "@/stores/employee.store";
+// import React, { useRef, useState } from "react";
+// import { useCookies } from "react-cookie";
+
+// interface Props {
+//   open: boolean;
+//   onClose: () => void;
+//   onSuccess: () => Promise<void>;
+// }
+
+
+// export function CreateLocation({ open, onClose, onSuccess }: Props) {
+//   const dialogRef = useRef<HTMLDialogElement>(null);
+//   const [cookies] = useCookies(["accessToken"]);
+//   const [form, setForm] = useState<LocationCreateRequestDto>({
+//     bookIsbn: "",
+//     floor: "",
+//     hall: "",
+//     section: "",
+//     displayType: DisplayType.BOOK_SHELF,
+//     note: "",
+//   });
+
+//   React.useEffect(() => {
+//     if (open) {
+//       dialogRef.current?.showModal();
+//     } else {
+//       dialogRef.current?.close();
+//     }
+//   }, [open]);
+
+//   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+//     const { name, value } = e.target;
+//     setForm(prev => ({ ...prev, [name]: value }));
+//   };
+
+//   const submit = async (e: React.FormEvent) => {
+    
+//     e.preventDefault();
+//     await createLocation(form, cookies.accessToken);
+//     await onSuccess();
+//     onClose();
+//   };
+
+//   return (
+//     <dialog ref={dialogRef} onClose={onClose}>
+//       <h3>책 위치 등록</h3>
+//       <form onSubmit={submit}>
+//         <div>
+//           <label>
+//             ISBN:
+//             <input name="bookIsbn" value={form.bookIsbn} onChange={handleChange} required />
+//           </label>
+//         </div>
+//         <div>
+//           <label>
+//             층:
+//             <input name="floor" value={form.floor} onChange={handleChange} />
+//           </label>
+//         </div>
+//         <div>
+//           <label>
+//             홀:
+//             <input name="hall" value={form.hall} onChange={handleChange} />
+//           </label>
+//         </div>
+//         <div>
+//           <label>
+//             섹션:
+//             <input name="section" value={form.section} onChange={handleChange} />
+//           </label>
+//         </div>
+//         <div>
+//           <label>
+//             진열 타입:
+//             <select name="displayType" value={form.displayType} onChange={handleChange}>
+//               {Object.entries(DisplayType).map(([key, val]) => (
+//                 <option key={key} value={val}>{val}</option>
+//               ))}
+//             </select>
+//           </label>
+//         </div>
+//         <div>
+//           <label>
+//             비고:
+//             <input name="note" value={form.note ?? ""} onChange={handleChange} />
+//           </label>
+//         </div>
+//         <div style={{ marginTop: "1rem" }}>
+//           <button type="button" onClick={onClose}>취소</button>
+//           <button type="submit">등록</button>
+//         </div>
+//       </form>
+//     </dialog>
+//   );
+// }

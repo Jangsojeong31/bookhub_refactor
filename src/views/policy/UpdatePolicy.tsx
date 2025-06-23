@@ -57,13 +57,13 @@ function UpdatePolicy({ isOpen, onClose, onUpdated, policy }: Props) {
     }
 
     const dto: PolicyUpdateRequestDto = {
-     
       policyDescription,
-      
+
       totalPriceAchieve,
       discountPercent,
       startDate,
       endDate,
+      policyId: 0
     };
 
     try {
