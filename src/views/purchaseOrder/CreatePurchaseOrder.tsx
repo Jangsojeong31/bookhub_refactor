@@ -114,9 +114,7 @@ function CreatePurchaseOrder() {
           <td>{purchaseOrder.employeeName}</td>
           <td>{purchaseOrder.isbn}</td>
           <td>{purchaseOrder.bookTitle}</td>
-          <td>{purchaseOrder.bookPrice}</td>
           <td>{purchaseOrder.purchaseOrderAmount}</td>
-          <td>{purchaseOrder.purchaseOrderPrice}</td>
           <td>{new Date(purchaseOrder.purchaseOrderDateAt).toLocaleString(
               "ko-KR"
             )}</td>
@@ -137,9 +135,7 @@ function CreatePurchaseOrder() {
             <th>발주 담당 사원</th>
             <th>ISBN</th>
             <th>책 제목</th>
-            <th>책 가격</th>
             <th>발주 수량</th>
-            <th>총 가격</th>
             <th>발주 일자</th>
             <th>승인 상태</th>
           </tr>

@@ -57,7 +57,6 @@ export const adminMenu: SidebarMenu[] = [
       { label: '매출 통계', path: '/statistics/revenue' },
       { label: '재고 통계', path: '/statistics/stocks' },
       { label: '판매량 통계', path: '/statistics/sales-quantity/period' },
-      { label: '발주량 판매 통계', path: '/statistics/' },
     ],
   },
 ];

@@ -1,24 +1,14 @@
+import { getCategoryTree } from "@/apis/category/category";
 import {
   getSalesQuantityByCategory,
-  getSalesQuantityByDiscountPolicy,
 } from "@/apis/statistics/salesQuantityStatistics/salesQuantityStatistics";
 import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { data, NavLink } from "react-router-dom";
-import {
-  ResponsiveContainer,
-  BarChart,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Bar,
-  Cell,
-  Pie,
-  PieChart,
-  Legend,
-} from "recharts";
+import { Cell, Pie, PieChart, Legend } from "recharts";
 
 type ChartData = { name: string; total: number };
+type LegendData = { name: string; total: number };
 
 interface CustomizedLabelProps {
   cx: number;
@@ -34,10 +24,18 @@ function SalesQuantityByCategory() {
   const [cookies] = useCookies(["accessToken"]);
   const [chartData1, setChartData1] = useState<ChartData[]>([]);
   const [chartData2, setChartData2] = useState<ChartData[]>([]);
+  const [legendData1, setLegendData1] = useState<LegendData[]>([]);
+  const [legendData2, setLegendData2] = useState<LegendData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState("");
 
   const token = cookies.accessToken as string;
+
+  // 차트 처음 불러오기
+  useEffect(() => {
+    fetchLegend();
+    onFetchChart();
+  }, []);
 
   // 새로고침하면 차트 갱신
   const onFetchChart = async () => {
@@ -79,6 +77,9 @@ function SalesQuantityByCategory() {
 
         setChartData1(mapped1);
         setChartData2(mapped2);
+
+        setLegendData1((prev) => mergeTotalIntoLegend(prev, mapped1));
+        setLegendData2((prev) => mergeTotalIntoLegend(prev, mapped2));
       }
     } else {
       setMessage("데이터가 유효하지 않습니다.");
@@ -86,10 +87,45 @@ function SalesQuantityByCategory() {
     setLoading(false);
   };
 
-  // 차트 처음 불러오기
-  useEffect(() => {
-    onFetchChart();
-  }, []);
+  const mergeTotalIntoLegend = (
+    legend: { name: string }[],
+    chart: { name: string; total: number }[]
+  ): { name: string; total: number }[] => {
+    const chartMap = new Map(chart.map((item) => [item.name, item.total]));
+    return legend.map((item) => ({
+      name: item.name,
+      total: chartMap.get(item.name) ?? 0,
+    }));
+  };
+
+  // 범례 데이터 불러오기
+  const fetchLegend = async () => {
+    const responseDomestic = await getCategoryTree(
+      "DOMESTIC",
+      cookies.accessToken
+    );
+    const responseForeign = await getCategoryTree(
+      "FOREIGN",
+      cookies.accessToken
+    );
+
+    if (responseDomestic.code != "SU" || responseForeign.code != "SU") {
+      // setMessage(message);
+      return;
+    }
+    const legendData1 = responseDomestic.data!.map((item) => ({
+      name: item.categoryName as string,
+      total: 0,
+    }));
+
+    const legendData2 = responseForeign.data!.map((item) => ({
+      name: item.categoryName as string,
+      total: 0,
+    }));
+    setLegendData1(mergeTotalIntoLegend(legendData1, chartData1));
+
+    setLegendData2(mergeTotalIntoLegend(legendData2, chartData2));
+  };
 
   // 차트 구성
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
@@ -118,7 +154,7 @@ function SalesQuantityByCategory() {
     };
 
   // legend
-  const renderCustomLegend = (data: ChartData[]) => () =>
+  const renderCustomLegend = (data: LegendData[]) => () =>
     (
       <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
         {data.map((entry, index) => (
@@ -128,11 +164,11 @@ function SalesQuantityByCategory() {
                 display: "inline-block",
                 width: 10,
                 height: 10,
-                backgroundColor: COLORS[index % COLORS.length],
+                backgroundColor: "#999",
                 marginRight: 8,
               }}
             />
-            {`${entry.name} (${entry.total})`}
+            {entry.name} ({entry.total.toLocaleString()})
           </li>
         ))}
       </ul>
@@ -222,7 +258,7 @@ function SalesQuantityByCategory() {
                   transform: "translate(0, -50%)",
                   lineHeight: "24px",
                 }}
-                content={renderCustomLegend(chartData1)}
+                content={renderCustomLegend(legendData1)}
               />
             </PieChart>
           </div>
@@ -268,7 +304,7 @@ function SalesQuantityByCategory() {
                   transform: "translate(0, -50%)",
                   lineHeight: "24px",
                 }}
-                content={renderCustomLegend(chartData2)}
+                content={renderCustomLegend(legendData2)}
               />
             </PieChart>
           </div>
