@@ -6,6 +6,7 @@ import { PurchaseOrderStatus } from "@/dtos/purchaseOrderApproval/request/purcha
 import { PurchaseOrderApprovalResponseDto } from "@/dtos/purchaseOrderApproval/response/purchaseOrderApproval.respose.dto";
 import React, { useState } from "react";
 import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 
 function ElsePurchaseOrderApproval() {
   const [searchForm, setSearchForm] = useState<{
@@ -27,34 +28,15 @@ function ElsePurchaseOrderApproval() {
     PurchaseOrderApprovalResponseDto[]
   >([]);
 
+  const [currentPage, setCurrentPage] = useState(0);
+    const itemsPerPage = 10;
+
+  const navigate = useNavigate();
+
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setDateForm({ ...dateForm, [name]: value });
   };
-
-  // //* 전체 조회
-  // const onGetAllPurchaseOrderApprovals = async() => {
-  //   const token = cookies.accessToken;
-
-  //   if(!token){
-  //     alert('인증 토큰이 없습니다.')
-  //     return
-  //   }
-
-  //   const response = await getAllPurchaseOrderApproval(token);
-  //   const {code, message, data} = response;
-
-  //   if(!code) {
-  //     setMessage(message);
-  //     return;
-  //   }
-
-  //   if (Array.isArray(data)) {
-  //     setPurchaseOrderApprovals(data);
-  //   } else {
-  //     setMessage("데이터 형식이 올바르지 않습니다.");
-  //   }
-  // }
 
   //* 조회 조건으로 조회 -- 조건 선택안하면 전체 조회
   const onGetPurchaseOrderByCriteria = async () => {
@@ -64,6 +46,7 @@ function ElsePurchaseOrderApproval() {
 
     if (!token) {
       alert("인증 토큰이 없습니다.");
+      navigate("/auth/login");
       return;
     }
 
@@ -118,6 +101,27 @@ function ElsePurchaseOrderApproval() {
     }
   };
 
+  const totalPages = Math.ceil(purchaseOrderApprovals.length / itemsPerPage);
+
+  const goToPage = (page: number) => {
+    if (page >= 0 && page < totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const goPrev = () => {
+    if (currentPage > 0) setCurrentPage(currentPage - 1);
+  };
+
+  const goNext = () => {
+    if (currentPage < totalPages - 1) setCurrentPage(currentPage + 1);
+  };
+
+  const pagedPurchaseOrderApprovals = purchaseOrderApprovals.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
+
   // *노출 리스트
   const responsePurchaseOrderApprovalList = purchaseOrderApprovals.map(
     (purchaseOrderApproval, index) => {
@@ -136,7 +140,6 @@ function ElsePurchaseOrderApproval() {
           <td>{purchaseOrderApproval.poDetail.employeeName}</td>
           <td>{purchaseOrderApproval.poDetail.isbn}</td>
           <td>{purchaseOrderApproval.poDetail.bookTitle}</td>
-          <td>{purchaseOrderApproval.poDetail.bookPrice}</td>
           <td>{purchaseOrderApproval.poDetail.purchaseOrderAmount}</td>
           <td>
             {purchaseOrderApproval.poDetail.purchaseOrderStatus ==
@@ -218,8 +221,7 @@ function ElsePurchaseOrderApproval() {
             placeholder="종료일"
             onInput={onInputChange}
           />
-
-          <button onClick={onGetPurchaseOrderByCriteria}>조회</button>
+          <button onClick={onGetPurchaseOrderApprovalByDate}>조회</button>
         </div>
       </div>
 
@@ -244,7 +246,6 @@ function ElsePurchaseOrderApproval() {
               <th>발주 담당자</th>
               <th>ISBN</th>
               <th>책 제목</th>
-              <th>책 가격</th>
               <th>발주 수량</th>
               <th>승인 상태</th>
             </tr>
@@ -253,6 +254,37 @@ function ElsePurchaseOrderApproval() {
         </table>
       )}
       {message && <p>{message}</p>}
+       {/* 페이지네이션 */}
+      {purchaseOrderApprovals.length > 0 && (
+        <div className="footer">
+          <button
+            className="pageBtn"
+            onClick={goPrev}
+            disabled={currentPage === 0}
+          >
+            {"<"}
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => i).map((i) => (
+            <button
+              key={i}
+              className={`pageBtn${i === currentPage ? " current" : ""}`}
+              onClick={() => goToPage(i)}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            className="pageBtn"
+            onClick={goNext}
+            disabled={currentPage >= totalPages - 1}
+          >
+            {">"}
+          </button>
+          <span className="pageText">
+            {totalPages > 0 ? `${currentPage + 1} / ${totalPages}` : "0 / 0"}
+          </span>
+        </div>
+      )}
     </div>
   );
 }

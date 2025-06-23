@@ -33,6 +33,10 @@ function ElsePurchaseOrder() {
   >([]);
   const [modalStatus, setModalStatus] = useState(false);
 
+  const [currentPage, setCurrentPage] = useState(0);
+    const itemsPerPage = 10;
+  
+
   const onSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setSearchForm({ ...searchForm, [name]: value });
@@ -71,6 +75,7 @@ function ElsePurchaseOrder() {
       if (Array.isArray(data) && data.length > 0) {
         setPurchaseOrders(data);
         setMessage("");
+        setCurrentPage(0);
       } else {
         setMessage("올바른 검색 조건을 입력해주세요.");
       }
@@ -198,9 +203,30 @@ function ElsePurchaseOrder() {
       alert("삭제 중 오류가 발생했습니다.");
     }
   };
+  
+  const totalPages = Math.ceil(purchaseOrders.length / itemsPerPage);
 
+  const goToPage = (page: number) => {
+    if (page >= 0 && page < totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const goPrev = () => {
+    if (currentPage > 0) setCurrentPage(currentPage - 1);
+  };
+
+  const goNext = () => {
+    if (currentPage < totalPages - 1) setCurrentPage(currentPage + 1);
+  };
+
+  const pagedPurchaseOrders = purchaseOrders.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
+  
   // *노출 리스트
-  const responsePurchaseOrderList = purchaseOrders.map(
+  const responsePurchaseOrderList = pagedPurchaseOrders.map(
     (purchaseOrder, index) => {
       return (
         <tr key={index}>
@@ -209,9 +235,7 @@ function ElsePurchaseOrder() {
           <td>{purchaseOrder.employeeName}</td>
           <td>{purchaseOrder.isbn}</td>
           <td>{purchaseOrder.bookTitle}</td>
-          <td>{purchaseOrder.bookPrice}</td>
           <td>{purchaseOrder.purchaseOrderAmount}</td>
-          <td>{purchaseOrder.purchaseOrderPrice}</td>
           <td>
             {new Date(purchaseOrder.purchaseOrderDateAt).toLocaleString(
               "ko-KR"
@@ -242,6 +266,7 @@ function ElsePurchaseOrder() {
       );
     }
   );
+
 
   return (
     <div>
@@ -296,9 +321,7 @@ function ElsePurchaseOrder() {
               <th>발주 담당 사원</th>
               <th>ISBN</th>
               <th>책 제목</th>
-              <th>책 가격</th>
               <th>발주 수량</th>
-              <th>총 가격</th>
               <th>발주 일자</th>
               <th>승인 상태</th>
               <th>작업</th>
@@ -318,6 +341,33 @@ function ElsePurchaseOrder() {
         />
       )}
       {message && <p>{message}</p>}
+       {/* 페이지네이션 */}
+      {purchaseOrders.length > 0 && (
+        <div className="footer">
+          <button className="pageBtn" onClick={goPrev} disabled={currentPage === 0}>
+            {"<"}
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => i).map((i) => (
+            <button
+              key={i}
+              className={`pageBtn${i === currentPage ? " current" : ""}`}
+              onClick={() => goToPage(i)}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            className="pageBtn"
+            onClick={goNext}
+            disabled={currentPage >= totalPages - 1}
+          >
+            {">"}
+          </button>
+          <span className="pageText">
+            {totalPages > 0 ? `${currentPage + 1} / ${totalPages}` : "0 / 0"}
+          </span>
+        </div>
+      )}
     </div>
   );
 }

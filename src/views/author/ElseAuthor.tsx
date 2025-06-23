@@ -24,6 +24,9 @@ function ElseAuthor() {
   const [modalMessage, setModalMessage] = useState("");
   const [modalStatus, setModalStatus] = useState(false);
   const [cookies] = useCookies(["accessToken"]);
+  
+    const [currentPage, setCurrentPage] = useState(0);
+      const itemsPerPage = 10;
 
   const onSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -157,6 +160,27 @@ function ElseAuthor() {
     }
   };
 
+  const totalPages = Math.ceil(authors.length / itemsPerPage);
+
+  const goToPage = (page: number) => {
+    if (page >= 0 && page < totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const goPrev = () => {
+    if (currentPage > 0) setCurrentPage(currentPage - 1);
+  };
+
+  const goNext = () => {
+    if (currentPage < totalPages - 1) setCurrentPage(currentPage + 1);
+  };
+
+  const pagedAuthors = authors.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
+
   const authorList = authors.map((author) => {
     return (
       <tr key={author.authorId}>
@@ -223,6 +247,34 @@ function ElseAuthor() {
           onClose={() => setModalStatus(false)}
           children={modalContent}
         />
+      )}
+
+       {/* 페이지네이션 */}
+      {pagedAuthors.length > 0 && (
+        <div className="footer">
+          <button className="pageBtn" onClick={goPrev} disabled={currentPage === 0}>
+            {"<"}
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => i).map((i) => (
+            <button
+              key={i}
+              className={`pageBtn${i === currentPage ? " current" : ""}`}
+              onClick={() => goToPage(i)}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            className="pageBtn"
+            onClick={goNext}
+            disabled={currentPage >= totalPages - 1}
+          >
+            {">"}
+          </button>
+          <span className="pageText">
+            {totalPages > 0 ? `${currentPage + 1} / ${totalPages}` : "0 / 0"}
+          </span>
+        </div>
       )}
     </>
   );
