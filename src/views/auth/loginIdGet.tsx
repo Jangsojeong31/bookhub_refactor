@@ -50,19 +50,24 @@ function LoginIdGet() {
   };
 
   return (
-    <div className="container mx-auto p-8 text-center">
+    <div className="container">
+      <img
+        src="/src/apis/constants/북허브_로그_로그인창.png"
+        alt="BookHub 로고"
+        className="logo-img"
+      />
       {loading && <p>로그인 ID를 불러오는 중입니다...</p>}
 
       {!loading && loginId && (
-        <div>
+        <div className="form-box">
           <h2>아이디 찾기</h2>
-          <li>
-            <strong>{loginId}</strong>
-          </li>
+          <p className="getP">사원의 아이디는 <strong>{loginId}</strong> 입니다.</p>
           <button onClick={onCloseButtonClick}>확인</button>
         </div>
       )}
-      {!loading && !loginId && <p>{message}</p>}
+      {!loading && !loginId && (
+        <p style={{ fontSize: "30px", margin: "10px" }}>{message}</p>
+      )}
     </div>
   );
 }

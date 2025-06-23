@@ -76,8 +76,8 @@ function SignIn() {
         className="logo-img"
       />
       <div className="form-box">
-        <h2>LOGIN</h2>
         <form onSubmit={onSubmit}>
+        <h2>LOGIN</h2>
           <input
             type="text"
             name="loginId"
