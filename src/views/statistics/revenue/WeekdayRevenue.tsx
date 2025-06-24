@@ -110,7 +110,15 @@
 //   );
 // }
 
+import React from 'react'
 
+function WeekdayRevenue() {
+  return (
+    <div>WeekdayRevenue</div>
+  )
+}
+
+export default WeekdayRevenue
 
 // //views/statistics/revenue/RevenueWeekday.tsx
 
