@@ -33,9 +33,9 @@ public class StockController {
 
 
     //책 기준 전체 조회(bookIsbn 으로 검색)
-    @GetMapping("/search/{bookIsbn}")
+    @GetMapping("/search/book")
     public ResponseEntity<ResponseDto<List<StockListResponseDto>>> searchByBookIsbn(
-            @PathVariable String bookIsbn){
+            @RequestParam String bookIsbn){
         ResponseDto<List<StockListResponseDto>> responseDtos = stockService.searchByBookIsbn(bookIsbn);
         return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
     }
