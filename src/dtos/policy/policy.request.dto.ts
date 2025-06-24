@@ -5,13 +5,13 @@ export interface PolicyCreateRequestDto{
   policyDescription? : string;
   policyType: PolicyType;
   totalPriceAchieve? : number;
-  discountPercent : number;
+  discountPercent? : number;
   startDate? : string;
   endDate? : string;
 }
 
 export interface PolicyUpdateRequestDto{
-  policyId : number;
+
   policyDescription? : string;
   totalPriceAchieve? : number;
   discountPercent? : number;

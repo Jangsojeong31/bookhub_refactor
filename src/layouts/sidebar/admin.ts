@@ -5,9 +5,9 @@ export const adminMenu: SidebarMenu[] = [
   {
     title: '책 정보관리',
     submenu: [
-      { label: '작가 관리', path: '/author/create' },       // ✅ 수정
-      { label: '출판사 관리', path: '/publishers' },   // ✅ 수정
-      { label: '카테고리 관리', path: '/categories' }, // 추가 예정이면 빈 문자열 말고 대략 예상 경로라도!
+      { label: '작가 관리', path: '/author/create' },       
+      { label: '출판사 관리', path: '/publishers' },  
+      { label: '카테고리 관리', path: '/categories' }, 
       { label: '책 등록', path: '/books/create' },
       { label: '책 수정 및 삭제', path: '/books/edit' },
       { label: '책 로그', path: '/booklogs' },
@@ -17,7 +17,7 @@ export const adminMenu: SidebarMenu[] = [
     title: '정책 관리',
     submenu: [
       { label: '정책 전체조회', path: '/policies' },
-      { label: '정책 등록', path: '/policies/create' },
+      { label: '정책 관리', path: '/policies/admin' },
     ],
   },
   {

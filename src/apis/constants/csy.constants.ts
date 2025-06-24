@@ -28,28 +28,6 @@ export const PUT_PUBLISHER_URL = (publisherId: number) => `${PUBLISHER_MODULE_UR
 // 5) 출판사 삭제
 export const DELETE_PUBLISHER_URL = (publisherId: number) => `${PUBLISHER_MODULE_URL}/${publisherId}`;
 
-
-// // & 2.book_display_locations
-
-// const LOCATION_BRANCH_MANAGER = `${API_DOMAIN}/api/v1/${MANAGER}/branch`
-// const LOCATION_BRANCH_COMMON = `${API_DOMAIN}/api/v1/${COMMON}/branch`
-// // 베이스 URL
-// const LOCATION_URL_MANAGER = (branchId: number) => `${LOCATION_BRANCH_MANAGER}/${branchId}/locations`;
-// const LOCATION_URL_COMMON = (branchId: number) => `${LOCATION_BRANCH_COMMON}/${branchId}/locations`;
-
-// // 1) 지점별 진열위치 등록
-// export const POST_LOCATION_URL = `${LOCATION_URL_MANAGER}`;
-
-// // 2) 지점별 진열위치 조회
-// export const GET_All_LOCATIONS_URL = `${LOCATION_URL_COMMON}`;
-// //3)지점별 진열위치 단건조회
-// export const GET_LOCATION_URL = (LocationId: number) =>`${LOCATION_URL_COMMON}/${LocationId}`;
-
-// // 3) 지점별 진열위치 수정
-// export const PUT_LOCATION_URL = (LocationId: number) => `${LOCATION_URL_MANAGER}/${LocationId}`;
-
-// // 4) 지점별 진열위치 삭제
-// export const DELETE_LOCATION_URL = (LocationId: number) => `${LOCATION_URL_MANAGER}/${LocationId}`;
 // 공통·관리자 공통 도메인
 const LOCATION_BRANCH_MANAGER = `${API_DOMAIN}/api/v1/${MANAGER}/branch/locations`
 const LOCATION_BRANCH_COMMON  = `${API_DOMAIN}/api/v1/${COMMON}/branch/locations`
@@ -97,6 +75,17 @@ export const PUT_POLICY_URL = (PolicyId : number) => `${POLICY_URL_ADMIN}/${Poli
 export const DELETE_POLICY_URL = (PolicyId : number) => `${POLICY_URL_ADMIN}/${PolicyId}`;
 
 //&Stock
+export const STOCK_BASE_URL =  `${API_DOMAIN}/api/v1/${MANAGER}/stocks`;
+export const UPDATE_STOCK_URL = (stockId: number) => `${STOCK_BASE_URL}/${stockId}`;
+export const DELETE_STOCK_URL = (stockId: number) => `${STOCK_BASE_URL}/${stockId}`;
+export const STOCK_SEARCH_BASE_URL =  `${STOCK_BASE_URL}/search`;
+export const STOCK_SEARCH_TITLE_URL =  `${STOCK_SEARCH_BASE_URL}/title`;
+export const STOCK_SEARCH_BOOK_URL =  `${STOCK_SEARCH_BASE_URL}/book`;
+export const STOCK_SEARCH_BRANCH_URL =  `${STOCK_SEARCH_BASE_URL}/branch`;
+
+
+
+//&StockLog
 export const STOCK_LOG_BASE_URL =  `${API_DOMAIN}/api/v1/${ADMIN}/stock-logs`;
 export const STOCK_LOGS_BY_BRANCH = (branchId: number) =>
   `${STOCK_LOG_BASE_URL}/branch/${branchId}`;
