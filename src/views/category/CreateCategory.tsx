@@ -18,10 +18,10 @@ function CreateCategory({ onSuccess }: CreateCategoryProps) {
   const [parentCategories, setParentCategories] = useState<CategoryTreeResponseDto[]>([]);
   const [cookies] = useCookies(["accessToken"]);
 
-  // categoryType 또는 categoryLevel이 변경될 때 대분류 목록을 fetch
+  
   useEffect(() => {
     if (categoryLevel !== 2) {
-      setParentCategories([]); // 소분류 아닌 경우는 비움
+      setParentCategories([]);
       return;
     }
 

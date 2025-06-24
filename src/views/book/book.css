@@ -178,12 +178,12 @@ th, td {
   margin-top: 12px;
 }
 
-select {
+.select {
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
     width: 100%;
-    max-width: 260px;
+    max-width: 400px;
     padding: 10px 14px;
     border: 1px solid #dcdcdc;
     border-radius: 8px;
@@ -199,7 +199,7 @@ select {
 }
 
 select:hover {
-    border-color: #fae100; /* 카카오톡 노란색 강조 */
+    border-color: #fae100;
     outline: none;
     box-shadow: 0 0 0 2px rgba(250, 225, 0, 0.3);
 }

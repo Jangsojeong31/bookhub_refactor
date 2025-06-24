@@ -3,6 +3,7 @@ import { BookCreateRequestDto } from '@/dtos/book/request/book-create.request.dt
 import React, { useState } from 'react'
 import { useCookies } from 'react-cookie';
 import "./book.css"
+import { CategoryTreeResponseDto } from '@/dtos/category/response/category-tree.response.dto';
 
 interface CreateBookProps {
   onSuccess: () => Promise<void>;
@@ -71,8 +72,6 @@ function CreateBook({ onSuccess }: CreateBookProps) {
       alert("책 등록 실패");
       return;
     }
-    
-    // 등록 성공 후 목록 새로고침
     try {
       await onSuccess(); 
     } catch (err) {
