@@ -24,7 +24,6 @@ import PurchaseOrder from "./views/purchaseOrder";
 import Reception from "./views/reception";
 
 // import 'react-datepicker/dist/react-datepicker.css';
-import PolicyPage from "./views/policy/PolicyPage";
 import SalesQuantityStatistics from "./views/statistics/salesQuantity-statistics";
 import StockLog from "./views/stock-logs";
 import Revenue from "./views/statistics/revenue";
@@ -98,7 +97,7 @@ function App() {
               <Route path="/alerts/*" element={<AlertPage />} />
 
               <Route path="/publishers/*" element={<Publisher />} />
-              <Route path="/policies/*" element={<PolicyPage />} />
+              <Route path="/policies/*" element={<Policy />} />
               <Route
                 path="/branch/locations"
                 element={<LocationPage />}

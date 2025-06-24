@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useCookies } from 'react-cookie';
-import { getPolicies, deletePolicy, getPolicyDetail } from '@/apis/policy/policy';
-import CreatePolicy from './CreatePolicy';
-import UpdatePolicy from './UpdatePolicy';
-import { PolicyDetailResponseDto, PolicyListResponseDto } from '@/dtos/policy/policy.response.dto';
-import { PolicyType } from '@/apis/enums/PolicyType';
-import '@/views/publisher/publisher.css'
+import { PolicyType } from "@/apis/enums/PolicyType";
+import { getPolicies, deletePolicy, getPolicyDetail } from "@/apis/policy/policy";
+import { PolicyListResponseDto, PolicyDetailResponseDto } from "@/dtos/policy/policy.response.dto";
+import { useState, useEffect } from "react";
+import { useCookies } from "react-cookie";
+import CreatePolicy from "./CreatePolicy";
+import UpdatePolicy from "./UpdatePolicy";
 
 const PAGE_SIZE = 10;
 
@@ -21,10 +20,13 @@ const PolicyPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [policies, setPolicies] = useState<PolicyListResponseDto[]>([]);
+   const [selectedPolicyId, setSelectedPolicyId] = useState<number | null>(null);
+   const [discountPercent, setDiscountPercent] = useState<number | ''>('');
+   
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [selectedPolicy, setSelectedPolicy] = useState<PolicyListResponseDto | null>(null);
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+  const [selectedDetail, setSelectedDetail] = useState<PolicyDetailResponseDto | null>(null);
 
   // 리스트 조회
   const fetchPage = async (page: number) => {
@@ -81,32 +83,27 @@ const PolicyPage: React.FC = () => {
     }
   };
 
-  // 수정 모달 열기
-  const openUpdate = (policy: PolicyListResponseDto) => {
-    setSelectedPolicy(policy);
-    setIsUpdateOpen(true);
+  // 수정 모달 열기 (상세 조회)
+  const openUpdateModal = async (id: number) => {
+    if (!accessToken) return;
+    try {
+      const res = await getPolicyDetail(id, accessToken);
+      if (res.code === 'SU' && res.data) {
+        setSelectedDetail(res.data);
+        setSelectedPolicyId(id); 
+        setIsUpdateOpen(true);
+      } else {
+        alert(res.message || '상세 조회 실패');
+      }
+    } catch (err) {
+      console.error('상세 조회 예외:', err);
+      alert('상세 조회 중 오류 발생');
+    }
   };
-
-
-
-// state 추가
-const [selectedDetail, setSelectedDetail] = useState<PolicyDetailResponseDto | null>(null);
-
-// openUpdateModal 수정
-const openUpdateModal = async (id: number) => {
-  if (!accessToken) return;
-  const res = await getPolicyDetail(id, accessToken);
-  if (res.code === 'SU' && res.data) {
-    setSelectedDetail(res.data);
-    setIsUpdateOpen(true);
-  } else {
-    alert(res.message || '상세 조회 실패');
-  }
-};
 
   // 수정 닫기
   const handleUpdateClose = () => {
-    setSelectedPolicy(null);
+    setSelectedDetail(null);
     setIsUpdateOpen(false);
   };
 
@@ -123,36 +120,64 @@ const openUpdateModal = async (id: number) => {
   };
 
   return (
-    <div className='publisher-page-container'>
-      <div className='topBar'>
-        <button onClick={() => setIsCreateOpen(true)} style={{ padding: '8px 16px', backgroundColor: '#4e7fff', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+    <div className="policy-page-container">
+      <div className="topBar">
+        <button onClick={() => setIsCreateOpen(true)} className="btn-create">
           정책 등록
         </button>
       </div>
 
       {/* 필터 영역 */}
-      <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
-        <select value={type} onChange={e => setType(e.target.value as PolicyType)}>
+      <div className="filter-bar">
+        <select
+          value={type}
+          onChange={(e) => setType(e.target.value as PolicyType)}
+        >
           <option value="">전체</option>
           <option value={PolicyType.BOOK_DISCOUNT}>도서 할인</option>
           <option value={PolicyType.TOTAL_PRICE_DISCOUNT}>총 금액 할인</option>
           <option value={PolicyType.CATEGORY_DISCOUNT}>카테고리 할인</option>
         </select>
-        <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
-        <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
+        <input
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+        />
+        <input
+          type="date"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+        />
         <input
           type="text"
           placeholder="제목 검색"
           value={keyword}
-          onChange={e => setKeyword(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && goToPage(0)}
-          style={{ flex: 1 }}
+          onChange={(e) => setKeyword(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && goToPage(0)}
+          className="input-search"
         />
-        <button onClick={() => goToPage(0)} style={{ padding: '4px 8px' }}>검색</button>
+        <input
+          type="number"
+          placeholder="할인율(%)"
+          value={discountPercent}
+          onChange={(e) => {
+            const v = e.target.value;
+            setDiscountPercent(v === "" ? "" : Number(v));
+          }}
+          style={{
+            flex: 1,
+            padding: "8px",
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+          }}
+        />
+        <button onClick={() => goToPage(0)} className="btn-search">
+          검색
+        </button>
       </div>
 
       {/* 리스트 테이블 */}
-      <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '16px' }}>
+      <table className="table-policy">
         <thead>
           <tr>
             <th>정책 ID</th>
@@ -164,7 +189,7 @@ const openUpdateModal = async (id: number) => {
           </tr>
         </thead>
         <tbody>
-          {policies.map(p => (
+          {policies.map((p) => (
             <tr key={p.policyId}>
               <td>{p.policyId}</td>
               <td>{p.policyTitle}</td>
@@ -172,8 +197,21 @@ const openUpdateModal = async (id: number) => {
               <td>{p.startDate}</td>
               <td>{p.endDate}</td>
               <td>
-                <button onClick={() => openUpdate(p.policyId)} style={{ marginRight: '8px' }}>수정</button>
-                <button onClick={() => handleDelete(p.policyId)}>삭제</button>
+                {/* <button onClick={() => openUpdateModal(p.policyId)} className='btn-update'>수정</button> */}
+                <button
+                  onClick={() => {
+                    console.log("수정 버튼 눌림, id:", p.policyId);
+                    openUpdateModal(p.policyId);
+                  }}
+                >
+                  수정
+                </button>
+                <button
+                  onClick={() => handleDelete(p.policyId)}
+                  className="btn-delete"
+                >
+                  삭제
+                </button>
               </td>
             </tr>
           ))}
@@ -181,10 +219,22 @@ const openUpdateModal = async (id: number) => {
       </table>
 
       {/* 페이지네이션 */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <button disabled={currentPage === 0} onClick={() => goToPage(currentPage - 1)}>이전</button>
-        <span>{currentPage + 1} / {totalPages}</span>
-        <button disabled={currentPage + 1 >= totalPages} onClick={() => goToPage(currentPage + 1)}>다음</button>
+      <div className="pagination">
+        <button
+          disabled={currentPage === 0}
+          onClick={() => goToPage(currentPage - 1)}
+        >
+          이전
+        </button>
+        <span>
+          {currentPage + 1} / {totalPages}
+        </span>
+        <button
+          disabled={currentPage + 1 >= totalPages}
+          onClick={() => goToPage(currentPage + 1)}
+        >
+          다음
+        </button>
       </div>
 
       {/* 생성 모달 */}
@@ -197,14 +247,16 @@ const openUpdateModal = async (id: number) => {
       )}
 
       {/* 수정 모달 */}
-    {isUpdateOpen && selectedDetail && (
-  <UpdatePolicy
-    isOpen={isUpdateOpen}
-    onClose={handleUpdateClose}
-    onUpdated={handleUpdated}
-    policy={selectedDetail}     // 이제 DetailDto 타입!
-  />
-)}
+      {isUpdateOpen && selectedDetail && selectedPolicyId != null && (
+        <UpdatePolicy
+          isOpen={isUpdateOpen}
+          onClose={handleUpdateClose}
+          onUpdated={handleUpdated}
+          policyDetail={selectedDetail}
+          policyId={selectedPolicyId}
+          
+        />
+      )}
     </div>
   );
 };

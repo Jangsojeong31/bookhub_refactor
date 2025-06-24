@@ -20,7 +20,7 @@ function CreatePolicy({ isOpen, onClose, onCreated }: Props) {
   const [policyDescription, setPolicyDescription] = useState('');
   const [policyType, setPolicyType] = useState<PolicyType>(PolicyType.BOOK_DISCOUNT);
   const [totalPriceAchieve, setTotalPriceAchieve] = useState<number | undefined>(undefined);
-  const [discountPercent, setDiscountPercent] = useState(0);
+  const [discountPercent, setDiscountPercent] = useState<number | undefined>(undefined);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [message, setMessage] = useState('');
@@ -30,7 +30,7 @@ function CreatePolicy({ isOpen, onClose, onCreated }: Props) {
       setMessage('제목을 입력해주세요.');
       return;
     }
-    if (discountPercent <= 0) {
+    if (discountPercent! <= 0) {
       setMessage('할인율을 입력해주세요.');
       return;
     }
@@ -64,7 +64,7 @@ function CreatePolicy({ isOpen, onClose, onCreated }: Props) {
     setPolicyDescription('');
     setPolicyType(PolicyType.BOOK_DISCOUNT);
     setTotalPriceAchieve(undefined);
-    setDiscountPercent(0);
+    setDiscountPercent(undefined);
     setStartDate('');
     setEndDate('');
     setMessage('');
