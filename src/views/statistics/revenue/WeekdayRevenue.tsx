@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { BarChart, Bar, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { getWeekdayRevenue } from "@/apis/statistics/revenue/weekday";
+import { getWeekdayRevenue } from "@/apis/statistics/revenue/revenueStatistics";
 import type { ResponseDto } from "@/dtos";
 import type { WeekdayRevenueResponseDto } from "@/dtos/statistics/revenue/revenue.response";
 

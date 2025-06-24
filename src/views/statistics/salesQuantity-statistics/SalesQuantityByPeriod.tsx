@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { BarChart, Bar, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { getWeekdayRevenue } from "@/apis/statistics/revenue/weekday";
+import { getWeekdayRevenue } from "@/apis/statistics/revenue/revenueStatistics";
 import { getSalesQuantityByBranch } from "@/apis/statistics/salesQuantityStatistics/salesQuantityStatistics";
 import { responseErrorHandler } from "@/apis/axiosConfig";
 import { SalesQuantityStatisticsReponseDto } from "@/dtos/statistics/salesQuantityStatistics/response/salesQuantity.response.dto";
