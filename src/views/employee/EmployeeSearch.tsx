@@ -8,6 +8,8 @@ import { EmployeeDetailResponseDto } from "@/dtos/employee/response/employee-det
 import { EmployeeListResponseDto } from "@/dtos/employee/response/employee-list.response.dto";
 import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
+import "@/styles/employee/employeeSelect.css";
+import "@/styles/employee/employeemodal.css";
 
 const positionOptions = ["사원", "대리", "과장", "부장", "점장"];
 const authorityOptions = ["STAFF", "MANAGER", "ADMIN"];
@@ -29,7 +31,7 @@ function EmployeeSearch() {
     status: "",
   });
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [cookies] = useCookies(["accessToken"]);
   const [employeeList, setEmployeeList] = useState<EmployeeListResponseDto[]>(
     []
@@ -80,8 +82,8 @@ function EmployeeSearch() {
   };
 
   const paginatedEmployees = employeeList.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
+    currentPage * ITEMS_PER_PAGE,
+    (currentPage + 1) * ITEMS_PER_PAGE
   );
 
   const onResetClick = () => {
@@ -117,90 +119,147 @@ function EmployeeSearch() {
     setModalStatus(true);
   };
 
+  const goToPage = (page: number) => {
+    if (page >= 0 && page < totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const goPrev = () => {
+    if (currentPage > 0) setCurrentPage(currentPage - 1);
+  };
+
+  const goNext = () => {
+    if (currentPage < totalPages - 1) setCurrentPage(currentPage + 1);
+  };
+
   const modalContent: React.ReactNode = (
     <>
-      <h1>사원 세부 사항</h1>
-      <p>사원 번호: {employee?.employeeNumber}</p>
-      <p>사원 이름: {employee?.employeeName}</p>
-      <p>지점 명: {employee?.branchName}</p>
-      <p>지급 명: {employee?.positionName}</p>
-      <p>권한 명: {employee?.authorityName}</p>
-      <p>이메일: {employee?.email}</p>
-      <p>전화 번호: {employee?.phoneNumber}</p>
-      <p>
-        생년월일: {new Date(employee?.birthDate || "").toLocaleDateString()}
-      </p>
-      <p>재직 상태: {employee?.status === "EXITED" ? "퇴사" : "재직"}</p>
-      <p>입사 일자: {new Date(employee?.createdAt || "").toLocaleString()}</p>
+      <div className="employee-details">
+        <h1>사원 세부 사항</h1>
+        <div className="vertical-row">
+          <div className="column">
+            <div className="field">
+              <label>사원 번호</label>
+              <span>{employee?.employeeNumber}</span>
+            </div>
+            <div className="field">
+              <label>사원 이름</label>
+              <span>{employee?.employeeName}</span>
+            </div>
+            <div className="field">
+              <label>지점 명</label>
+              <span>{employee?.branchName}</span>
+            </div>
+            <div className="field">
+              <label>지급 명</label>
+              <span>{employee?.positionName}</span>
+            </div>
+            <div className="field">
+              <label>권한 명</label>
+              <span>{employee?.authorityName}</span>
+            </div>
+          </div>
+          <div className="column">
+            <div className="field">
+              <label>이메일</label>
+              <span>{employee?.email}</span>
+            </div>
+            <div className="field">
+              <label>전화 번호</label>
+              <span>{employee?.phoneNumber}</span>
+            </div>
+            <div className="field">
+              <label>생년월일: </label>
+              <span>
+                {new Date(employee?.birthDate || "").toLocaleDateString()}
+              </span>
+            </div>
+            <div className="field">
+              <label>재직 상태</label>
+              <span>{employee?.status === "EXITED" ? "퇴사" : "재직"}</span>
+            </div>
+            <div className="field">
+              <label>입사 일자:</label>
+              <span>
+                {new Date(employee?.createdAt || "").toLocaleString()}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 
   return (
     <div>
-      <h2>직원 검색</h2>
-      <div>
-        <input
-          type="text"
-          name="name"
-          placeholder="이름"
-          value={searchForm.name}
-          onChange={onInputChange}
-        />
+      <div className="searchContainer">
+        <h2>사원 정보 조회</h2>
+        <div className="search-row">
+          <input
+            type="text"
+            name="name"
+            placeholder="이름"
+            value={searchForm.name}
+            onChange={onInputChange}
+          />
 
-        <select
-          name="branchName"
-          value={searchForm.branchName}
-          onChange={onInputChange}
-        >
-          <option value="">지점 선택</option>
-          {branches.map((branch) => (
-            <option key={branch.branchName} value={branch.branchName}>
-              {branch.branchName}
-            </option>
-          ))}
-        </select>
+          <select
+            name="branchName"
+            value={searchForm.branchName}
+            onChange={onInputChange}
+          >
+            <option value="">지점 선택</option>
+            {branches.map((branch) => (
+              <option key={branch.branchName} value={branch.branchName}>
+                {branch.branchName}
+              </option>
+            ))}
+          </select>
 
-        <select
-          name="positionName"
-          value={searchForm.positionName}
-          onChange={onInputChange}
-        >
-          <option value="">직급 선택</option>
-          {positionOptions.map((p) => (
-            <option key={p} value={p}>
-              {p}
-            </option>
-          ))}
-        </select>
+          <select
+            name="positionName"
+            value={searchForm.positionName}
+            onChange={onInputChange}
+          >
+            <option value="">직급 선택</option>
+            {positionOptions.map((p) => (
+              <option key={p} value={p}>
+                {p}
+              </option>
+            ))}
+          </select>
 
-        <select
-          name="authorityName"
-          value={searchForm.authorityName}
-          onChange={onInputChange}
-        >
-          <option value="">권한 선택</option>
-          {authorityOptions.map((a) => (
-            <option key={a} value={a}>
-              {a}
-            </option>
-          ))}
-        </select>
+          <select
+            name="authorityName"
+            value={searchForm.authorityName}
+            onChange={onInputChange}
+          >
+            <option value="">권한 선택</option>
+            {authorityOptions.map((a) => (
+              <option key={a} value={a}>
+                {a}
+              </option>
+            ))}
+          </select>
 
-        <select
-          name="status"
-          value={searchForm.status}
-          onChange={onInputChange}
-        >
-          <option value="">상태 선택</option>
-          {statusOptions.map((s) => (
-            <option key={s} value={s}>
-              {s === "EXITED" ? "퇴사" : "재직"}
-            </option>
-          ))}
-        </select>
-
-        <button onClick={onSearchClick}>검색</button>
-        <button onClick={onResetClick}>초기화</button>
+          <select
+            name="status"
+            value={searchForm.status}
+            onChange={onInputChange}
+          >
+            <option value="">상태 선택</option>
+            {statusOptions.map((s) => (
+              <option key={s} value={s}>
+                {s === "EXITED" ? "퇴사" : "재직"}
+              </option>
+            ))}
+          </select>
+          <div className="search-button">
+            <button onClick={onSearchClick}>검색</button>
+            <button onClick={onResetClick}>초기화</button>
+          </div>
+        </div>
       </div>
 
       {message && <p style={{ color: "red" }}>{message}</p>}
@@ -212,6 +271,7 @@ function EmployeeSearch() {
       >
         <thead>
           <tr>
+            <th></th>
             <th>사번</th>
             <th>이름</th>
             <th>지점</th>
@@ -222,8 +282,9 @@ function EmployeeSearch() {
           </tr>
         </thead>
         <tbody>
-          {paginatedEmployees.map((emp) => (
+          {paginatedEmployees.map((emp, index) => (
             <tr key={emp.employeeId}>
+              <th>{currentPage * ITEMS_PER_PAGE + index + 1}</th>
               <td>{emp.employeeNumber}</td>
               <td>{emp.employeeName}</td>
               <td>{emp.branchName}</td>
@@ -231,32 +292,46 @@ function EmployeeSearch() {
               <td>{emp.authorityName}</td>
               <td>{emp.status === "EXITED" ? "퇴사" : "재직"}</td>
               <td>
-                <button onClick={() => onOpenModalClick(emp)}>세부 사항</button>
+                <button
+                  onClick={() => onOpenModalClick(emp)}
+                  className="approval-button"
+                >
+                  세부 사항
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      {totalPages > 1 && (
-        <div style={{ marginTop: "20px" }}>
+      {employeeList.length > 0 && (
+        <div className="footer">
           <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
+            className="pageBtn"
+            onClick={goPrev}
+            disabled={currentPage === 0}
           >
-            이전
+            {"<"}
           </button>
-          <span style={{ margin: "0 10px" }}>
-            {currentPage} / {totalPages}
+          {Array.from({ length: totalPages }, (_, i) => i).map((i) => (
+            <button
+              key={i}
+              className={`pageBtn${i === currentPage ? " current" : ""}`}
+              onClick={() => goToPage(i)}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            className="pageBtn"
+            onClick={goNext}
+            disabled={currentPage >= totalPages - 1}
+          >
+            {">"}
+          </button>
+          <span className="pageText">
+            {totalPages > 0 ? `${currentPage + 1} / ${totalPages}` : "0 / 0"}
           </span>
-          <button
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
-            disabled={currentPage === totalPages}
-          >
-            다음
-          </button>
         </div>
       )}
       {modalStatus && (
