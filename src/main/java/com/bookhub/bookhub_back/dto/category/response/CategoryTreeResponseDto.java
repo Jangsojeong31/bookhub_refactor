@@ -18,6 +18,6 @@ public class CategoryTreeResponseDto {
     private int categoryOrder;
     private Boolean isActive;
     private Long parentCategoryId;
-    private DiscountPolicy discountPolicyId;
+    private Long discountPolicyId;
     private List<CategoryTreeResponseDto> subCategories;
 }

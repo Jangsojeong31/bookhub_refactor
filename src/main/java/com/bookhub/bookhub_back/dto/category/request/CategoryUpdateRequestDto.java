@@ -26,5 +26,5 @@ public class CategoryUpdateRequestDto {
 
     private Boolean isActive;
 
-    private DiscountPolicy discountPolicyId;
+    private Long discountPolicyId;
 }
