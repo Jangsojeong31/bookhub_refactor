@@ -1,6 +1,7 @@
 export interface BookResponseDto {
   isbn: string;
   bookTitle: string;
+  categoryId: number;
   categoryName: string;
   authorName: string;
   publisherName: string;

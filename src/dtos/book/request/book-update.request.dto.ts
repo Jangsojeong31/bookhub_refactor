@@ -3,5 +3,6 @@ export interface BookUpdateRequestDto {
   bookPrice?: number;
   description?: string;
   bookStatus?: 'ACTIVE' | 'INACTIVE' | 'HIDDEN';
-  policyId?: number;
+  policyId?: number | null;
+  categoryId?: number | null;
 }

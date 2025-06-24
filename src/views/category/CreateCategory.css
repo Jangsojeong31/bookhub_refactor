@@ -1,11 +1,9 @@
-/* CreateCategory.css */
-
 .create-category-container {
-  height: 100vh; /* 전체 화면 높이 */
+  height: 100vh;
   display: flex;
-  justify-content: center; /* 수평 중앙 */
-  align-items: center;     /* 수직 중앙 */
-  background-color: #f5f5f5; /* 선택 사항 */
+  justify-content: center;
+  align-items: center;
+  background-color: #f5f5f5;
 }
 
 
@@ -50,4 +48,24 @@
 
 .create-category-button:hover {
   background-color: #45a049;
+}
+
+.create-category-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 100%;
+    max-width: 400px;
+    padding: 10px 14px;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    background-color: #f7f7f7;
+    font-size: 16px;
+    color: #333;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }

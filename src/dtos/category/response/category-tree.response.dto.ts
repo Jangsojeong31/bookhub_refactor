@@ -6,5 +6,6 @@ export interface CategoryTreeResponseDto {
   parentCategoryId?: number;
   categoryOrder?: number;
   isActive: boolean;
-  subCategories?: CategoryTreeResponseDto[]; // 트리 구조
+  discountPolicyId?: number;
+  subCategories?: CategoryTreeResponseDto[];
 }

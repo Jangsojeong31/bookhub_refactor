@@ -11,6 +11,7 @@ function UpdateBook() {
   const [bookPrice, setBookPrice] = useState<number>();
   const [description, setDescription] = useState("");
   const [policyId, setPolicyId] = useState<number | null>(null);
+  const [categoryId, setCategoryId] = useState<number | null>(null);
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [bookStatus, setBookStatus] = useState<'ACTIVE' | 'INACTIVE' | 'HIDDEN'>('ACTIVE');
 
@@ -23,6 +24,7 @@ function UpdateBook() {
       setDescription(book.description ?? "");
       setBookPrice(book.bookPrice ?? null);
       setPolicyId(book.policyId ?? null);
+      setCategoryId(book.categoryId ?? null);
       setBookStatus(book.bookStatus ?? "ACTIVE");
       setIsBookLoaded(true);
     } else {
@@ -41,7 +43,8 @@ function UpdateBook() {
       bookPrice,
       description,
       bookStatus,
-      policyId: policyId ?? undefined,
+      ...(policyId !== null ? { policyId } : {}),
+      categoryId
     };
 
     try {
@@ -87,6 +90,7 @@ function UpdateBook() {
                 <th>설명</th>
                 <th>가격</th>
                 <th>정책ID</th>
+                <th>카테고리ID</th>
                 <th>활성/비활성화</th>
                 <th>표지 이미지</th>
                 <th>수정</th>
@@ -108,6 +112,17 @@ function UpdateBook() {
                   <input type="number" value={policyId ?? ""}
                   onChange={(e) => setPolicyId(Number(e.target.value))}
                   placeholder="정책ID (선택)"/>
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    value={policyId ?? ""}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setPolicyId(val === "" ? null : Number(val));
+                    }}
+                    placeholder="정책ID (선택)"
+                  />
                 </td>
                 <td>
                   <select value={bookStatus}className="select" onChange={(e) => setBookStatus(e.target.value as 'ACTIVE' | 'INACTIVE')}>

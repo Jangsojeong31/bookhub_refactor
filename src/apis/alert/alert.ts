@@ -71,15 +71,15 @@ export function getAlertTargetUrl(alert: AlertResponseDto): string | null {
     case "BOOK_RECEIVED_SUCCESS":
       return `/reception/logs`;
 
-    // case "DISCOUNT_POLICIES":
-    //   return ``;
+    case "NOTICE":
+      return `/policies`;
 
     case "SIGNUP_APPROVAL":
       return `/employees/approval`;
 
-    // case "STOCK_LOW":
-    // case "STOCK_OUT":
-    //   return `/stock `;
+    case "STOCK_LOW":
+    case "STOCK_OUT":
+      return `/stocks`;
 
     default:
       return null;

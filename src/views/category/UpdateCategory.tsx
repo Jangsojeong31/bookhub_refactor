@@ -15,15 +15,15 @@ interface UpdateCategoryProps {
 function UpdateCategory({ category, onSuccess, mode }: UpdateCategoryProps) {
   const [categoryName, setCategoryName] = useState("");
   const [categoryType, setCategoryType] = useState<"DOMESTIC" | "FOREIGN">("DOMESTIC");
-  const [categoryOrder, setCategoryOrder] = useState(0);
+  const [discountPolicyId, setDiscountPolicyId] = useState<number | null>(null);
   const [isActive, setIsActive] = useState(true);
   const [cookies] = useCookies(["accessToken"]);
 
   useEffect(() => {
     setCategoryName(category.categoryName);
     setCategoryType(category.categoryType);
-    setCategoryOrder(category.categoryOrder ?? 0);
     setIsActive(category.isActive);
+    setDiscountPolicyId(category.discountPolicyId ?? null);
   }, [category]);
 
   const handleUpdate = async (e: React.FormEvent) => {
@@ -38,8 +38,8 @@ function UpdateCategory({ category, onSuccess, mode }: UpdateCategoryProps) {
     const dto: CategoryUpdateRequestDto = {
       categoryName,
       categoryType,
-      categoryOrder,
       isActive,
+      ...(discountPolicyId !== null ? { discountPolicyId } : {}),
     };
 
     try {
@@ -64,7 +64,6 @@ function UpdateCategory({ category, onSuccess, mode }: UpdateCategoryProps) {
     const dto: CategoryUpdateRequestDto = {
       categoryName,
       categoryType,
-      categoryOrder,
       isActive: false,
     };
     
@@ -96,9 +95,9 @@ function UpdateCategory({ category, onSuccess, mode }: UpdateCategoryProps) {
 
       <input
         type="number"
-        value={categoryOrder}
-        onChange={(e) => setCategoryOrder(Number(e.target.value))}
-        placeholder="정렬 우선순위"
+        value={discountPolicyId ?? ""}
+        onChange={(e) => setDiscountPolicyId(Number(e.target.value))}
+        placeholder="할인 정책 ID"
       />
 
       <label>

@@ -6,4 +6,5 @@ export interface CategoryUpdateResponseDto {
   parentCategory?: number;
   categoryOrder: number;
   isActive: boolean;
+  discountPolicy?: number;
 }
