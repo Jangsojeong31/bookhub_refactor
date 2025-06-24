@@ -1,14 +1,14 @@
 package com.bookhub.bookhub_back.dto.purchaseOrder.response;
 
 import com.bookhub.bookhub_back.common.enums.PurchaseOrderStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class PurchaseOrderResponseDto {
     private Long purchaseOrderId;

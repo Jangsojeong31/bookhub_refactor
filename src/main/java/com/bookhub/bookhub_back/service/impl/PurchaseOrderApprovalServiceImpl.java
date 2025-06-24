@@ -27,21 +27,6 @@ public class PurchaseOrderApprovalServiceImpl implements PurchaseOrderApprovalSe
     private final PurchaseOrderApprovalRepository purchaseOrderApprovalRepository;
     private final EmployeeRepository employeeRepository;
 
-    // 전체 조회
-    @Override
-    public ResponseDto<List<PurchaseOrderApprovalResponseDto>> getAllPurchaseOrderApprovals() {
-        List<PurchaseOrderApprovalResponseDto> responseDtos = null;
-
-        List<PurchaseOrderApproval> purchaseOrderApprovals = purchaseOrderApprovalRepository.findAll();
-
-        responseDtos = purchaseOrderApprovals.stream()
-                .sorted(Comparator.comparing(PurchaseOrderApproval::getCreatedAt).reversed())
-                .map(purchaseOrderApproval -> changeToResponseDto(purchaseOrderApproval))
-                .collect(Collectors.toList());
-
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
-    }
-
     // id로 단건 조회
     @Override
     public ResponseDto<PurchaseOrderApprovalResponseDto> getPurchaseOrderApprovalById(Long id) {
@@ -52,25 +37,6 @@ public class PurchaseOrderApprovalServiceImpl implements PurchaseOrderApprovalSe
 
         responseDto = changeToResponseDto(purchaseOrderApproval);
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDto);
-    }
-
-    // 조회 - 승인 담당자
-    @Override
-    public ResponseDto<List<PurchaseOrderApprovalResponseDto>> getPurchaseOrderApprovalByEmployeeName(String employeeName) {
-        List<PurchaseOrderApprovalResponseDto> responseDtos = null;
-        List<PurchaseOrderApproval> purchaseOrderApprovals = null;
-
-        Employee employee = employeeRepository.findByName(employeeName)
-                .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
-
-
-        purchaseOrderApprovals = purchaseOrderApprovalRepository.findByEmployeeId(employee);
-
-        responseDtos = purchaseOrderApprovals.stream()
-                .map(purchaseOrderApproval -> changeToResponseDto(purchaseOrderApproval))
-                .collect(Collectors.toList());
-
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
     }
 
     // 조회 - 승인 일자
@@ -87,23 +53,6 @@ public class PurchaseOrderApprovalServiceImpl implements PurchaseOrderApprovalSe
         LocalDateTime end = endDate.atTime(23, 59, 59);
 
         purchaseOrderApprovals = purchaseOrderApprovalRepository.findByCreatedAtBetween(start, end);
-
-        responseDtos = purchaseOrderApprovals.stream()
-                .sorted(Comparator.comparing(PurchaseOrderApproval::getCreatedAt).reversed())
-                .map(purchaseOrderApproval -> changeToResponseDto(purchaseOrderApproval))
-                .collect(Collectors.toList());
-
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
-    }
-
-
-    // 조회 - 승인 여부
-    @Override
-    public ResponseDto<List<PurchaseOrderApprovalResponseDto>> getPurchaseOrderApprovalByIsApproved(boolean isApproved) {
-        List<PurchaseOrderApprovalResponseDto> responseDtos = null;
-        List<PurchaseOrderApproval> purchaseOrderApprovals = null;
-
-        purchaseOrderApprovals = purchaseOrderApprovalRepository.findByIsApproved(isApproved);
 
         responseDtos = purchaseOrderApprovals.stream()
                 .sorted(Comparator.comparing(PurchaseOrderApproval::getCreatedAt).reversed())

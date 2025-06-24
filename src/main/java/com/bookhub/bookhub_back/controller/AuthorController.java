@@ -29,20 +29,13 @@ public class AuthorController {
         return ResponseEntity.noContent().build();
     }
 
-    // 작가 등록 (여러건 동시 등록)
+    // 작가 등록
     @PostMapping
     public ResponseEntity<ResponseDto<List<AuthorResponseDto>>> createAuthor(
             @Valid @RequestBody AuthorCreateRequestDto dto
     ) {
         ResponseDto<List<AuthorResponseDto>> response = authorService.createAuthor(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-
-    // 작가 전체 조회
-    @GetMapping
-    public ResponseEntity<ResponseDto<List<AuthorResponseDto>>> getAllAuthors() {
-        ResponseDto<List<AuthorResponseDto>> response = authorService.getAllAuthors();
-        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 작가 이름으로 조회 (동명이인까지 조회)

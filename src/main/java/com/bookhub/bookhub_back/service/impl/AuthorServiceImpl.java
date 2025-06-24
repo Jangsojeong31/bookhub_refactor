@@ -29,8 +29,6 @@ public class AuthorServiceImpl implements AuthorService {
 
         List<AuthorRequestDto> requestDtos = dto.getAuthors();
 
-        //
-
         List<Author> authors = requestDtos.stream()
                         .map(requestDto -> Author.builder()
                                 .authorName(requestDto.getAuthorName())
@@ -41,24 +39,6 @@ public class AuthorServiceImpl implements AuthorService {
         List<Author> savedAuthors = authorRepository.saveAll(authors);
 
         responseDtos = savedAuthors.stream()
-                .map(author -> AuthorResponseDto.builder()
-                        .authorId(author.getAuthorId())
-                        .authorName((author.getAuthorName()))
-                        .authorEmail(author.getAuthorEmail())
-                        .build())
-                .collect(Collectors.toList());
-
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
-    }
-
-    // 작가 전체 조회
-    @Override
-    public ResponseDto<List<AuthorResponseDto>> getAllAuthors() {
-        List<AuthorResponseDto> responseDtos = null;
-
-        List<Author> authors = authorRepository.findAll();
-
-        responseDtos = authors.stream()
                 .map(author -> AuthorResponseDto.builder()
                         .authorId(author.getAuthorId())
                         .authorName((author.getAuthorName()))
@@ -132,7 +112,6 @@ public class AuthorServiceImpl implements AuthorService {
         authorRepository.delete(author);
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
-        //"[작가이름: " + author.getAuthorName() + ", 작가이메일: " + author.getAuthorEmail() + "] 작가의 정보 삭제를 성공하였습니다."
     }
 
 

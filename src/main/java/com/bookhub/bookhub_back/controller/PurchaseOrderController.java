@@ -23,7 +23,7 @@ import java.util.List;
 public class PurchaseOrderController {
     private final PurchaseOrderService purchaseOrderService;
 
-    // 1) 발주 요청서 작성
+    // 발주 요청서 작성
     @PostMapping(ApiMappingPattern.MANAGER_API + "/purchase-orders")
     public ResponseEntity<ResponseDto<List<PurchaseOrderResponseDto>>> createPurchaseOrder(
             @AuthenticationPrincipal String loginId,
@@ -33,26 +33,7 @@ public class PurchaseOrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // 2) 발주 요청서 전체 조회 - 사용자 소속 지점 해당 발주서만
-//    @GetMapping(ApiMappingPattern.MANAGER_API + "/purchase-orders")
-//    public ResponseEntity<ResponseDto<List<PurchaseOrderResponseDto>>> getAllPurchaseOrders(
-//            @AuthenticationPrincipal String loginId
-//    ) {
-//        ResponseDto<List<PurchaseOrderResponseDto>> response = purchaseOrderService.getAllPurchaseOrders(loginId);
-//        return ResponseEntity.status(HttpStatus.OK).body(response);
-//    }
-
-
-    // 3) 발주 요청서 단건 조회 - id로 조회
-    @GetMapping(ApiMappingPattern.MANAGER_API + "/purchase-orders/{purchaseOrderId}")
-    public ResponseEntity<ResponseDto<PurchaseOrderResponseDto>> getPurchaseOrderById(
-            @PathVariable Long purchaseOrderId
-    ) {
-        ResponseDto<PurchaseOrderResponseDto> response = purchaseOrderService.getPurchaseOrderById(purchaseOrderId);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    // 4) 발주 요청서 조회 - 조회 기준: 발주담당사원, isbn, 승인 상태 (사용자 소속 지점 해당 발주서만)
+    // 4) 발주 요청서 조회 - 조회 조건 없을 시 전체 조회 기능, 사용자 소속 지점 해당 발주서만 필터링
     @GetMapping(ApiMappingPattern.MANAGER_API + "/purchase-orders")
     public ResponseEntity<ResponseDto<List<PurchaseOrderResponseDto>>> searchPurchaseOrder(
             @AuthenticationPrincipal String loginId,
@@ -63,8 +44,6 @@ public class PurchaseOrderController {
         ResponseDto<List<PurchaseOrderResponseDto>> response = purchaseOrderService.searchPurchaseOrder(loginId, employeeName, bookIsbn, purchaseOrderStatus);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-
-    // 발주 일자로 조회 - 고민중
 
     // 5) 발주 요청서 수정 - 발주량 수정
     @PutMapping(ApiMappingPattern.MANAGER_API + "/purchase-orders/{purchaseOrderId}")

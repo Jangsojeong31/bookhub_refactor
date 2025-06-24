@@ -24,16 +24,7 @@ public class PurchaseOrderApprovalController {
     private final PurchaseOrderApprovalService purchaseOrderApprovalService;
     private final PurchaseOrderService purchaseOrderService;
 
-    // 1-2) 발주 요청서 기능 - 발주 승인 취소 (승인 -> 승인 거절) --- 고민중
-
-    // 2) 전체 조회
-//    @GetMapping
-//    public ResponseEntity<ResponseDto<List<PurchaseOrderApprovalResponseDto>>> getAllPurchaseOrderApprovals() {
-//        ResponseDto<List<PurchaseOrderApprovalResponseDto>> response = purchaseOrderApprovalService.getAllPurchaseOrderApprovals();
-//        return ResponseEntity.status(HttpStatus.OK).body(response);
-//    }
-
-    // 3) 단건 조회
+    // 단건 조회
     @GetMapping("/{purchaseOrderApprovalId}")
     public ResponseEntity<ResponseDto<PurchaseOrderApprovalResponseDto>> getPurchaseOrderApprovalById(
             @PathVariable Long purchaseOrderApprovalId
@@ -42,8 +33,7 @@ public class PurchaseOrderApprovalController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // 4) 조회 조건으로 조회 - 승인 담당자, 승인 일자, 승인 여부
-    // 승인 담당자, 승인 여부로 조회
+    // 조회 조건으로 조회 - 승인 담당자, 승인 여부로 조회
     @GetMapping
     public ResponseEntity<ResponseDto<List<PurchaseOrderApprovalResponseDto>>> getPurchaseOrderApprovalByEmployeeNameAndIsApproved(
             @RequestParam(required = false) String employeeName,
@@ -53,7 +43,7 @@ public class PurchaseOrderApprovalController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // 승인 일자로 조회
+    // 조회 조건으로 조회 - 승인 일자로 조회
     @GetMapping("/date")
     public ResponseEntity<ResponseDto<List<PurchaseOrderApprovalResponseDto>>> getPurchaseOrderApprovalByCreatedAt(
             @RequestParam LocalDate startDate,
@@ -62,24 +52,4 @@ public class PurchaseOrderApprovalController {
         ResponseDto<List<PurchaseOrderApprovalResponseDto>> response = purchaseOrderApprovalService.getPurchaseOrderApprovalByCreatedAt(startDate, endDate);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-
-    // 승인 담당자로 조회
-    @GetMapping("/employee-name/{employeeName}")
-    public ResponseEntity<ResponseDto<List<PurchaseOrderApprovalResponseDto>>> getPurchaseOrderApprovalByEmployeeName(
-            @PathVariable String employeeName
-    ) {
-        ResponseDto<List<PurchaseOrderApprovalResponseDto>> response = purchaseOrderApprovalService.getPurchaseOrderApprovalByEmployeeName(employeeName);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    // 승인 여부로 조회
-    @GetMapping("/is-approved/{isApproved}")
-    public ResponseEntity<ResponseDto<List<PurchaseOrderApprovalResponseDto>>> getPurchaseOrderApprovalByIsApproved(
-            @PathVariable boolean isApproved
-    ) {
-        ResponseDto<List<PurchaseOrderApprovalResponseDto>> response = purchaseOrderApprovalService.getPurchaseOrderApprovalByIsApproved(isApproved);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    // 4-4) 승인 일자 - 1개월, 3개월, 6개월 단위로 조회 --- 고민중
 }
