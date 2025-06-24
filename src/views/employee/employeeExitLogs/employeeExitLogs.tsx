@@ -1,6 +1,5 @@
 import { employeeExitLogsRequest } from "@/apis/employeeExitLogs/employeeExitLogs";
 import { EmployeeExitLogsResponseDto } from "@/dtos/employee/response/employee-exit-logs.response.dto";
-import { tr } from "date-fns/locale";
 import React, { useState } from "react";
 import { useCookies } from "react-cookie";
 
@@ -28,7 +27,7 @@ function EmployeeExitLogs() {
     EmployeeExitLogsResponseDto[]
   >([]);
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const totalPages = Math.ceil(employeeExitLogs.length / ITEMS_PAGE);
 
   const onInputChange = (
@@ -68,39 +67,55 @@ function EmployeeExitLogs() {
   };
 
   const paginatedEmployeeExitLogs = employeeExitLogs.slice(
-    (currentPage - 1) * ITEMS_PAGE,
-    currentPage * ITEMS_PAGE
+    currentPage * ITEMS_PAGE,
+    (currentPage + 1) * ITEMS_PAGE
   );
+
+  const goToPage = (page: number) => {
+    if (page >= 0 && page < totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const goPrev = () => {
+    if (currentPage > 0) setCurrentPage(currentPage - 1);
+  };
+
+  const goNext = () => {
+    if (currentPage < totalPages - 1) setCurrentPage(currentPage + 1);
+  };
 
   return (
     <div>
-      <div>
-        <input
-          type="text"
-          name="employeeName"
-          value={searchForm.employeeName}
-          placeholder="사원 명"
-          onChange={onInputChange}
-        />
-        <input
-          type="text"
-          name="authorizerName"
-          value={searchForm.authorizerName}
-          placeholder="관리자 명"
-          onChange={onInputChange}
-        />
-        <select
-          name="exitReason"
-          value={searchForm.exitReason}
-          onChange={onInputChange}
-        >
-          <option value="">퇴사 사유를 선택하세요.</option>
-          <option value="RETIREMENT">정년 퇴직</option>
-          <option value="VOLUNTEER">자진 퇴사</option>
-          <option value="FORCED">권고 사직</option>
-          <option value="TERMINATED">해고</option>
-        </select>
-        <span>
+      <div className="searchContainer">
+        <h2>퇴사자 로그 조회</h2>
+        <div className="search-row">
+          <input
+            type="text"
+            name="employeeName"
+            value={searchForm.employeeName}
+            placeholder="사원 명"
+            onChange={onInputChange}
+          />
+          <input
+            type="text"
+            name="authorizerName"
+            value={searchForm.authorizerName}
+            placeholder="관리자 명"
+            onChange={onInputChange}
+          />
+          <select
+            name="exitReason"
+            value={searchForm.exitReason}
+            onChange={onInputChange}
+          >
+            <option value="">퇴사 사유를 선택하세요.</option>
+            <option value="RETIREMENT">정년 퇴직</option>
+            <option value="VOLUNTEER">자진 퇴사</option>
+            <option value="FORCED">권고 사직</option>
+            <option value="TERMINATED">해고</option>
+          </select>
+
           <input
             type="date"
             name="startUpdatedAt"
@@ -108,7 +123,7 @@ function EmployeeExitLogs() {
             placeholder="시작 일자"
             onChange={onInputChange}
           />
-          ~
+          <span>~</span>
           <input
             type="date"
             name="endUpdatedAt"
@@ -116,13 +131,17 @@ function EmployeeExitLogs() {
             placeholder="종료 일자"
             onChange={onInputChange}
           />
-        </span>
-        <button onClick={onSearchClick}>검색</button>
-        <button onClick={onResetClick}>초기화</button>
+
+          <div className="search-button">
+            <button onClick={onSearchClick}>검색</button>
+            <button onClick={onResetClick}>초기화</button>
+          </div>
+        </div>
       </div>
       <table>
         <thead>
           <tr>
+            <td></td>
             <td>사원 번호</td>
             <td>사원 명</td>
             <td>지점 명</td>
@@ -135,8 +154,9 @@ function EmployeeExitLogs() {
           </tr>
         </thead>
         <tbody>
-          {paginatedEmployeeExitLogs.map((employeeExitLog) => (
+          {paginatedEmployeeExitLogs.map((employeeExitLog, index) => (
             <tr key={employeeExitLog.exitId}>
+              <td>{currentPage * ITEMS_PAGE + index + 1}</td>
               <td>{employeeExitLog.employeeNumber}</td>
               <td>{employeeExitLog.employeeName}</td>
               <td>{employeeExitLog.branchName}</td>
@@ -155,25 +175,34 @@ function EmployeeExitLogs() {
           ))}
         </tbody>
       </table>
-      {totalPages > 1 && (
-        <div style={{ marginTop: "20px" }}>
+      {employeeExitLogs.length > 0 && (
+        <div className="footer">
           <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
+            className="pageBtn"
+            onClick={goPrev}
+            disabled={currentPage === 0}
           >
-            이전
+            {"<"}
           </button>
-          <span style={{ margin: "0 10px" }}>
-            {currentPage} / {totalPages}
+          {Array.from({ length: totalPages }, (_, i) => i).map((i) => (
+            <button
+              key={i}
+              className={`pageBtn${i === currentPage ? " current" : ""}`}
+              onClick={() => goToPage(i)}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            className="pageBtn"
+            onClick={goNext}
+            disabled={currentPage >= totalPages - 1}
+          >
+            {">"}
+          </button>
+          <span className="pageText">
+            {totalPages > 0 ? `${currentPage + 1} / ${totalPages}` : "0 / 0"}
           </span>
-          <button
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
-            disabled={currentPage === totalPages}
-          >
-            다음
-          </button>
         </div>
       )}
     </div>

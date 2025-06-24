@@ -24,7 +24,7 @@ function EmployeeChangeLogsSearch() {
     EmployeeChangeLogsResponseDto[]
   >([]);
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const totalPages = Math.ceil(employeeChangeLogs.length / ITEMS_PER_PAGE);
 
   const onInputChange = (
@@ -63,38 +63,53 @@ function EmployeeChangeLogsSearch() {
   };
 
   const paginatedEmployeeChangeLogList = employeeChangeLogs.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
+    currentPage * ITEMS_PER_PAGE,
+    (currentPage + 1) * ITEMS_PER_PAGE
   );
+
+  const goToPage = (page: number) => {
+    if (page >= 0 && page < totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const goPrev = () => {
+    if (currentPage > 0) setCurrentPage(currentPage - 1);
+  };
+
+  const goNext = () => {
+    if (currentPage < totalPages - 1) setCurrentPage(currentPage + 1);
+  };
 
   return (
     <div>
-      <div>
-        <input
-          type="text"
-          name="employeeName"
-          value={searchForm.employeeName}
-          placeholder="사원 명"
-          onChange={onInputChange}
-        />
-        <input
-          type="text"
-          name="authorizerName"
-          value={searchForm.authorizerName}
-          placeholder="관리자 명"
-          onChange={onInputChange}
-        />
-        <select
-          name="changeType"
-          value={searchForm.changeType}
-          onChange={onInputChange}
-        >
-          <option value="">변경 종류를 선택하세요</option>
-          <option value="POSITION_CHANGE">직급 변경</option>
-          <option value="AUTHORITY_CHANGE">권한 변경</option>
-          <option value="BRANCH_CHANGE">지점 변경</option>
-        </select>
-        <span>
+      <div className="searchContainer">
+        <h2>회원정보 로그 조회</h2>
+        <div className="search-row">
+          <input
+            type="text"
+            name="employeeName"
+            value={searchForm.employeeName}
+            placeholder="사원 명"
+            onChange={onInputChange}
+          />
+          <input
+            type="text"
+            name="authorizerName"
+            value={searchForm.authorizerName}
+            placeholder="관리자 명"
+            onChange={onInputChange}
+          />
+          <select
+            name="changeType"
+            value={searchForm.changeType}
+            onChange={onInputChange}
+          >
+            <option value="">변경 종류를 선택하세요</option>
+            <option value="POSITION_CHANGE">직급 변경</option>
+            <option value="AUTHORITY_CHANGE">권한 변경</option>
+            <option value="BRANCH_CHANGE">지점 변경</option>
+          </select>
           <input
             type="date"
             name="startUpdatedAt"
@@ -102,7 +117,7 @@ function EmployeeChangeLogsSearch() {
             placeholder="시작 일자"
             onChange={onInputChange}
           />
-          ~
+          <span>~</span>
           <input
             type="date"
             name="endUpdatedAt"
@@ -110,13 +125,16 @@ function EmployeeChangeLogsSearch() {
             placeholder="마지막 일자"
             onChange={onInputChange}
           />
-        </span>
-        <button onClick={onSearchClick}>검색</button>
-        <button onClick={onResetClcik}>초기화</button>
+          <div className="search-button">
+            <button onClick={onSearchClick}>검색</button>
+            <button onClick={onResetClcik}>초기화</button>
+          </div>
+        </div>
       </div>
       <table>
         <thead>
           <tr>
+            <td></td>
             <th>사원 번호</th>
             <th>사원 명</th>
             <th>변경 종류</th>
@@ -129,8 +147,9 @@ function EmployeeChangeLogsSearch() {
           </tr>
         </thead>
         <tbody>
-          {paginatedEmployeeChangeLogList.map((employeeChangeLog) => (
+          {paginatedEmployeeChangeLogList.map((employeeChangeLog, index) => (
             <tr key={employeeChangeLog.logId}>
+              <td>{currentPage * ITEMS_PER_PAGE + index + 1}</td>
               <td>{employeeChangeLog.employeeNumber}</td>
               <td>{employeeChangeLog.employeeName}</td>
               <td>
@@ -149,25 +168,34 @@ function EmployeeChangeLogsSearch() {
           ))}
         </tbody>
       </table>
-      {totalPages > 1 && (
-        <div style={{ marginTop: "20px" }}>
+      {employeeChangeLogs.length > 0 && (
+        <div className="footer">
           <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
+            className="pageBtn"
+            onClick={goPrev}
+            disabled={currentPage === 0}
           >
-            이전
+            {"<"}
           </button>
-          <span style={{ margin: "0 10px" }}>
-            {currentPage} / {totalPages}
+          {Array.from({ length: totalPages }, (_, i) => i).map((i) => (
+            <button
+              key={i}
+              className={`pageBtn${i === currentPage ? " current" : ""}`}
+              onClick={() => goToPage(i)}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            className="pageBtn"
+            onClick={goNext}
+            disabled={currentPage >= totalPages - 1}
+          >
+            {">"}
+          </button>
+          <span className="pageText">
+            {totalPages > 0 ? `${currentPage + 1} / ${totalPages}` : "0 / 0"}
           </span>
-          <button
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
-            disabled={currentPage === totalPages}
-          >
-            다음
-          </button>
         </div>
       )}
     </div>

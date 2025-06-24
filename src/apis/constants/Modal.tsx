@@ -88,3 +88,4 @@ const CloseButton = styled.button`
   font-size: 24px;
   cursor: pointer;
 `;
+

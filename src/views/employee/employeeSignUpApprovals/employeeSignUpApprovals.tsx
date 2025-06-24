@@ -7,6 +7,10 @@ import {
 import { EmployeeSignUpListResponseDto } from "@/dtos/employee/response/employee-sign-up-list.response.dto copy";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
+import "@/styles/employee/employeeModal.css";
+import "@/styles/employee/employeeSelect.css";
+
+const ITEMS_PER_PAGE = 10;
 
 function EmployeeSignUpApprovals() {
   const [employeeList, setEmployeeList] = useState<
@@ -17,13 +21,26 @@ function EmployeeSignUpApprovals() {
   const [cookies] = useCookies(["accessToken"]);
   const token = cookies.accessToken;
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 10;
-  const totalPages = Math.ceil(employeeList.length / ITEMS_PER_PAGE);
-
   const [modalStatus, setModalStatus] = useState(false);
 
   const [deniedReason, setDeniedReason] = useState("");
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const totalPages = Math.ceil(employeeList.length / ITEMS_PER_PAGE);
+
+  const goToPage = (page: number) => {
+    if (page >= 0 && page < totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const goPrev = () => {
+    if (currentPage > 0) setCurrentPage(currentPage - 1);
+  };
+
+  const goNext = () => {
+    if (currentPage < totalPages - 1) setCurrentPage(currentPage + 1);
+  };
 
   const onInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -43,7 +60,7 @@ function EmployeeSignUpApprovals() {
 
     if (code === "SU" && data) {
       setEmployeeList(data);
-      setMessage("");
+      setMessage(message);
     } else {
       setEmployeeList([]);
       setMessage(message);
@@ -55,8 +72,8 @@ function EmployeeSignUpApprovals() {
   }, [token]);
 
   const paginatedEmployees = employeeList.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
+    currentPage * ITEMS_PER_PAGE,
+    (currentPage + 1) * ITEMS_PER_PAGE
   );
 
   const onOpenModalClick = async (employee: EmployeeSignUpListResponseDto) => {
@@ -127,24 +144,35 @@ function EmployeeSignUpApprovals() {
 
   const modalContent: React.ReactNode = (
     <>
-      <h1>거절 사유</h1>
-      <select name="deniedReason" value={deniedReason} onChange={onInputChange}>
-        <option value="">거절 사유 선택</option>
-        <option value="INVALID_EMPLOYEE_INFO">사원 정보 불일치</option>
-        <option value="ACCOUNT_ALREADY_EXISTS">이미 계정이 발급된 사원</option>
-        <option value="PENDING_RESIGNATION">퇴사 예정자</option>
-      </select>
-      <br />
-      <button onClick={onSubmitClick}>확인</button>
+      <div className="contain">
+        <h1>거절 사유</h1>
+        <select
+          name="deniedReason"
+          value={deniedReason}
+          onChange={onInputChange}
+          className="de-select"
+        >
+          <option value="">거절 사유 선택</option>
+          <option value="INVALID_EMPLOYEE_INFO">사원 정보 불일치</option>
+          <option value="ACCOUNT_ALREADY_EXISTS">
+            이미 계정이 발급된 사원
+          </option>
+          <option value="PENDING_RESIGNATION">퇴사 예정자</option>
+        </select>
+        <button onClick={onSubmitClick} className="de-button">
+          확인
+        </button>
+      </div>
     </>
   );
 
   return (
     <div>
-      <h1>로그인 승인</h1>
+      <h2>로그인 승인</h2>
       <table>
         <thead>
           <tr>
+            <th></th>
             <th>사원 번호</th>
             <th>사원 명</th>
             <th>지점 명</th>
@@ -157,8 +185,9 @@ function EmployeeSignUpApprovals() {
           </tr>
         </thead>
         <tbody>
-          {paginatedEmployees.map((employee) => (
+          {paginatedEmployees.map((employee, index) => (
             <tr key={employee.approvalId}>
+              <td>{currentPage * ITEMS_PER_PAGE + index + 1}</td>
               <td>{employee.employeeNumber}</td>
               <td>{employee.employeeName}</td>
               <td>{employee.branchName}</td>
@@ -167,34 +196,43 @@ function EmployeeSignUpApprovals() {
               <td>{new Date(employee.appliedAt || "").toLocaleString()}</td>
               <td>{employee.isApproved === "PENDING" ? "대기 중" : "오류"}</td>
               <td>
-                <button onClick={() => onApprovedClick(employee)}>승인</button>
+                <button onClick={() => onApprovedClick(employee)} className="approval-button">승인</button>
               </td>
               <td>
-                <button onClick={() => onOpenModalClick(employee)}>거절</button>
+                <button onClick={() => onOpenModalClick(employee)} className="denied-button">거절</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      {totalPages > 1 && (
-        <div>
+      {employeeList.length > 0 && (
+        <div className="footer">
           <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
+            className="pageBtn"
+            onClick={goPrev}
+            disabled={currentPage === 0}
           >
-            이전
+            {"<"}
           </button>
-          <span style={{ margin: "0 10px" }}>
-            {currentPage} / {totalPages}
+          {Array.from({ length: totalPages }, (_, i) => i).map((i) => (
+            <button
+              key={i}
+              className={`pageBtn${i === currentPage ? " current" : ""}`}
+              onClick={() => goToPage(i)}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            className="pageBtn"
+            onClick={goNext}
+            disabled={currentPage >= totalPages - 1}
+          >
+            {">"}
+          </button>
+          <span className="pageText">
+            {totalPages > 0 ? `${currentPage + 1} / ${totalPages}` : "0 / 0"}
           </span>
-          <button
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
-            disabled={currentPage === totalPages}
-          >
-            다음
-          </button>
         </div>
       )}
       {modalStatus && (
