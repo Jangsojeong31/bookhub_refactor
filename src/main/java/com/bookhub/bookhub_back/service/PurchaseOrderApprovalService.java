@@ -9,13 +9,7 @@ import java.util.List;
 
 public interface PurchaseOrderApprovalService {
 
-    ResponseDto<List<PurchaseOrderApprovalResponseDto>> getAllPurchaseOrderApprovals();
-
     ResponseDto<PurchaseOrderApprovalResponseDto> getPurchaseOrderApprovalById(Long id);
-
-    ResponseDto<List<PurchaseOrderApprovalResponseDto>> getPurchaseOrderApprovalByEmployeeName(String employeeName);
-
-    ResponseDto<List<PurchaseOrderApprovalResponseDto>> getPurchaseOrderApprovalByIsApproved(boolean isApproved);
 
     ResponseDto<List<PurchaseOrderApprovalResponseDto>> getPurchaseOrderApprovalByCreatedAt(LocalDate startDate, LocalDate endDate);
 

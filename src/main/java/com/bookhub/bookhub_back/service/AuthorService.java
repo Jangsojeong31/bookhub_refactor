@@ -12,8 +12,6 @@ import java.util.List;
 public interface AuthorService {
     ResponseDto<List<AuthorResponseDto>> createAuthor(@Valid AuthorCreateRequestDto dto);
 
-    ResponseDto<List<AuthorResponseDto>> getAllAuthors();
-
     ResponseDto<AuthorResponseDto> updateAuthor(Long authorId, AuthorRequestDto dto);
 
     ResponseDto<Void> deleteAuthor(Long authorId);

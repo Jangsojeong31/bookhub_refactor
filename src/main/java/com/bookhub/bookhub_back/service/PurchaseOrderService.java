@@ -13,13 +13,9 @@ import java.util.List;
 public interface PurchaseOrderService {
     ResponseDto<List<PurchaseOrderResponseDto>> createPurchaseOrder(String loginId, @Valid PurchaseOrderCreateRequestDto dto);
 
-    ResponseDto<List<PurchaseOrderResponseDto>> getAllPurchaseOrders(String loginId);
-
     ResponseDto<PurchaseOrderResponseDto> updatePurchaseOrder(PurchaseOrderRequestDto dto, Long purchaseOrderId);
 
     ResponseDto<Void> deletePurchaseOrder(Long purchaseOrderId);
-
-    ResponseDto<PurchaseOrderResponseDto> getPurchaseOrderById(Long purchaseOrderId);
 
     ResponseDto<List<PurchaseOrderResponseDto>> searchPurchaseOrder(String loginId, String employeeName, String bookIsbn, PurchaseOrderStatus purchaseOrderStatus);
 
