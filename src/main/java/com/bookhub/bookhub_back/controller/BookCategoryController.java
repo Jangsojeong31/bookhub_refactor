@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(ApiMappingPattern.BASIC_API + ApiMappingPattern.ADMIN_API + "/categories")
+@RequestMapping(ApiMappingPattern.BASIC_API)
 @RequiredArgsConstructor
 public class BookCategoryController {
     private final BookCategoryService bookCategoryService;
 
     // 1) 카테고리 생성
-    @PostMapping
+    @PostMapping(ApiMappingPattern.ADMIN_API + "/categories")
     public ResponseEntity<ResponseDto<CategoryCreateResponseDto>> createCategory(
             @Valid @RequestBody CategoryCreateRequestDto dto) {
         ResponseDto<CategoryCreateResponseDto> category = bookCategoryService.createCategory(dto);
@@ -32,7 +32,7 @@ public class BookCategoryController {
     }
 
     // 2) 카테고리 수정
-    @PutMapping("/{categoryId}")
+    @PutMapping(ApiMappingPattern.ADMIN_API + "/categories/{categoryId}")
     public ResponseDto<CategoryUpdateResponseDto> updateCategory(
             @PathVariable Long categoryId,
             @RequestBody CategoryUpdateRequestDto dto) {
@@ -40,45 +40,38 @@ public class BookCategoryController {
     }
 
     // 3) 카테고리 삭제(비활성화)
-    @DeleteMapping("/{categoryId}")
+    @DeleteMapping(ApiMappingPattern.ADMIN_API + "/categories/{categoryId}")
     public ResponseDto<Void> deleteCategory(@PathVariable Long categoryId) {
         return bookCategoryService.deleteCategory(categoryId);
     }
 
     // 4) 트리형 카테고리 조회
-    @GetMapping("/tree")
+    @GetMapping(ApiMappingPattern.ADMIN_API + "/categories/tree")
     public ResponseDto<List<CategoryTreeResponseDto>> getCategoryTree(@RequestParam CategoryType type) {
         return bookCategoryService.getCategoryTree(type);
     }
 
     // 5) 활성 카테고리 전체 조회
-    @GetMapping
+    @GetMapping(ApiMappingPattern.ADMIN_API + "/categories/active")
     public ResponseDto<List<CategoryTreeResponseDto>> getAllActiveCategories() {
         return bookCategoryService.getAllActiveCategories();
     }
 
     // 6) 대분류 카테고리 조회
-    @GetMapping("/roots")
+    @GetMapping(ApiMappingPattern.ADMIN_API + "/categories/roots")
     public ResponseDto<List<CategoryTreeResponseDto>> getRootCategories() {
         return bookCategoryService.getRootCategories();
     }
 
     // 7) 특정 부모 ID 하위 카테고리 조회
-    @GetMapping("/subcategories/{parentId}")
+    @GetMapping(ApiMappingPattern.ADMIN_API + "/categories/subcategories/{parentId}")
     public ResponseDto<List<CategoryTreeResponseDto>> getSubCategories(@PathVariable Long parentId) {
         return bookCategoryService.getSubCategories(parentId);
     }
 
-    // 카테고리 이름으로 조회(활성/비활성 모두 포함)
-    @GetMapping("/name")
-    public ResponseDto<CategoryTreeResponseDto> getCategoryByName(@RequestParam String name) {
-        return bookCategoryService.getCategoryByName(name);
+    // 카테고리 ID로 연결된 할인정책 조회
+    @GetMapping(ApiMappingPattern.COMMON_API + "/categories/{categoryId}/policy")
+    public ResponseDto<?> getPolicyByCategory(@PathVariable("categoryId") Long categoryId) {
+        return bookCategoryService.getPolicyByCategoryId(categoryId);
     }
-
-    // 카테고리 이름으로 조회(활성화 된것만)
-    @GetMapping("/name/active")
-    public ResponseDto<CategoryTreeResponseDto> getActiveByName(@RequestParam("name") String name) {
-        return bookCategoryService.getActiveByName(name);
-    }
-
 }

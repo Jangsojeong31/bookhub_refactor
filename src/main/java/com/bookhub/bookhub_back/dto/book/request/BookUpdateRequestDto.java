@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class BookUpdateRequestDto {
     private String isbn;
     private Long bookPrice;
+    private Long categoryId;
     private String coverUrl;
     private String description;
     private String bookStatus;

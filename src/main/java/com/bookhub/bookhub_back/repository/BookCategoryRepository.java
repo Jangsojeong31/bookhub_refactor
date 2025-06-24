@@ -2,6 +2,7 @@ package com.bookhub.bookhub_back.repository;
 
 import com.bookhub.bookhub_back.common.enums.CategoryType;
 import com.bookhub.bookhub_back.entity.BookCategory;
+import com.bookhub.bookhub_back.entity.DiscountPolicy;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -35,4 +36,12 @@ public interface BookCategoryRepository extends JpaRepository<BookCategory, Long
 
     // 6. 특정 이름의 카테고리 (활성/비활성 상태 모두) 조회
     Optional<BookCategory> findByCategoryName(String categoryName);
+
+    // CategoryRepository.java
+    @Query("""
+    SELECT c.discountPolicyId FROM BookCategory c
+    WHERE c.categoryId = :categoryId AND c.isActive = true
+""")
+    Optional<DiscountPolicy> findPolicyByCategoryId(@Param("categoryId") Long categoryId);
+
 }

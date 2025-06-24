@@ -7,6 +7,7 @@ import com.bookhub.bookhub_back.dto.book.request.BookCreateRequestDto;
 import com.bookhub.bookhub_back.dto.book.request.BookUpdateRequestDto;
 import com.bookhub.bookhub_back.dto.book.response.BookResponseDto;
 import com.bookhub.bookhub_back.entity.Book;
+import com.bookhub.bookhub_back.entity.BookCategory;
 import com.bookhub.bookhub_back.entity.DiscountPolicy;
 import com.bookhub.bookhub_back.entity.Employee;
 import com.bookhub.bookhub_back.provider.JwtProvider;
@@ -33,6 +34,7 @@ public class BookServiceImpl implements BookService {
     private final AuthorRepository authorRepository;
     private final PublisherRepository publisherRepository;
     private final DiscountPolicyRepository discountPolicyRepository;
+    private final BookCategoryRepository categoryRepository;
     private final BookLogService bookLogService;
     private final EmployeeRepository employeeRepository;
     private final JwtProvider jwtProvider;
@@ -44,7 +46,7 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public ResponseDto<BookResponseDto> createBook(BookCreateRequestDto dto, String token, MultipartFile coverImageFile) throws IOException{
-        // 1. 로그인한 사용자 정보 추출
+
         String loginId = jwtProvider.getUsernameFromJwt(jwtProvider.removeBearer(token));
         Employee employee = employeeRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new IllegalArgumentException(ResponseCode.NO_EXIST_USER_ID));
@@ -68,7 +70,7 @@ public class BookServiceImpl implements BookService {
                 )
                 .build();
         Book savedBook = bookRepository.save(book);
-        // 이미지 파일 저장
+
         if (coverImageFile != null && !coverImageFile.isEmpty()) {
             String coverUrl = saveCoverImageFile(coverImageFile);
             savedBook.setCoverUrl(coverUrl);
@@ -80,7 +82,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public ResponseDto<BookResponseDto> updateBook(String isbn, BookUpdateRequestDto dto, String token, MultipartFile coverImageFile) throws IOException {
-        // 로그인 유저 확인
+
         String loginId = jwtProvider.getUsernameFromJwt(jwtProvider.removeBearer(token));
         Employee employee = employeeRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new IllegalArgumentException(ResponseCode.NO_EXIST_USER_ID));
@@ -88,14 +90,17 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findById(dto.getIsbn())
                 .orElseThrow(() -> new IllegalArgumentException("해당 ISBN의 책이 존재하지 않습니다."));
 
-        // 기존 정보 저장
         Long oldPrice = book.getBookPrice();
         DiscountPolicy oldPolicy = book.getPolicyId();
         BookStatus oldStatus = book.getBookStatus();
         Integer oldRate = oldPolicy != null ? oldPolicy.getDiscountPercent() : null;
 
-        // 필드 업데이트
         book.setBookPrice(dto.getBookPrice());
+        if (dto.getCategoryId() != null) {
+            BookCategory newCategory = categoryRepository.findById(dto.getCategoryId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
+            book.setCategoryId(newCategory);
+        }
         book.setDescription(dto.getDescription());
 
         BookStatus newStatus = dto.getBookStatus() != null
@@ -103,10 +108,12 @@ public class BookServiceImpl implements BookService {
                 : oldStatus;
         book.setBookStatus(newStatus);
 
-        if (dto.getPolicyId() != null) {
+        if (dto.getPolicyId() != null && dto.getPolicyId() > 0) {
             DiscountPolicy newPolicy = discountPolicyRepository.findById(dto.getPolicyId())
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 할인 정책입니다."));
             book.setPolicyId(newPolicy);
+        } else {
+            book.setPolicyId(null);
         }
 
 
@@ -174,6 +181,7 @@ public class BookServiceImpl implements BookService {
         return BookResponseDto.builder()
                 .isbn(book.getIsbn())
                 .bookTitle(book.getBookTitle())
+                .categoryId(book.getCategoryId().getCategoryId())
                 .categoryName(book.getCategoryId().getCategoryName())
                 .authorName(book.getAuthorId().getAuthorName())
                 .publisherName(book.getPublisherId().getPublisherName())

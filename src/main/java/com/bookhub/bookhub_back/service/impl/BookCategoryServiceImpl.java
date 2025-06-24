@@ -9,8 +9,11 @@ import com.bookhub.bookhub_back.dto.category.request.CategoryUpdateRequestDto;
 import com.bookhub.bookhub_back.dto.category.response.CategoryCreateResponseDto;
 import com.bookhub.bookhub_back.dto.category.response.CategoryTreeResponseDto;
 import com.bookhub.bookhub_back.dto.category.response.CategoryUpdateResponseDto;
+import com.bookhub.bookhub_back.dto.policy.response.DiscountPolicyDetailResponseDto;
 import com.bookhub.bookhub_back.entity.BookCategory;
+import com.bookhub.bookhub_back.entity.DiscountPolicy;
 import com.bookhub.bookhub_back.repository.BookCategoryRepository;
+import com.bookhub.bookhub_back.repository.DiscountPolicyRepository;
 import com.bookhub.bookhub_back.service.BookCategoryService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -27,6 +30,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BookCategoryServiceImpl implements BookCategoryService {
     private final BookCategoryRepository bookCategoryRepository;
+    private final DiscountPolicyRepository discountPolicyRepository;
+    private final BookCategoryRepository categoryRepository;
 
     // 1. 카테고리 생성
     @Override
@@ -79,18 +84,26 @@ public class BookCategoryServiceImpl implements BookCategoryService {
         if (dto.getCategoryType() != null) category.setCategoryType(dto.getCategoryType());
         if (dto.getCategoryOrder() != 0) category.setCategoryOrder(dto.getCategoryOrder());
         if (dto.getIsActive() != null) category.setIsActive(dto.getIsActive());
-        if (dto.getDiscountPolicyId() != null) category.setDiscountPolicyId(dto.getDiscountPolicyId());
+        Long policyId = dto.getDiscountPolicyId();
+        if (policyId != null && policyId > 0) {
+            DiscountPolicy policy = discountPolicyRepository.findById(policyId)
+                    .orElseThrow(() -> new EntityNotFoundException("할인 정책이 존재하지 않습니다."));
+            category.setDiscountPolicyId(policy);
+        } else {
+            category.setDiscountPolicyId(null);
+        }
+
 
         BookCategory updated = bookCategoryRepository.save(category);
 
         CategoryUpdateResponseDto responseDto = CategoryUpdateResponseDto.builder()
-                .parentCategoryId(updated.getParentCategoryId())
+                .parentCategoryId(updated.getParentCategoryId() != null ? category.getParentCategoryId().getCategoryId() : null)
                 .categoryName(updated.getCategoryName())
                 .categoryLevel(updated.getCategoryLevel())
-                .categoryType(updated.getCategoryType())
+                .categoryType(updated.getCategoryType().toString())
                 .categoryOrder(updated.getCategoryOrder())
                 .isActive(updated.getIsActive())
-                .discountPolicyId(updated.getDiscountPolicyId())
+                .discountPolicyId(updated.getDiscountPolicyId() != null ? category.getDiscountPolicyId().getPolicyId() : null)
                 .build();
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDto);
@@ -160,6 +173,32 @@ public class BookCategoryServiceImpl implements BookCategoryService {
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, buildTree(category));
     }
 
+    @Override
+    @Transactional
+    public ResponseDto<?> getPolicyByCategoryId(Long categoryId) {
+        BookCategory category = bookCategoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
+
+        DiscountPolicy policy = category.getDiscountPolicyId();
+
+        // 정책이 없는 경우 null 응답
+        if (policy == null) {
+            return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, null);
+        }
+
+        DiscountPolicyDetailResponseDto dto = DiscountPolicyDetailResponseDto.builder()
+                .policyTitle(policy.getPolicyTitle())
+                .policyDescription(policy.getPolicyDescription())
+                .policyType(policy.getPolicyType())
+                .totalPriceAchieve(policy.getTotalPriceAchieve())
+                .discountPercent(policy.getDiscountPercent())
+                .startDate(policy.getStartDate())
+                .endDate(policy.getEndDate())
+                .build();
+
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, dto);
+    }
+
 
     // 단건 엔티티를 트리 응답 DTO로 변환
     private CategoryTreeResponseDto toDto(BookCategory bc) {
@@ -175,7 +214,11 @@ public class BookCategoryServiceImpl implements BookCategoryService {
                                 ? bc.getParentCategoryId().getCategoryId()
                                 : null
                 )
-                .discountPolicyId(bc.getDiscountPolicyId())
+                .discountPolicyId(
+                        bc.getDiscountPolicyId() != null
+                                ? bc.getDiscountPolicyId().getPolicyId()
+                                : null
+                )
                 .subCategories(new ArrayList<>())
                 .build();
     }

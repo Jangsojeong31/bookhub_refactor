@@ -9,11 +9,11 @@ import lombok.Data;
 @Data
 @Builder
 public class CategoryUpdateResponseDto {
-    private BookCategory parentCategoryId;
+    private Long parentCategoryId;
     private String categoryName;
     private int categoryLevel;
-    private CategoryType categoryType;
+    private String categoryType;
     private int categoryOrder;
-    private Boolean isActive;
-    private DiscountPolicy discountPolicyId;
+    private boolean isActive;
+    private Long discountPolicyId;
 }

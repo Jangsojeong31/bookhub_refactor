@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class BookResponseDto {
     private String isbn;
     private String bookTitle;
+    private Long categoryId;
     private String categoryName;
     private String authorName;
     private String publisherName;
