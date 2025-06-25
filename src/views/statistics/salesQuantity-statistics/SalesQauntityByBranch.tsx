@@ -119,8 +119,9 @@ function SaleQuantityByBranch() {
       {loading ? (
         <div>불러오는 중...</div>
       ) : (
-        <BarChart width={1400} height={400} data={chartData}>
-          <XAxis dataKey="name" />
+        <BarChart width={1400} height={400} data={chartData}
+        margin={{ top: 20, right: 20, bottom: 40, left: 20 }}>
+          <XAxis dataKey="name" angle={-30} textAnchor="end" />
           <YAxis />
           <Tooltip />
           <Bar dataKey="total">

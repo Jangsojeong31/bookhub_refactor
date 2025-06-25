@@ -63,7 +63,7 @@ function MonthlySalesQuantity() {
 
   return (
     <div
-      style={{ width: "100%", maxWidth: 600, margin: "0 auto", padding: 32 }}
+      style={{ width: "100%", maxWidth: 800, margin: "0 auto", padding: 32 }}
     >
       <h4>월별 통계</h4>
 
@@ -79,6 +79,7 @@ function MonthlySalesQuantity() {
           ))}
         </select>
         <button onClick={onFetchChart}>새로고침</button>
+        <p>[{selectedYear}년]</p>
       </div>
 
       {loading ? (
