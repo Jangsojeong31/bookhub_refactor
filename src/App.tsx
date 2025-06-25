@@ -26,6 +26,7 @@ import Reception from "./views/reception";
 // import 'react-datepicker/dist/react-datepicker.css';
 import SalesQuantityStatistics from "./views/statistics/salesQuantity-statistics";
 import StockLog from "./views/stock-logs";
+import Stock from "./views/stocks"
 import Revenue from "./views/statistics/revenue";
 
 import StockStatistics from "./views/statistics/stockstatistics";
@@ -103,6 +104,7 @@ function App() {
                 element={<LocationPage />}
               />
               <Route path="/stock-logs/*" element={<StockLog />} />
+              <Route path="/stocks/*" element={<Stock />} />
               <Route path="/statistics/revenue/*" element={<Revenue />} />
               <Route
                 path="/statistics/stocks/*"
