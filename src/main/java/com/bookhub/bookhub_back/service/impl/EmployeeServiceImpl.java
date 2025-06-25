@@ -2,7 +2,10 @@ package com.bookhub.bookhub_back.service.impl;
 
 import com.bookhub.bookhub_back.common.constants.ResponseCode;
 import com.bookhub.bookhub_back.common.constants.ResponseMessageKorean;
-import com.bookhub.bookhub_back.common.enums.*;
+import com.bookhub.bookhub_back.common.enums.AlertType;
+import com.bookhub.bookhub_back.common.enums.ChangeType;
+import com.bookhub.bookhub_back.common.enums.IsApproved;
+import com.bookhub.bookhub_back.common.enums.Status;
 import com.bookhub.bookhub_back.common.util.DateUtils;
 import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.alert.request.AlertCreateRequestDto;
@@ -12,7 +15,10 @@ import com.bookhub.bookhub_back.dto.employee.request.EmployeeStatusUpdateRequest
 import com.bookhub.bookhub_back.dto.employee.response.EmployeeListResponseDto;
 import com.bookhub.bookhub_back.dto.employee.response.EmployeeResponseDto;
 import com.bookhub.bookhub_back.dto.employee.response.EmployeeSignUpApprovalsResponseDto;
-import com.bookhub.bookhub_back.entity.*;
+import com.bookhub.bookhub_back.entity.Employee;
+import com.bookhub.bookhub_back.entity.EmployeeChangeLog;
+import com.bookhub.bookhub_back.entity.EmployeeExitLog;
+import com.bookhub.bookhub_back.entity.EmployeeSignUpApproval;
 import com.bookhub.bookhub_back.repository.*;
 import com.bookhub.bookhub_back.service.AlertService;
 import com.bookhub.bookhub_back.service.EmployeeService;
@@ -20,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -145,18 +150,6 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setIsApproved(dto.getIsApproved());
             employeeSignUpApproval.setAuthorizerId(authorizerEmployee);
             employeeSignUpApproval.setIsApproved(dto.getIsApproved());
-
-            Alert alert = Alert.builder()
-                    .employeeId(employee)
-                    .alertType(AlertType.SIGNUP_APPROVAL_SUCCESS)
-                    .message("회원가입이 승인되었습니다.")
-                    .alertTargetTable(AlertTargetTable.EMPLOYEES) // EMPLOYEE_SIGNUP_APPROVAL도 가능
-                    .targetPk(employee.getEmployeeId())
-                    .targetIsbn(null)
-                    .isRead(false)
-                    .createdAt(LocalDate.now())
-                    .build();
-            alertRepository.save(alert);
         } else if (dto.getIsApproved().equals(IsApproved.DENIED) && !dto.getDeniedReason().isBlank()) {
             employee.setIsApproved(dto.getIsApproved());
             employeeSignUpApproval.setAuthorizerId(authorizerEmployee);
@@ -203,15 +196,13 @@ public class EmployeeServiceImpl implements EmployeeService {
             employeeChangeLogRepository.save(employeeChangeLog);
 
             alertService.createAlert(AlertCreateRequestDto.builder()
-                    .employeeId(employee.getEmployeeId()) // 변경된 사람 본인
+                    .employeeId(employee.getEmployeeId())
                     .alertType(String.valueOf(AlertType.CHANGE_BRANCH_SUCCESS))
                     .alertTargetTable("EMPLOYEES")
                     .targetPk(employee.getEmployeeId())
                     .message("지점이 [" + employee.getBranchId().getBranchName() + "]로 변경되었습니다.")
                     .build()
             );
-
-
         }
 
         if (dto.getPositionId() != null && !dto.getPositionId().equals(prePositionId)) {
@@ -229,7 +220,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             employeeChangeLogRepository.save(employeeChangeLog);
 
             alertService.createAlert(AlertCreateRequestDto.builder()
-                    .employeeId(employee.getEmployeeId()) // 변경된 사람 본인
+                    .employeeId(employee.getEmployeeId())
                     .alertType(String.valueOf(AlertType.CHANGE_POSITION_SUCCESS))
                     .alertTargetTable("EMPLOYEES")
                     .targetPk(employee.getEmployeeId())
@@ -253,7 +244,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             employeeChangeLogRepository.save(employeeChangeLog);
 
             alertService.createAlert(AlertCreateRequestDto.builder()
-                    .employeeId(employee.getEmployeeId()) // 변경된 사람 본인
+                    .employeeId(employee.getEmployeeId())
                     .alertType(String.valueOf(AlertType.CHANGE_PERMISSION_SUCCESS))
                     .alertTargetTable("EMPLOYEES")
                     .targetPk(employee.getEmployeeId())
