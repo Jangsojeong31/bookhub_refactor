@@ -11,6 +11,7 @@ export const adminMenu: SidebarMenu[] = [
       { label: '책 등록', path: '/books/create' },
       { label: '책 수정 및 삭제', path: '/books/edit' },
       { label: '책 로그', path: '/booklogs' },
+      { label: '', path:''  },
     ],
   },
   {
@@ -36,6 +37,8 @@ export const adminMenu: SidebarMenu[] = [
       { label: '퇴사자 로그 조회', path: '/employees/retired/logs' },
       { label: '회원정보 로그 조회', path: '/employees/logs' },
       { label: '회원가입승인 로그 조회', path: '/employees/approval/logs' },
+      { label: '', path: '' },
+      
     ],
   },
   {
