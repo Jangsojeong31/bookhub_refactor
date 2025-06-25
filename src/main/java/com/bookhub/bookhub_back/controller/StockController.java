@@ -33,7 +33,7 @@ public class StockController {
     }
 
     //책 재고 손실 시 수량 변경(Update)
-    @PutMapping("/branch/{branchId}/{stockId}")
+    @PutMapping("/{stockId}")
     public ResponseEntity<ResponseDto<StockUpdateResponseDto>> updateStock(
             @PathVariable Long stockId,
             @Valid @RequestBody StockUpdateRequestDto dto){
