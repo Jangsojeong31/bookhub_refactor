@@ -3,12 +3,7 @@ import { employeeUpdateRequest, verifyTokenEmployee } from "@/apis/auth/auth";
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import "@/styles/auth/Auth.css"
-
-interface Branch {
-  branchId: number;
-  branchName: string;
-  branchLocation: string;
-}
+import { Branch } from "@/dtos/branch/branch";
 
 const EmployeeUpdate = () => {
   const [searchParams] = useSearchParams();

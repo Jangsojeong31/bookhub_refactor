@@ -158,9 +158,21 @@ function EmployeeChangeLogsSearch() {
                     employeeChangeLog.changeType
                   : "-"}
               </td>
-              <td>{employeeChangeLog.prePositionName}</td>
-              <td>{employeeChangeLog.preAuthorityName}</td>
-              <td>{employeeChangeLog.preBranchName}</td>
+              <td>
+                {employeeChangeLog.prePositionName
+                  ? employeeChangeLog.prePositionName
+                  : "-"}
+              </td>
+              <td>
+                {employeeChangeLog.preAuthorityName
+                  ? employeeChangeLog.preAuthorityName
+                  : "-"}
+              </td>
+              <td>
+                {employeeChangeLog.preBranchName
+                  ? employeeChangeLog.preBranchName
+                  : "-"}
+              </td>
               <td>{employeeChangeLog.authorizerNumber}</td>
               <td>{employeeChangeLog.authorizerName}</td>
               <td>{new Date(employeeChangeLog.updatedAt).toLocaleString()}</td>

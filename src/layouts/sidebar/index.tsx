@@ -3,12 +3,15 @@ import { useNavigate } from "react-router-dom";
 import styles from "./Sidebar.module.css";
 import { commonMenu } from "./common";
 import { adminMenu } from "./admin";
+import { useEmployeeStore } from "@/stores/employee.store";
 
 export default function Sidebar() {
   const navigate = useNavigate();
+  const employee = useEmployeeStore((state) => state.employee);
+  const isAdmin = employee?.authorityName.includes("ADMIN");
 
   const [isAdminMode, setIsAdminMode] = useState(() => {
-    return localStorage.getItem("sidebarIsAdminMode") === "true";
+    return localStorage.getItem("sidebarIsAdminMode") === "false";
   });
 
   const [activeIndex, setActiveIndex] = useState<number | null>(() => {
@@ -29,6 +32,11 @@ export default function Sidebar() {
   };
 
   const toggleAdminMode = () => {
+    if (!isAdmin) {
+      alert("관리자 권한이 필요합니다.");
+      return;
+    }
+
     const nextMode = !isAdminMode;
     setIsAdminMode(nextMode);
     localStorage.setItem("sidebarIsAdminMode", String(nextMode));

@@ -4,12 +4,7 @@ import { GET_BRANCH_URL } from "@/apis/constants/khj.constants";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "@/styles/auth/Auth.css";
-
-interface Branch {
-  branchId: number;
-  branchName: string;
-  branchLocation: string;
-}
+import { Branch } from "@/dtos/branch/branch";
 
 function SignUp() {
   const navigate = useNavigate();
