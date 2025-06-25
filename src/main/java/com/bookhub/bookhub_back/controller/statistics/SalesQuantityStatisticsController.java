@@ -67,15 +67,20 @@ public class SalesQuantityStatisticsController {
     // 기간별
     // 1) Daily
     @GetMapping(SALES_QUANTITY_API + ("/daily"))
-    public ResponseEntity<ResponseDto<List<SalesQuantityStatisticsDto>>> getDailySalesQuantity() {
-        ResponseDto<List<SalesQuantityStatisticsDto>> response = salesQuantityStatisticsService.getDailySalesQuantity();
+    public ResponseEntity<ResponseDto<List<SalesQuantityStatisticsDto>>> getDailySalesQuantity(
+            @RequestParam("month") int month
+    ) {
+        ResponseDto<List<SalesQuantityStatisticsDto>> response = salesQuantityStatisticsService.getDailySalesQuantity(month);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 2) weekly
     @GetMapping(SALES_QUANTITY_API + ("/weekly"))
-    public ResponseEntity<ResponseDto<List<SalesQuantityStatisticsDto>>> getWeeklySalesQuantity() {
-        ResponseDto<List<SalesQuantityStatisticsDto>> response = salesQuantityStatisticsService.getWeeklySalesQuantity();
+    public ResponseEntity<ResponseDto<List<SalesQuantityStatisticsDto>>> getWeeklySalesQuantity(
+            @RequestParam("year") int year,
+            @RequestParam("month") int month
+    ) {
+        ResponseDto<List<SalesQuantityStatisticsDto>> response = salesQuantityStatisticsService.getWeeklySalesQuantity(year, month);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

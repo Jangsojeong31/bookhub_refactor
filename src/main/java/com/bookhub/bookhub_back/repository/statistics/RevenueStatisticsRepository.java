@@ -1,6 +1,8 @@
 package com.bookhub.bookhub_back.repository.statistics;
 
 
+import com.bookhub.bookhub_back.dto.statistics.projection.MonthlyRevenueStatisticsProjection;
+import com.bookhub.bookhub_back.dto.statistics.projection.WeeklyRevenueStatisticsProjection;
 import com.bookhub.bookhub_back.dto.statistics.response.revenue.BranchRevenueResponseDto;
 import com.bookhub.bookhub_back.dto.statistics.response.revenue.MonthlyRevenueResponseDto;
 import com.bookhub.bookhub_back.entity.CustomerOrder;
@@ -36,19 +38,20 @@ public interface RevenueStatisticsRepository extends JpaRepository<CustomerOrder
     );
 
     // 월간 매출 집계 (순수 JPQL)
-    @Query("""
-        SELECT new com.bookhub.bookhub_back.dto.statistics.response.revenue.MonthlyRevenueResponseDto(
-            MONTH(o.createdAt),
-            SUM(o.totalPrice)
-        )
-        FROM CustomerOrder o
-        WHERE FUNCTION('DATE', o.createdAt) BETWEEN :startDate AND :endDate
-        GROUP BY MONTH(o.createdAt)
-        ORDER BY MONTH(o.createdAt)
-        """)
-    List<MonthlyRevenueResponseDto> findMonthlySales(
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate")   LocalDate endDate
+    @Query(value = """
+        SELECT
+        MONTH(co.customer_order_date_at) AS orderMonth,
+        SUM(co.customer_order_total_price) AS totalRevenue
+        FROM customer_orders co
+        LEFT JOIN refund_orders r
+        ON r.order_id = co.customer_order_id
+        WHERE YEAR(co.customer_order_date_at) = :year
+        AND r.order_id IS NULL
+        GROUP BY MONTH(co.customer_order_date_at)
+        ORDER BY MONTH(co.customer_order_date_at) ASC;
+        """, nativeQuery = true)
+    List<MonthlyRevenueStatisticsProjection> findMonthlySales(
+            @Param("year") int year
     );
 
     // 지점·카테고리별 매출 집계 (JPQL)
@@ -78,6 +81,21 @@ public interface RevenueStatisticsRepository extends JpaRepository<CustomerOrder
             LocalDateTime start,
             LocalDateTime end
     );
+
+    @Query(value = """
+        SELECT
+            DATE(co.customer_order_date_at) AS orderDate,
+            SUM(co.customer_order_total_price) AS totalRevenue
+        FROM customer_orders co
+        LEFT JOIN refund_orders r
+            ON r.order_id = co.customer_order_id
+        WHERE YEAR(co.customer_order_date_at) = :year
+            AND MONTH(co.customer_order_date_at) = :month
+            AND r.order_id IS NULL
+        GROUP BY DATE(co.customer_order_date_at)
+        ORDER BY orderDate ASC;
+""", nativeQuery = true)
+    List<WeeklyRevenueStatisticsProjection> findWeeklySales(@Param("year") int year, @Param("month") int month);
 }
 
 

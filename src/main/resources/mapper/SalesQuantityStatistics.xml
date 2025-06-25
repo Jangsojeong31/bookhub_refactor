@@ -140,17 +140,16 @@
     <!-- 2. 판매 수량 차트 -->
 
     <!-- 1) 기간별 -->
-    <!-- Daily (15간) -->
+    <!-- Daily -->
     <select id="findDailySalesQuantity" resultType="SalesQuantityStatisticsDto">
         SELECT
             DATE(co.customer_order_date_at) AS orderDate,
-            SUM(cod.amount) AS totalSales
-        FROM customer_orders_detail cod
-            JOIN customer_orders co ON cod.customer_order_id = co.customer_order_id
-            JOIN books b ON cod.book_isbn = b.book_isbn
+            SUM(co.customer_order_total_amount) AS totalSales
+        FROM customer_orders co
             LEFT JOIN refund_orders r
             ON r.order_id = co.customer_order_id
-        WHERE co.customer_order_date_at >= DATE_SUB(NOW(), INTERVAL 15 DAY)
+        WHERE YEAR(co.customer_order_date_at) = YEAR(CURDATE())
+          AND MONTH(co.customer_order_date_at) = #{month}
           AND r.order_id IS NULL
         GROUP BY DATE(co.customer_order_date_at)
         ORDER BY orderDate ASC;
@@ -160,14 +159,12 @@
     <select id="findWeeklySalesQuantity" resultType="SalesQuantityStatisticsDto">
         SELECT
             DATE(co.customer_order_date_at) AS orderDate,
-            SUM(cod.amount) AS totalSales
-        FROM customer_orders_detail cod
-        JOIN customer_orders co ON cod.customer_order_id = co.customer_order_id
-        JOIN books b ON cod.book_isbn = b.book_isbn
+            SUM(co.customer_order_total_amount) AS totalSales
+        FROM customer_orders co
         LEFT JOIN refund_orders r
         ON r.order_id = co.customer_order_id
-        WHERE co.customer_order_date_at >= DATE_FORMAT(CURDATE(), '%Y-%m-01')
-            AND co.customer_order_date_at &lt; DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL 1 MONTH), '%Y-%m-01')
+        WHERE YEAR(co.customer_order_date_at) = #{year}
+          AND MONTH(co.customer_order_date_at) = #{month}
             AND r.order_id IS NULL
         GROUP BY DATE(co.customer_order_date_at)
         ORDER BY orderDate ASC;
@@ -177,10 +174,8 @@
     <select id="findMonthlySalesQuantity" resultType="SalesQuantityStatisticsDto">
         SELECT
             MONTH(co.customer_order_date_at) AS orderMonth,
-            SUM(cod.amount) AS totalSales
-        FROM customer_orders_detail cod
-            JOIN customer_orders co
-        ON cod.customer_order_id = co.customer_order_id
+            SUM(co.customer_order_total_amount) AS totalSales
+        FROM customer_orders co
             LEFT JOIN refund_orders r
             ON r.order_id = co.customer_order_id
         WHERE YEAR(co.customer_order_date_at) = #{year}

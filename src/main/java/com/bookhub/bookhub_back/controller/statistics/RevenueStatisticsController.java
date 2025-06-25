@@ -2,6 +2,8 @@ package com.bookhub.bookhub_back.controller.statistics;
 
 import com.bookhub.bookhub_back.common.constants.ApiMappingPattern;
 import com.bookhub.bookhub_back.dto.ResponseDto;
+import com.bookhub.bookhub_back.dto.statistics.projection.MonthlyRevenueStatisticsProjection;
+import com.bookhub.bookhub_back.dto.statistics.projection.WeeklyRevenueStatisticsProjection;
 import com.bookhub.bookhub_back.dto.statistics.response.revenue.BranchRevenueResponseDto;
 import com.bookhub.bookhub_back.dto.statistics.response.revenue.MonthlyRevenueResponseDto;
 import com.bookhub.bookhub_back.dto.statistics.response.revenue.WeekdayRevenueResponseDto;
@@ -53,26 +55,25 @@ public class RevenueStatisticsController {
     //목- 수요일까자의 각각의 값이 y 축이 되고 6.19일, 6.20일 데이터는 표시하지  않는다
     //y축은 각각의 주차별 총 매출금액의 합니다.
     @GetMapping("/weekly")
-    public ResponseEntity<ResponseDto<List<WeeklyRevenueResponseDto>>> getWeeklyRevenue(
-            @RequestParam("startDate")
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-            LocalDate startDate,
-
-            @RequestParam("endDate")
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-            LocalDate endDate
+    public ResponseEntity<ResponseDto<List<WeeklyRevenueStatisticsProjection>>> getWeeklyRevenue(
+            @RequestParam("year") int year,
+            @RequestParam("month") int month
     ){
-        ResponseDto<List<WeeklyRevenueResponseDto>> revenue = revenueService.getWeeklyRevenue(startDate, endDate);
+        ResponseDto<List<WeeklyRevenueStatisticsProjection>> revenue = revenueService.getWeeklyRevenue(year, month);
         return ResponseEntity.status(HttpStatus.OK).body(revenue);
     }
 
     //월간 총 매출 금액 (1월~12월 : x축)
     //현재 월을 기분으로 이전 1년간의 데이터를 조회할 수 있다. (만약 현재가 2025.6/6일이면 2024.6.1부터 2025.5.31까지의 데이터 조회 가능)
     @GetMapping("/monthly")
-    public ResponseEntity<ResponseDto<List<MonthlyRevenueResponseDto>>> getMonthlyRevenue(){
-        ResponseDto<List<MonthlyRevenueResponseDto>> revenue = revenueService.getMonthlyRevenue();
+    public ResponseEntity<ResponseDto<List<MonthlyRevenueStatisticsProjection>>> getMonthlyRevenue(
+            @RequestParam int year
+    ){
+        ResponseDto<List<MonthlyRevenueStatisticsProjection>> revenue = revenueService.getMonthlyRevenue(year);
         return ResponseEntity.status(HttpStatus.OK).body(revenue);
     }
+
+
 
     //x축 : 각 지점 (지점은 늘어날수도 줄어들수도 있기 때문에 고정값은 아님 , branchId 순서대로 x 축 정렬)
     //y축 : 매출금액
@@ -94,4 +95,4 @@ public class RevenueStatisticsController {
         return ResponseEntity.status(HttpStatus.OK).body(revenue);
     }
 }
-//월별 평균 객단가
+
