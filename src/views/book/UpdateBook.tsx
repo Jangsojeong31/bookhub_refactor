@@ -141,14 +141,7 @@ function UpdateBook() {
                 </td>
               </tr>
             </tbody>
-          </table>
-          
-          
-          
-          
-          
-
-          
+          </table>         
         </form>
       )}
       </div>

@@ -128,7 +128,7 @@ function CreateCategory({ onSuccess }: CreateCategoryProps) {
           className="create-category-select"
           required
         >
-          <option value="">대분류 선택</option>
+          <option value="">카테고리 선택</option>
           {parentCategories.map((cat) => (
             <option key={cat.categoryId} value={cat.categoryId}>
               {cat.categoryName}
