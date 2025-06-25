@@ -118,9 +118,7 @@ function App() {
             style={{
               flex: 1,
               padding: "30px",
-              overflowY: "auto",
-              minHeight: 0,
-              minWidth: 0,
+              minWidth: "1500px",
             }}
           >
             <Routes>
