@@ -15,7 +15,8 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
 
     List<Stock> findByBookIsbn_BookTitleContaining(String keyword); // 제목 부분 검색
 
-    List<Stock> findByBranchId_BranchName(String branchName);
 
     Optional<Stock> findByBookIsbnAndBranchId(Book bookIsbn, Branch branchId);
+
+    List<Stock> findByBranchId_BranchId(Long branchId);
 }
