@@ -56,8 +56,7 @@ const CATEGORY_MODULE_URL = `${API_DOMAIN}/api/v1/${ADMIN}/categories`;
 // 카테고리 생성
 export const POST_CATEGORY_URL = `${CATEGORY_MODULE_URL}`;
 
-// 카테고리 전체 조회
-// export const GET_CATEGORY_TREE_URL = (type : "DOMESTIC" | "FOREIGN") => `${CATEGORY_MODULE_URL}/tree/${type}`;
+// 트리형 카테고리 전체 조회
 export const GET_CATEGORY_TREE_URL = (type: "DOMESTIC" | "FOREIGN") =>
   `${CATEGORY_MODULE_URL}/tree?type=${type}`;
 
@@ -66,6 +65,9 @@ export const PUT_CATEGORY_URL = (categoryId : number) => `${CATEGORY_MODULE_URL}
 
 // 카테고리 삭제
 export const DELETE_CATEGORY_URL = (categoryId : number) => `${CATEGORY_MODULE_URL}/${categoryId}`;
+
+// 카테고리 ID로 연결된 할인정책 조회
+export const GET_POLICY_BY_CATEGORYID_URL = (categoryId : number) => `${API_DOMAIN}/api/v1/${COMMON}/categories/${categoryId}/policy`
 
 //! 4. 수령 승인 관련 요청 베이스 URL
 const RECEPTION_ADMIN_MODULE_URL = `${API_DOMAIN}/api/v1/admin/reception`;
