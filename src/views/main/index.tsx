@@ -1,10 +1,11 @@
 import { Route } from 'react-router-dom'
-import MainSearchBar from './MainSearchBar'
+import MainPage from './Main'
+
 
 function Main() {
   return (
     <>
-    <Route path = "/main" element = {<MainSearchBar />} />
+    <Route path = "/main" element = {<MainPage />} />
     </>
   )
 }
