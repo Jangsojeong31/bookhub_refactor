@@ -5,6 +5,8 @@ import { PolicyUpdateRequestDto } from "@/dtos/policy/policy.request.dto";
 import { PolicyDetailResponseDto } from "@/dtos/policy/policy.response.dto";
 import { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
+import './policyC.css';
+
 
 interface Props {
   isOpen: boolean;

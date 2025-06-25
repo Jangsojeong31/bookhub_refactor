@@ -52,6 +52,12 @@ export const adminMenu: SidebarMenu[] = [
     ],
   },
   {
+    title: '재고 로그 관리',
+    submenu: [
+      {label: '재고 로그 관리', path: '/stock-logs'}
+    ]
+  },
+  {
     title: '판매 통계',
     submenu: [
       { label: '매출 통계', path: '/statistics/revenue' },
