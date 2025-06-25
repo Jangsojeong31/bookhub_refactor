@@ -2,7 +2,9 @@ package com.bookhub.bookhub_back.controller;
 
 import com.bookhub.bookhub_back.common.constants.ApiMappingPattern;
 import com.bookhub.bookhub_back.dto.ResponseDto;
+import com.bookhub.bookhub_back.dto.stock.request.StockCreateRequestDto;
 import com.bookhub.bookhub_back.dto.stock.request.StockUpdateRequestDto;
+import com.bookhub.bookhub_back.dto.stock.response.StockCreateResponseDto;
 import com.bookhub.bookhub_back.dto.stock.response.StockListResponseDto;
 import com.bookhub.bookhub_back.dto.stock.response.StockUpdateResponseDto;
 import com.bookhub.bookhub_back.service.StockService;
@@ -22,8 +24,16 @@ public class StockController {
     //서비스랑 연결
     private final StockService stockService;
 
+    @PostMapping
+    public ResponseEntity<ResponseDto<StockCreateResponseDto>> createStock(
+            @Valid@RequestBody StockCreateRequestDto dto
+    ){
+        ResponseDto<StockCreateResponseDto> responsedto = stockService.createStock(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responsedto);
+    }
+
     //책 재고 손실 시 수량 변경(Update)
-    @PutMapping("/{stockId}")
+    @PutMapping("/branch/{branchId}/{stockId}")
     public ResponseEntity<ResponseDto<StockUpdateResponseDto>> updateStock(
             @PathVariable Long stockId,
             @Valid @RequestBody StockUpdateRequestDto dto){
@@ -33,9 +43,9 @@ public class StockController {
 
 
     //책 기준 전체 조회(bookIsbn 으로 검색)
-    @GetMapping("/search/book")
+    @GetMapping("/search/book/{bookIsbn}")
     public ResponseEntity<ResponseDto<List<StockListResponseDto>>> searchByBookIsbn(
-            @RequestParam String bookIsbn){
+            @PathVariable String bookIsbn){
         ResponseDto<List<StockListResponseDto>> responseDtos = stockService.searchByBookIsbn(bookIsbn);
         return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
     }
@@ -49,10 +59,10 @@ public class StockController {
     }
 
     //지점 기준 전체 조회
-    @GetMapping("/search/branch")
+    @GetMapping("/search/{branchId}")
     public ResponseEntity<ResponseDto<List<StockListResponseDto>>> searchByBranch(
-            @RequestParam String branchName){
-        ResponseDto<List<StockListResponseDto>> responseDtos = stockService.searchByBranch(branchName);
+            @PathVariable Long branchId){
+        ResponseDto<List<StockListResponseDto>> responseDtos = stockService.searchByBranch(branchId);
         return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
     }
 

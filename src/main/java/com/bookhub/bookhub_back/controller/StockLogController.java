@@ -69,10 +69,10 @@ public class StockLogController {
     }
 
     //특정 책에 대한 로그 전체 조회
-    @GetMapping("branch/{branchId}/book/{bookIsbn}")
+    @GetMapping("branch/{branchId}/book")
     public ResponseEntity<ResponseDto<List<StockLogResponseDto>>> getLogsByBook(
             @PathVariable Long branchId,
-            @PathVariable String bookIsbn){
+            @RequestParam String bookIsbn){
         ResponseDto<List<StockLogResponseDto>> stockLogs = stockLogService.getLogsByBook(branchId, bookIsbn);
         return ResponseEntity.status(HttpStatus.OK).body(stockLogs);
     }

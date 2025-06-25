@@ -7,7 +7,9 @@ import com.bookhub.bookhub_back.common.enums.AlertType;
 import com.bookhub.bookhub_back.common.enums.StockActionType;
 import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.alert.request.AlertCreateRequestDto;
+import com.bookhub.bookhub_back.dto.stock.request.StockCreateRequestDto;
 import com.bookhub.bookhub_back.dto.stock.request.StockUpdateRequestDto;
+import com.bookhub.bookhub_back.dto.stock.response.StockCreateResponseDto;
 import com.bookhub.bookhub_back.dto.stock.response.StockListResponseDto;
 import com.bookhub.bookhub_back.dto.stock.response.StockUpdateResponseDto;
 import com.bookhub.bookhub_back.entity.*;
@@ -32,6 +34,12 @@ public class StockServiceImpl implements StockService {
     private final EmployeeRepository employeeRepository;//직원
     private final BookRepository bookRepository;//책
     private final BranchRepository branchRepository;//지점
+
+    //재고 생성
+    @Override
+    public ResponseDto<StockCreateResponseDto> createStock(StockCreateRequestDto dto) {
+        return null;
+    }
 
 
 
@@ -184,11 +192,11 @@ public class StockServiceImpl implements StockService {
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseDto<List<StockListResponseDto>> searchByBranch(String branchName) {
+    public ResponseDto<List<StockListResponseDto>> searchByBranch(Long branchId) {
         List<StockListResponseDto> responseDtos = null;
-        List<Stock> stocks = stockRepository.findByBranchId_BranchName(branchName);
+        List<Stock> stocks = stockRepository.findByBranchId_BranchId(branchId);
         if (stocks.isEmpty()) {
-            throw new EntityNotFoundException(ResponseCode.NO_EXIST_ID + branchName);
+            throw new EntityNotFoundException(ResponseCode.NO_EXIST_ID + branchId);
         }
 
         responseDtos = stocks.stream()
@@ -201,4 +209,6 @@ public class StockServiceImpl implements StockService {
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
     }
+
+
 }

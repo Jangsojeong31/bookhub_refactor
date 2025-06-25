@@ -46,12 +46,8 @@ public class RevenueStatisticsController {
     }
 
     //주별 매출 추이
-    //RequestParam : 시작일과 마지막 날짜(달력을 이용한 선택
-    //CustomizedLabelLineChart를 이용해 구현 예정
-    //각각의 line은 각 지점을 나타내고 x축은 시작일로부터 주차별(6월 1주차, 6월 2주차 등등)
-    //각각의 값은 만약 시작일이 2025.3.6(목)/끝나는 날자가 2025.6.20(금)이라면
-    //목- 수요일까자의 각각의 값이 y 축이 되고 6.19일, 6.20일 데이터는 표시하지  않는다
-    //y축은 각각의 주차별 총 매출금액의 합니다.
+    //몇년도 몇월을 입력하면 x 축은 각각의 월의 1주차, 2주차, 3주차, 4주차의 Revenue
+    //y 축은 총 매출
     @GetMapping("/weekly")
     public ResponseEntity<ResponseDto<List<WeeklyRevenueResponseDto>>> getWeeklyRevenue(
             @RequestParam("startDate")
