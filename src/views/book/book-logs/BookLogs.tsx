@@ -30,6 +30,10 @@ function BookLogs() {
   };
 
   const totalPages = Math.ceil(logs.length / itemsPerPage);
+  const pagesPerGroup = 5;
+  const currentGroup = Math.floor(currentPage / pagesPerGroup);
+  const startPage = currentGroup * pagesPerGroup;
+  const endPage = Math.min(startPage + pagesPerGroup, totalPages);
 
   const goToPage = (page: number) => {
     if (page >= 0 && page < totalPages) {
@@ -97,7 +101,7 @@ function BookLogs() {
           <button className="pageBtn" onClick={goPrev} disabled={currentPage === 0}>
             {"<"}
           </button>
-          {Array.from({ length: totalPages }, (_, i) => (
+          {Array.from({ length: endPage - startPage }, (_, i) => startPage + i).map((i) => (
             <button
               key={i}
               className={`pageBtn${i === currentPage ? " current" : ""}`}
@@ -106,16 +110,11 @@ function BookLogs() {
               {i + 1}
             </button>
           ))}
-          <button
-            className="pageBtn"
-            onClick={goNext}
-            disabled={currentPage >= totalPages - 1}
-          >
+          <button className="pageBtn" onClick={goNext} disabled={currentPage >= totalPages - 1}>
             {">"}
           </button>
-          <span className="pageText">
-            {totalPages > 0 ? `${currentPage + 1} / ${totalPages}` : "0 / 0"}
-          </span>
+
+          <span className="pageText">{`${currentPage + 1} / ${totalPages}`}</span>
         </div>
       )}
     </div>

@@ -1,6 +1,7 @@
 import { Route } from 'react-router-dom'
 import MainPage from './Main'
 
+
 function Main() {
   return (
     <>

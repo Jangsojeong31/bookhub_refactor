@@ -1,4 +1,19 @@
-import { ResponseDto } from "@/dtos";
+import axios from "axios";
+import { STOCK_SEARCH_BOOK_URL, STOCK_SEARCH_TITLE_URL, STOCK_SEARCH_BRANCH_URL, UPDATE_STOCK_URL } from "../constants/csy.constants";
+
+export const searchStocksByIsbn = (isbn: string) =>
+  axios.get(STOCK_SEARCH_BOOK_URL(isbn));
+
+export const searchStocksByTitle = (title: string) =>
+  axios.get(STOCK_SEARCH_TITLE_URL, { params: { bookTitle: title } });
+
+export const searchStocksByBranch = (branchId: number) =>
+  axios.get(STOCK_SEARCH_BRANCH_URL(branchId));
+
+export const updateStock = (branchId: number, stockId: number, body: any) =>
+  axios.put(UPDATE_STOCK_URL(branchId, stockId), body);
+
+/*import { ResponseDto } from "@/dtos";
 import { StockListResponseDto } from "@/dtos/stock/Stock.response.dto";
 import { axiosInstance, bearerAuthorization, responseErrorHandler, responseSuccessHandler } from "../axiosConfig";
 import { AxiosError } from "axios";
@@ -60,4 +75,4 @@ export const stockSearchByBookTitle = async(
   }catch(err){
     return responseErrorHandler(error as unknown as AxiosError<ResponseDto<null>>);
   }
-}
+}*/

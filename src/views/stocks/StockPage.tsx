@@ -1,93 +1,56 @@
-import { deletePublisher } from '@/apis/publisher/publisher';
-import { stockSearchByBranch } from '@/apis/stock/stock';
-import { StockListResponseDto, StockUpdateResponseDto } from '@/dtos/stock/Stock.response.dto';
-import { useEmployeeStore } from '@/stores/employee.store';
-import React, { useEffect, useState } from 'react'
-import { useCookies } from 'react-cookie';
-
+// 📁 src/views/stock/StockPage.tsx
+import React, { useState } from 'react';
+import StockTable from './StockTable';
+import StockUpdateModal from './StockUpdateModal';
+import {
+  searchStocksByIsbn,
+  searchStocksByTitle,
+  searchStocksByBranch
+} from '@/apis/stock/stock';
+import { Stock } from './stock';
 
 function StockPage() {
-  const [cookies] = useCookies(['accessToken']);
-  const accessToken = cookies.accessToken;
-    const branchId = useEmployeeStore(state => state.employee?.branchId);
+  const [selectedStock, setSelectedStock] = useState<Stock | null>(null);
 
-  //검색하는 법
-  const [search,setSearch] = useState<string>('');
+  const [isbn, setIsbn] = useState('');
+  const [title, setTitle] = useState('');
+  const [branchId, setBranchId] = useState('');
+  const [stocks, setStocks] = useState([]);
 
-  const [stocks, setStocks] = useState<StockListResponseDto[]>([]);
+  const handleSearch = async (type: 'isbn' | 'title' | 'branch') => {
+    try {
+      let response;
+      if (type === 'isbn') response = await searchStocksByIsbn(isbn);
+      else if (type === 'title') response = await searchStocksByTitle(title);
+      else response = await searchStocksByBranch(Number(branchId));
 
-  // 페이징 상태
-    const [currentPage, setCurrentPage] = useState<number>(0);
-    const pageSize = 10;
-    const [totalPages, setTotalPages] = useState<number>(0);
-
-  const [selectStock, setSelectedStock] = useState<StockUpdateResponseDto |null>(null);
-  const[isUpdateOpen, setIsUpdateOpen] = useState<boolean>(false);
-
-  
-
-  const fetchPage = async (page : number, keyword? : string) => {
-    if(!accessToken) return;
-    try{
-      //SearchByBranch(branch)
-      const response = await stockSearchByBranch(branchId, accessToken);
-      if(response.code ==='SU' && response.data){
-        const pageData = response.data as StockListResponseDto[];
-        setSearch(pageData.)
-        
-      }else{
-        console.error('목록 조회 실패', response.message);
-      }
-
-        // accessToken 이 바뀌거나 search 가 바뀔 때마다 재조회
-        useEffect(() => {
-          fetchPage(0, search.trim() || undefined);
-        }, [accessToken, search]);
-      
-        const onDelete = async(id:number) =>{
-          if (!window.confirm('정말 삭제하시겠습니까?')) return;
-          if (!accessToken) return;
-          try{
-            const response = await deletePublisher(id, accessToken);
-                  if (response.code === 'SU') {
-                    // 삭제 후 빈 페이지라면 이전 페이지로
-                    if (stocks.length === 1 && currentPage > 0) {
-                      fetchPage(currentPage - 1, search.trim() || undefined);
-                    } else {
-                      fetchPage(currentPage, search.trim() || undefined);
-                    }
-                  } else {
-                    alert(response.message || '삭제 중 오류');
-                  }
-
-          }catch(err){
-            console.error('삭제 중 예외:', err);
-            alert('삭제 중 오류가 발생했습니다.');
-          }
-        }
-      //book - get (Isbn)
-      
-  // 페이지네이션
-  const goToPage = (page: number) => {
-    if (page < 0 || page >= totalPages) return;
-    fetchPage(page, search.trim() || undefined);
-  };
-  const goPrev = () => {
-    if (currentPage > 0) goToPage(currentPage - 1);
-  };
-  const goNext = () => {
-    if (currentPage < totalPages - 1) goToPage(currentPage + 1);
-  };
-
-      
-    }catch(err){
-      console.error('stock 조회 중 예외', err);
+      setStocks(response.data.data);
+    } catch (err) {
+      alert('검색 실패');
     }
-  }
+  };
 
   return (
-    <div>StockPage</div>
-  )
+    <div className="p-4 space-y-4">
+      <h2 className="text-xl font-bold">재고 검색</h2>
+      <div className="space-x-2">
+        <input value={isbn} onChange={e => setIsbn(e.target.value)} placeholder="ISBN" className="border p-1" />
+        <button onClick={() => handleSearch('isbn')} className="btn">ISBN 검색</button>
+
+        <input value={title} onChange={e => setTitle(e.target.value)} placeholder="제목" className="border p-1" />
+        <button onClick={() => handleSearch('title')} className="btn">제목 검색</button>
+
+        <input value={branchId} onChange={e => setBranchId(e.target.value)} placeholder="지점 ID" className="border p-1" />
+        <button onClick={() => handleSearch('branch')} className="btn">지점 검색</button>
+      </div>
+
+      <StockTable stocks={stocks} onEdit={setSelectedStock} />
+
+      {selectedStock && (
+        <StockUpdateModal stock={selectedStock} onClose={() => setSelectedStock(null)} />
+      )}
+    </div>
+  );
 }
 
-export default StockPage
+export default StockPage;
