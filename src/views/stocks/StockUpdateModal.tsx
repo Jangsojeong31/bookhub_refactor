@@ -1,30 +1,60 @@
+// StockUpdateModal.tsx
 import React, { useState } from 'react';
-import { updateStock } from '@/apis/stock/stock';
+import { useCookies } from 'react-cookie';
 import { Stock } from './stock';
-
+import { StockActionType } from '@/apis/enums/StockActionType';
+import { updateStock } from '@/apis/stock/stock';
+import { useEmployeeStore } from '@/stores/employee.store';
+import { StockListResponseDto } from '@/dtos/stock/Stock.response.dto';
 
 interface StockUpdateModalProps {
-  stock: Stock;
+  stock: StockListResponseDto;
   onClose: () => void;
+  onUpdated: () => void;           // ← 추가
 }
 
-function StockUpdateModal({ stock, onClose }: StockUpdateModalProps) {
+function StockUpdateModal({
+  stock,
+  onClose,
+  onUpdated,                       // ← 추가
+}: StockUpdateModalProps) {
+  const [cookies] = useCookies(['accessToken']);
+  const accessToken = cookies.accessToken as string;
+  const employee = useEmployeeStore((s) => s.employee);
+  const employeeId = employee?.employeeId;
+
   const [amount, setAmount] = useState(0);
-  const [type, setType] = useState('OUT');
+  const [type, setType] = useState<StockActionType>(StockActionType.OUT);
 
   const handleSubmit = async () => {
+    if (!employeeId) {
+      alert('로그인 정보가 없습니다.');
+      return;
+    }
+    if (!stock.branchId || !stock.stockId) {
+      alert('지점 또는 재고 ID 정보가 없습니다.');
+      return;
+    }
+
     try {
-      await updateStock(stock.branchId, stock.stockId, {
-        type,
-        amount,
-        branchId: stock.branchId,
-        bookIsbn: stock.bookIsbn,
-        employeeId: 1, // 나중에 로그인 사용자로 대체
-        description: '재고 수정',
-      });
+      await updateStock(
+        stock.branchId,
+        stock.stockId,
+        {
+          type,
+          amount,
+          branchId: stock.branchId,
+          bookIsbn: stock.bookTitle,
+          employeeId,
+          description: '재고 수정',
+        },
+        accessToken
+      );
       alert('수정 성공');
       onClose();
-    } catch {
+      onUpdated();               // ← 성공 후 목록 갱신 콜백 호출
+    } catch (err) {
+      console.error(err);
       alert('수정 실패');
     }
   };
@@ -33,12 +63,17 @@ function StockUpdateModal({ stock, onClose }: StockUpdateModalProps) {
     <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center">
       <div className="bg-white p-4 rounded shadow-md space-y-4 w-96">
         <h3 className="text-lg font-semibold">재고 수정</h3>
-        <p><strong>{stock.bookTitle}</strong> @ {stock.branchName}</p>
-
-        <select value={type} onChange={(e) => setType(e.target.value)} className="border p-1 w-full">
-          <option value="IN">입고</option>
-          <option value="OUT">출고</option>
-          <option value="LOSS">손실</option>
+        <p>
+          <strong>{stock.bookTitle}</strong> @ {stock.branchName}
+        </p>
+        <select
+          value={type}
+          onChange={(e) => setType(e.target.value as StockActionType)}
+          className="border p-1 w-full"
+        >
+          <option value={StockActionType.IN}>{StockActionType.IN}</option>
+          <option value={StockActionType.OUT}>{StockActionType.OUT}</option>
+          <option value={StockActionType.LOSS}>{StockActionType.LOSS}</option>
         </select>
 
         <input
@@ -50,8 +85,12 @@ function StockUpdateModal({ stock, onClose }: StockUpdateModalProps) {
         />
 
         <div className="flex justify-between">
-          <button onClick={handleSubmit} className="btn">수정하기</button>
-          <button onClick={onClose} className="btn btn-secondary">닫기</button>
+          <button onClick={handleSubmit} className="btn">
+            수정하기
+          </button>
+          <button onClick={onClose} className="btn btn-secondary">
+            닫기
+          </button>
         </div>
       </div>
     </div>
