@@ -5,6 +5,8 @@ import { useCookies } from 'react-cookie';
 import { createPolicy } from '@/apis/policy/policy';
 import { PolicyCreateRequestDto } from '@/dtos/policy/policy.request.dto';
 import { PolicyType } from '@/apis/enums/PolicyType';
+import './policyC.css';
+
 
 interface Props {
   isOpen: boolean;

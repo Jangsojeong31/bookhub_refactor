@@ -1,16 +1,16 @@
+// PolicySearch.tsx
 import { PolicyType } from "@/apis/enums/PolicyType";
-import { getPolicies, deletePolicy, getPolicyDetail } from "@/apis/policy/policy";
-import { PolicyListResponseDto, PolicyDetailResponseDto } from "@/dtos/policy/policy.response.dto";
+import { getPolicies, getPolicyDetail } from "@/apis/policy/policy";
+import { PolicyDetailResponseDto, PolicyListResponseDto } from "@/dtos/policy/policy.response.dto";
 import { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
-import CreatePolicy from "./CreatePolicy";
-import UpdatePolicy from "./UpdatePolicy";
+import PolicyDetail from "./PolicyDetail";
 import './policyC.css';
 
 
 const PAGE_SIZE = 10;
 
-const PolicyPage: React.FC = () => {
+const PolicySearch: React.FC = () => {
   const [cookies] = useCookies(['accessToken']);
   const accessToken = cookies.accessToken;
 
@@ -18,17 +18,14 @@ const PolicyPage: React.FC = () => {
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
   const [keyword, setKeyword] = useState<string>('');
+  const [discountPercent, setDiscountPercent] = useState<number | ''>('');
 
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [policies, setPolicies] = useState<PolicyListResponseDto[]>([]);
-   const [selectedPolicyId, setSelectedPolicyId] = useState<number | null>(null);
-   const [discountPercent, setDiscountPercent] = useState<number | ''>('');
-   
-
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+  const [selectedPolicyId, setSelectedPolicyId] = useState<number | null>(null);
   const [selectedDetail, setSelectedDetail] = useState<PolicyDetailResponseDto | null>(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   // 리스트 조회
   const fetchPage = async (page: number) => {
@@ -67,33 +64,15 @@ const PolicyPage: React.FC = () => {
     fetchPage(0);
   }, [accessToken, keyword, type, startDate, endDate]);
 
-  // 삭제
-  const handleDelete = async (id: number) => {
-    if (!window.confirm('정말 삭제하시겠습니까?')) return;
-    if (!accessToken) return;
-    try {
-      const res = await deletePolicy(id, accessToken);
-      if (res.code === 'SU') {
-        const isLast = policies.length === 1 && currentPage > 0;
-        fetchPage(isLast ? currentPage - 1 : currentPage);
-      } else {
-        alert(res.message || '삭제 실패');
-      }
-    } catch (err) {
-      console.error('삭제 예외:', err);
-      alert('삭제 중 오류 발생');
-    }
-  };
-
-  // 수정 모달 열기 (상세 조회)
-  const openUpdateModal = async (id: number) => {
+  // 상세조회 모달 열기
+  const openDetailModal = async (id: number) => {
     if (!accessToken) return;
     try {
       const res = await getPolicyDetail(id, accessToken);
       if (res.code === 'SU' && res.data) {
         setSelectedDetail(res.data);
-        setSelectedPolicyId(id); 
-        setIsUpdateOpen(true);
+        setSelectedPolicyId(id);
+        setIsDetailOpen(true);
       } else {
         alert(res.message || '상세 조회 실패');
       }
@@ -103,16 +82,10 @@ const PolicyPage: React.FC = () => {
     }
   };
 
-  // 수정 닫기
-  const handleUpdateClose = () => {
+  // 보기창 닫기
+  const handleDetailClose = () => {
     setSelectedDetail(null);
-    setIsUpdateOpen(false);
-  };
-
-  // 수정 완료 콜백
-  const handleUpdated = () => {
-    handleUpdateClose();
-    fetchPage(currentPage);
+    setIsDetailOpen(false);
   };
 
   // 페이지 이동
@@ -123,12 +96,6 @@ const PolicyPage: React.FC = () => {
 
   return (
     <div className="policy-page-container">
-      <div className="topBar">
-        <button onClick={() => setIsCreateOpen(true)} className="btn-create">
-          정책 등록
-        </button>
-      </div>
-
       {/* 필터 영역 */}
       <div className="filter-bar">
         <select
@@ -155,7 +122,7 @@ const PolicyPage: React.FC = () => {
           placeholder="제목 검색"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && goToPage(0)}
+          onKeyDown={(e) => e.key === 'Enter' && goToPage(0)}
           className="input-search"
         />
         <input
@@ -164,14 +131,9 @@ const PolicyPage: React.FC = () => {
           value={discountPercent}
           onChange={(e) => {
             const v = e.target.value;
-            setDiscountPercent(v === "" ? "" : Number(v));
+            setDiscountPercent(v === '' ? '' : Number(v));
           }}
-          style={{
-            flex: 1,
-            padding: "8px",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-          }}
+          style={{ flex: 1, padding: '8px', border: '1px solid #ccc', borderRadius: '4px' }}
         />
         <button onClick={() => goToPage(0)} className="btn-search">
           검색
@@ -199,20 +161,8 @@ const PolicyPage: React.FC = () => {
               <td>{p.startDate}</td>
               <td>{p.endDate}</td>
               <td>
-                {/* <button onClick={() => openUpdateModal(p.policyId)} className='btn-update'>수정</button> */}
-                <button
-                  onClick={() => {
-                    console.log("수정 버튼 눌림, id:", p.policyId);
-                    openUpdateModal(p.policyId);
-                  }}
-                >
-                  수정
-                </button>
-                <button
-                  onClick={() => handleDelete(p.policyId)}
-                  className="btn-delete"
-                >
-                  삭제
+                <button onClick={() => openDetailModal(p.policyId)}>
+                  보기
                 </button>
               </td>
             </tr>
@@ -222,45 +172,29 @@ const PolicyPage: React.FC = () => {
 
       {/* 페이지네이션 */}
       <div className="pagination">
-        <button
-          disabled={currentPage === 0}
-          onClick={() => goToPage(currentPage - 1)}
-        >
+        <button disabled={currentPage === 0} onClick={() => goToPage(currentPage - 1)}>
           이전
         </button>
         <span>
           {currentPage + 1} / {totalPages}
         </span>
-        <button
-          disabled={currentPage + 1 >= totalPages}
-          onClick={() => goToPage(currentPage + 1)}
-        >
+        <button disabled={currentPage + 1 >= totalPages} onClick={() => goToPage(currentPage + 1)}>
           다음
         </button>
       </div>
 
-      {/* 생성 모달 */}
-      {isCreateOpen && (
-        <CreatePolicy
-          isOpen={isCreateOpen}
-          onClose={() => setIsCreateOpen(false)}
-          onCreated={() => fetchPage(currentPage)}
-        />
-      )}
-
-      {/* 수정 모달 */}
-      {isUpdateOpen && selectedDetail && selectedPolicyId != null && (
-        <UpdatePolicy
-          isOpen={isUpdateOpen}
-          onClose={handleUpdateClose}
-          onUpdated={handleUpdated}
+      {/* 상세 모달 */}
+      {isDetailOpen && selectedDetail && selectedPolicyId != null && (
+        <PolicyDetail
+          isOpen={isDetailOpen}
+          onClose={handleDetailClose}
           policyDetail={selectedDetail}
           policyId={selectedPolicyId}
-          
         />
       )}
     </div>
   );
 };
 
-export default PolicyPage;
+export default PolicySearch;
+

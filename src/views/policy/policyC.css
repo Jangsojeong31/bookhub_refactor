@@ -122,3 +122,15 @@
 .btn-primary:hover {
   opacity: 0.9;
 }
+
+.button{
+    background-color: #e74c3c;
+  color: white;
+  font-size: 12px;
+  border: none;
+  border-radius: 12px;
+  padding: 4px 10px;
+  margin: 0 4px;
+  cursor: pointer;
+
+}
