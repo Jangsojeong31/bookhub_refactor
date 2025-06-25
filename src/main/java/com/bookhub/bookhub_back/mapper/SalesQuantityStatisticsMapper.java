@@ -20,9 +20,9 @@ public interface SalesQuantityStatisticsMapper {
 
     List<BestSellerDto> findBestSellersByCategory(@Param("categoryId") Long categoryId);
 
-    List<SalesQuantityStatisticsDto> findDailySalesQuantity();
+    List<SalesQuantityStatisticsDto> findDailySalesQuantity(@Param("month") int month);
 
-    List<SalesQuantityStatisticsDto> findWeeklySalesQuantity();
+    List<SalesQuantityStatisticsDto> findWeeklySalesQuantity(@Param("year") int year, @Param("month") int month);
 
     List<SalesQuantityStatisticsDto> findMonthlySalesQuantity(@Param("year") int year);
 

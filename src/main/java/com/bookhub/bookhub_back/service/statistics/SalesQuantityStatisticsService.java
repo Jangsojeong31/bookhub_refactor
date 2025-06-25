@@ -25,9 +25,9 @@ public interface SalesQuantityStatisticsService {
 
     ResponseDto<List<SalesQuantityStatisticsDto>> getSalesQuantityByBranch(int year, int month);
 
-    ResponseDto<List<SalesQuantityStatisticsDto>> getDailySalesQuantity();
+    ResponseDto<List<SalesQuantityStatisticsDto>> getDailySalesQuantity(int month);
 
-    ResponseDto<List<SalesQuantityStatisticsDto>> getWeeklySalesQuantity();
+    ResponseDto<List<SalesQuantityStatisticsDto>> getWeeklySalesQuantity(int year, int month);
 
     ResponseDto<List<SalesQuantityStatisticsDto>> getMonthlySalesQuantity(int year);
 }

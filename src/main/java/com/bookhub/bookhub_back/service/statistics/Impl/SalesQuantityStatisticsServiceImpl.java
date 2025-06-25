@@ -67,14 +67,14 @@ public class SalesQuantityStatisticsServiceImpl implements SalesQuantityStatisti
     }
 
     @Override
-    public ResponseDto<List<SalesQuantityStatisticsDto>> getDailySalesQuantity() {
-        List<SalesQuantityStatisticsDto> responseDtos = statisticsMapper.findDailySalesQuantity();
+    public ResponseDto<List<SalesQuantityStatisticsDto>> getDailySalesQuantity(int month) {
+        List<SalesQuantityStatisticsDto> responseDtos = statisticsMapper.findDailySalesQuantity(month);
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
     }
 
     @Override
-    public ResponseDto<List<SalesQuantityStatisticsDto>> getWeeklySalesQuantity() {
-        List<SalesQuantityStatisticsDto> responseDtos = statisticsMapper.findWeeklySalesQuantity();
+    public ResponseDto<List<SalesQuantityStatisticsDto>> getWeeklySalesQuantity(int year, int month) {
+        List<SalesQuantityStatisticsDto> responseDtos = statisticsMapper.findWeeklySalesQuantity(year, month);
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
     }
 
