@@ -18,6 +18,7 @@ function EmployeeSignUpApprovals() {
   >([]);
   const [employee, setEmployee] = useState({ employeeId: 0, approvalId: 0 });
   const [message, setMessage] = useState("");
+
   const [cookies] = useCookies(["accessToken"]);
   const token = cookies.accessToken;
 
@@ -35,11 +36,15 @@ function EmployeeSignUpApprovals() {
   };
 
   const goPrev = () => {
-    if (currentPage > 0) setCurrentPage(currentPage - 1);
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
   };
 
   const goNext = () => {
-    if (currentPage < totalPages - 1) setCurrentPage(currentPage + 1);
+    if (currentPage < totalPages - 1) {
+      setCurrentPage(currentPage + 1);
+    }
   };
 
   const onInputChange = (
@@ -114,20 +119,17 @@ function EmployeeSignUpApprovals() {
     }
 
     if (!deniedReason) {
-      alert("항목을 선택하세요");
+      setMessage("거절 사유를 선택하세요");
       return;
     }
 
-    const id = { employee: employee.employeeId };
-    const approvalId = { employee: employee.approvalId };
-
     const response = await employeeSignUpApprovalRequest(
-      id.employee,
+      employee.employeeId,
       { isApproved: "DENIED", deniedReason: deniedReason },
       token
     );
 
-    const responseBody = await signUpResultRequest(approvalId.employee);
+    const responseBody = await signUpResultRequest(employee.approvalId);
 
     const { code, message } = response;
 
@@ -147,7 +149,6 @@ function EmployeeSignUpApprovals() {
       <div className="contain">
         <h1>거절 사유</h1>
         <select
-          name="deniedReason"
           value={deniedReason}
           onChange={onInputChange}
           className="de-select"
@@ -196,10 +197,20 @@ function EmployeeSignUpApprovals() {
               <td>{new Date(employee.appliedAt || "").toLocaleString()}</td>
               <td>{employee.isApproved === "PENDING" ? "대기 중" : "오류"}</td>
               <td>
-                <button onClick={() => onApprovedClick(employee)} className="approval-button">승인</button>
+                <button
+                  onClick={() => onApprovedClick(employee)}
+                  className="approval-button"
+                >
+                  승인
+                </button>
               </td>
               <td>
-                <button onClick={() => onOpenModalClick(employee)} className="denied-button">거절</button>
+                <button
+                  onClick={() => onOpenModalClick(employee)}
+                  className="denied-button"
+                >
+                  거절
+                </button>
               </td>
             </tr>
           ))}

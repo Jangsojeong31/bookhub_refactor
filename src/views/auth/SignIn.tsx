@@ -8,7 +8,7 @@ import "@/styles/auth/Auth.css";
 
 function SignIn() {
   const navigate = useNavigate();
-  const [, setCookie] = useCookies(["accessToken"]);
+  const [cookies, setCookie] = useCookies(["accessToken", "tokenExpiresAt"]);
   const setLogin = useEmployeeStore((store) => store.setLogin);
 
   const [form, setForm] = useState({
@@ -35,8 +35,7 @@ function SignIn() {
       return;
     }
 
-    const responseBody: SignInRequestDto = { loginId, password };
-    const response = await signInRequest(responseBody);
+    const response = await signInRequest(form);
     const { code, message, data } = response;
 
     if (code != "SU" || !data) {
@@ -60,8 +59,12 @@ function SignIn() {
       sameSite: "strict",
     });
 
-    setLogin();
+    setCookie("tokenExpiresAt", expireDate.toISOString(), {
+      path: "/",
+      sameSite: "strict",
+    });
 
+    setLogin();
     setEmployee(employee);
 
     alert("로그인 성공!");
@@ -77,7 +80,7 @@ function SignIn() {
       />
       <div className="form-box">
         <form onSubmit={onSubmit}>
-        <h2>LOGIN</h2>
+          <h2>LOGIN</h2>
           <input
             type="text"
             name="loginId"

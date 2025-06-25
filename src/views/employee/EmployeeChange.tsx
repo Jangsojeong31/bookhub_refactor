@@ -19,14 +19,10 @@ import { useCookies } from "react-cookie";
 import "@/styles/employee/employeeUpdateModal.css";
 import "@/styles/employee/employeemodal.css";
 import "@/styles/employee/employeeSelect.css";
+import { Branch } from "@/dtos/branch/branch";
 
 const statusOptions = ["EMPLOYED", "EXITED"];
 const ITEMS_PER_PAGE = 10;
-
-interface Branch {
-  branchId: number;
-  branchName: string;
-}
 
 function EmployeeChange() {
   const [searchForm, setSearchForm] = useState({
@@ -39,6 +35,7 @@ function EmployeeChange() {
 
   const [currentPage, setCurrentPage] = useState(0);
   const [cookies] = useCookies(["accessToken"]);
+  const token = cookies.accessToken;
 
   const [employeeList, setEmployeeList] = useState<EmployeeListResponseDto[]>(
     []
@@ -129,8 +126,6 @@ function EmployeeChange() {
     setForm({ ...form, [name]: Number(value) });
   };
 
-  const token = cookies.accessToken;
-
   const onSearchClick = async () => {
     if (!token) {
       alert("인증 토큰이 없습니다.");
@@ -142,10 +137,10 @@ function EmployeeChange() {
 
     if (code === "SU" && data) {
       setEmployeeList(data);
-      setMessage("");
     } else {
       setEmployeeList([]);
       setMessage(message);
+      return;
     }
   };
 
@@ -213,11 +208,7 @@ function EmployeeChange() {
 
     const response = await employeeChangeRequestDto(
       employee.employeeId,
-      {
-        branchId: form.branchId,
-        positionId: form.positionId,
-        authorityId: form.authorityId,
-      },
+      form,
       token
     );
 
@@ -298,7 +289,6 @@ function EmployeeChange() {
     <>
       <div className="employee-details">
         <h1>사원 세부 사항</h1>
-
         <div className="vertical-row">
           <div className="column">
             <div className="field">
@@ -355,7 +345,6 @@ function EmployeeChange() {
               </select>
             </div>
           </div>
-
           <div className="column">
             <div className="field">
               <label>이메일</label>
@@ -381,7 +370,6 @@ function EmployeeChange() {
             </div>
           </div>
         </div>
-
         <div className="actions">
           <button onClick={onUpdateClick}>수정</button>
         </div>
@@ -425,7 +413,6 @@ function EmployeeChange() {
               value={searchForm.name}
               onChange={onInputChange}
             />
-
             <select
               name="branchName"
               value={searchForm.branchName}
@@ -463,7 +450,6 @@ function EmployeeChange() {
                 </option>
               ))}
             </select>
-
             <select
               name="status"
               value={searchForm.status}
@@ -482,9 +468,7 @@ function EmployeeChange() {
             </div>
           </div>
         </div>
-
         {message && <p style={{ color: "red" }}>{message}</p>}
-
         <table
           border={1}
           cellPadding={10}
@@ -533,7 +517,6 @@ function EmployeeChange() {
             ))}
           </tbody>
         </table>
-
         {totalPages > 1 && (
           <div style={{ marginTop: "20px" }}>
             <button
