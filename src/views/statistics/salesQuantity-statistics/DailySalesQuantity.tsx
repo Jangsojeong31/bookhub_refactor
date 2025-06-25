@@ -1,10 +1,7 @@
-import {
-  getDailySalesQuantity,
-  getSalesQuantityByBranch,
-} from "@/apis/statistics/salesQuantityStatistics/salesQuantityStatistics";
+import { getDailySalesQuantity } from "@/apis/statistics/salesQuantityStatistics/salesQuantityStatistics";
+import { eachDayOfInterval, lastDayOfMonth } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
-import { NavLink } from "react-router-dom";
 import {
   ResponsiveContainer,
   BarChart,
@@ -21,13 +18,19 @@ function DailySalesQuantity() {
   const [cookies] = useCookies(["accessToken"]);
   const [chartData, setChartData] = useState<ChartData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [selectedMonth, setSelectedMonth] = useState<number>(
+    new Date().getMonth() + 1
+  );
 
-  const today = new Date();
-  const dayRange = Array.from({ length: 15 }, (_, i) => {
-    const day = new Date(today);
-    day.setDate(today.getDate() - 14 + i);
-    return day;
+  const thisYear = new Date().getFullYear();
+
+  let dayRange = eachDayOfInterval({
+    start: new Date(new Date().getFullYear(), selectedMonth - 1, 1),
+    end: lastDayOfMonth(new Date(new Date().getFullYear(), selectedMonth - 1)),
   });
+  const start = new Date(thisYear, selectedMonth - 1, 1);
+  const end = lastDayOfMonth(start);
+  dayRange = eachDayOfInterval({ start, end });
 
   const token = cookies.accessToken as string;
 
@@ -36,7 +39,7 @@ function DailySalesQuantity() {
     if (!token) return;
     setLoading(true);
 
-    const response = await getDailySalesQuantity(token);
+    const response = await getDailySalesQuantity(selectedMonth, token);
     const { code, message, data } = response;
 
     if (code != "SU") {
@@ -52,7 +55,7 @@ function DailySalesQuantity() {
         });
 
         return {
-          name: `${day.getMonth() + 1}/${day.getDate()}`,
+          name: `${selectedMonth}/${day.getDate()}`,
           total: foundData ? foundData.totalSales : 0,
         };
       });
@@ -64,16 +67,27 @@ function DailySalesQuantity() {
   // 차트 처음 불러오기
   useEffect(() => {
     onFetchChart();
-  }, []);
+  }, [selectedMonth]);
 
   return (
     <div
-      style={{ width: "100%", maxWidth: 1400, margin: "0 auto", padding: 32 }}
+      style={{ width: "100%", maxWidth: 1600, margin: "0 auto", padding: 32 }}
     >
       <h4>일일 통계</h4>
 
       <div style={{ margin: 16 }}>
+        <select
+          value={selectedMonth}
+          onChange={(e) => setSelectedMonth(Number(e.target.value))}
+        >
+          {[...Array(12)].map((_, idx) => (
+            <option key={idx + 1} value={idx + 1}>
+              {idx + 1}월
+            </option>
+          ))}
+        </select>
         <button onClick={onFetchChart}>새로고침</button>
+        <p>[{selectedMonth}월]</p>
       </div>
 
       {loading ? (

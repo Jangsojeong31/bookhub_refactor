@@ -11,14 +11,15 @@ export interface BranchRevenueResponseDto{
 }
 
 export interface MonthlyRevenueResponseDto{
-  month : number;
-  totalSales : number;
+  orderMonth : number;
+  totalRevenue : number;
 }
 
 export interface WeeklyRevenueResponseDto{
-  branchId: number;
-  branchName : string;
-  weekIndex : number;
-  weekStartDate : Date;
+  // branchId: number;
+  // branchName : string;
+  // weekIndex : number;
+  // weekStartDate : Date;
   totalRevenue: number;
+  orderDate: string;
 }

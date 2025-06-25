@@ -60,9 +60,12 @@ export const getBestSellersByCategory = async(categoryId: number, accessToken: s
 // 판매량 통계
 // 기간별
 // 1) daily
-export const getDailySalesQuantity = async(accessToken: string): Promise<ResponseDto<SalesQuantityStatisticsReponseDto[]>> => {
+export const getDailySalesQuantity = async(month: number, accessToken: string): Promise<ResponseDto<SalesQuantityStatisticsReponseDto[]>> => {
   try{
-    const response = await axiosInstance.get(GET_DAILY_SALES_QUANTITY, bearerAuthorization(accessToken));
+    const response = await axiosInstance.get(GET_DAILY_SALES_QUANTITY, {
+        ...bearerAuthorization(accessToken),
+        params: { month }
+      });
     return responseSuccessHandler(response);
   }catch(error){
     return responseErrorHandler(error as AxiosError<ResponseDto>)
@@ -70,9 +73,12 @@ export const getDailySalesQuantity = async(accessToken: string): Promise<Respons
 }
 
 // 2) weekly
-export const getWeeklySalesQuantity = async(accessToken: string): Promise<ResponseDto<SalesQuantityStatisticsReponseDto[]>> => {
+export const getWeeklySalesQuantity = async(year: number, month: number, accessToken: string): Promise<ResponseDto<SalesQuantityStatisticsReponseDto[]>> => {
   try{
-    const response = await axiosInstance.get(GET_WEEKLY_SALES_QUANTITY, bearerAuthorization(accessToken));
+    const response = await axiosInstance.get(GET_WEEKLY_SALES_QUANTITY, {
+        ...bearerAuthorization(accessToken),
+        params: { year, month }
+      });
     return responseSuccessHandler(response);
   }catch(error){
     return responseErrorHandler(error as AxiosError<ResponseDto>)

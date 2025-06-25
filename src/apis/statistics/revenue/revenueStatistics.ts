@@ -33,8 +33,8 @@ export const fetchWeekday = async (
  */
 export const fetchWeekly = async (
   token: string,
-  startDate: string,
-  endDate: string
+  year: number,
+  month: number
 ): Promise<ResponseDto<WeeklyRevenueResponseDto[]>> => {
   try {
     const response = await axiosInstance.get<
@@ -43,7 +43,7 @@ export const fetchWeekly = async (
       REVENUE_STATISTICS_WEEKLY_URL,
       {
         ...bearerAuthorization(token),
-        params: { startDate, endDate }
+        params: { year, month }
       }
     );
     return responseSuccessHandler(response);
@@ -56,6 +56,7 @@ export const fetchWeekly = async (
  * 월별 매출 조회 (지난 12개월)
  */
 export const fetchMonthly = async (
+  year: number,
   token: string
 ): Promise<ResponseDto<MonthlyRevenueResponseDto[]>> => {
   try {
@@ -63,7 +64,10 @@ export const fetchMonthly = async (
       ResponseDto<MonthlyRevenueResponseDto[]>
     >(
       REVENUE_STATISTICS_MONTHLY_URL,
-      bearerAuthorization(token)
+      {
+        ...bearerAuthorization(token),
+        params: { year }
+      }
     );
     return responseSuccessHandler(response);
   } catch (error) {
