@@ -1,8 +1,6 @@
-// PolicyDetail.tsx
 import React from 'react';
 import { PolicyDetailResponseDto } from '@/dtos/policy/policy.response.dto';
 import './policyC.css';
-
 
 interface PolicyDetailProps {
   isOpen: boolean;
@@ -13,21 +11,45 @@ interface PolicyDetailProps {
 
 const PolicyDetail: React.FC<PolicyDetailProps> = ({ isOpen, onClose, policyDetail, policyId }) => {
   if (!isOpen) return null;
+
   return (
-    <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-      <div className="modal-content" style={{ background: '#fff', padding: '20px', borderRadius: '4px', maxWidth: '500px', width: '100%' }}>
-        <h2>정책 상세 정보 (ID: {policyId})</h2>
-        <p><strong>제목:</strong> {policyDetail.policyTitle}</p>
-        <p><strong>타입:</strong> {policyDetail.policyType}</p>
-        <p><strong>시작일:</strong> {policyDetail.startDate}</p>
-        <p><strong>종료일:</strong> {policyDetail.endDate}</p>
-        {'discountPercent' in policyDetail && (
-          <p><strong>할인율:</strong> {policyDetail.discountPercent}%</p>
-        )}
-        <p><strong>설명</strong> {policyDetail.policyDescription}</p>
-        <button onClick={onClose} style={{ marginTop: '20px' }}>
-          닫기
-        </button>
+    <div className="modal-overlay">
+      <div className="policy-detail-modal">
+        <h2 className="modal-title">정책 상세 조회</h2>
+        <table className="detail-table">
+          <tbody>
+            <tr>
+              <th>정책 ID</th>
+              <td>{policyId}</td>
+            </tr>
+            <tr>
+              <th>제목</th>
+              <td>{policyDetail.policyTitle}</td>
+            </tr>
+            <tr>
+              <th>기간</th>
+              <td>{policyDetail.startDate} - {policyDetail.endDate}</td>
+            </tr>
+            {'discountPercent' in policyDetail && (
+              <tr>
+                <th>할인율</th>
+                <td>{policyDetail.discountPercent}%</td>
+              </tr>
+            )}
+       
+            <tr>
+              <th>Type</th>
+              <td>{policyDetail.policyType}</td>
+            </tr>
+            <tr>
+              <th>설명</th>
+              <td>{policyDetail.policyDescription}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div className="modal-footer">
+          <button className="btn-primary" onClick={onClose}>목록으로</button>
+        </div>
       </div>
     </div>
   );
