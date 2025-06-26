@@ -64,7 +64,7 @@ export const adminMenu: SidebarMenu[] = [
     title: '판매 통계',
     submenu: [
       { label: '매출 통계', path: '/statistics/revenue' },
-      { label: '재고 통계', path: '/statistics/stocks' },
+      { label: '재고 통계', path: '/statistics/stocks/branch' },
       { label: '판매량 통계', path: '/statistics/sales-quantity/period' },
     ],
   },
