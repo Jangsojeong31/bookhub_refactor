@@ -3,6 +3,7 @@ import { categoryStockRequest } from "@/apis/statistics/stocksStatistics/stocksS
 import { CategoryStockResponseDto } from "@/dtos/statistics/StocksStatistics/response/categoryStock.response.dto";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
+import { NavLink } from "react-router-dom";
 import { Cell, Legend, Pie, PieChart, Tooltip } from "recharts";
 
 interface Branch {
@@ -96,50 +97,95 @@ function CategoryStockStatistics() {
   }
 
   return (
+    <>
     <div>
-      <select
-        name="branchName"
-        value={searchParams.branchName}
-        onChange={onBranchNameChange}
+        <h2>재고 통계</h2>
+        <div style={{ marginBottom: 16, display: "flex", gap: 12 }}>
+          {[
+            { to: "/statistics/stocks/branch", label: "지점별" },
+            { to: "/statistics/stocks/category", label: "카테고리별" },
+            {
+              to: "/statistics/stocks/time",
+              label: "월별",
+            },
+            { to: "/statistics/stocks/zero", label: "재고 개수별" },
+          ].map(({ to, label }) => (
+            <NavLink
+              key={to}
+              to={to}
+              style={({ isActive }) => ({
+                backgroundColor: isActive ? "#265185" : "#f0f0f0",
+                color: isActive ? "white" : "#333",
+                padding: "10px 20px",
+                borderRadius: 6,
+                textDecoration: "none",
+                fontWeight: isActive ? "bold" : "normal",
+                transition: "background-color 0.3s",
+              })}
+            >
+              {label}
+            </NavLink>
+          ))}
+        </div>
+      </div>
+      <div>
+        <h3>지점별 각 카테고리의 재고 비율</h3>
+        <select
+          name="branchName"
+          value={searchParams.branchName}
+          onChange={onBranchNameChange}
+        >
+          <option value="">지점을 선택하세요.</option>
+          {branches.map((branch) => (
+            <option key={branch.branchId} value={branch.branchName}>
+              {branch.branchName}
+            </option>
+          ))}
+        </select>
+        <button onClick={onSearchClick}>조회</button>
+      </div>
+      <div
+        style={{
+          width: "1500px",
+          height: "700px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
       >
-        <option value="">지점을 선택하세요.</option>
-        {branches.map((branch) => (
-          <option key={branch.branchId} value={branch.branchName}>
-            {branch.branchName}
-          </option>
-        ))}
-      </select>
-      <button onClick={onSearchClick}>조회</button>
-      {data.length > 0 && (
-        <PieChart width={600} height={600}>
-          <Pie
-            data={data}
-            dataKey="percent"
-            nameKey="categoryName"
-            cx="50%"
-            cy="50%"
-            outerRadius={180}
-            label={({ categoryName, percent, rank }) =>
-              `${rank}. ${categoryName} ${percent.toFixed(1)}%`
-            }
-          >
-            {data.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
+        <div>
+          {data.length > 0 && (
+            <PieChart width={600} height={600}>
+              <Pie
+                data={data}
+                dataKey="percent"
+                nameKey="categoryName"
+                cx="50%"
+                cy="50%"
+                outerRadius={180}
+                label={({ categoryName, percent, rank }) =>
+                  `${rank}. ${categoryName} ${percent.toFixed(1)}%`
+                }
+              >
+                {data.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Pie>
+              <Tooltip
+                formatter={(value: number, name: string) => [
+                  `${value.toFixed(1)}%`,
+                  name,
+                ]}
               />
-            ))}
-          </Pie>
-          <Tooltip
-            formatter={(value: number, name: string) => [
-              `${value.toFixed(1)}%`,
-              name,
-            ]}
-          />
-          <Legend />
-        </PieChart>
-      )}
-    </div>
+              <Legend />
+            </PieChart>
+          )}
+        </div>
+      </div>
+    </>
   );
 }
 

@@ -2,6 +2,7 @@ import { branchStockBarChartRequest } from "@/apis/statistics/stocksStatistics/s
 import { BranchStockBarChartResponseDto } from "@/dtos/statistics/StocksStatistics/response/branchStockBarChart.response.dto";
 import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
+import { NavLink } from "react-router-dom";
 import {
   Bar,
   BarChart,
@@ -60,6 +61,37 @@ function BranchStockStatistics() {
   return (
     <>
       <div>
+        <h2>재고 통계</h2>
+        <div style={{ marginBottom: 16, display: "flex", gap: 12 }}>
+          {[
+            { to: "/statistics/stocks/branch", label: "지점별" },
+            { to: "/statistics/stocks/category", label: "카테고리별" },
+            {
+              to: "/statistics/stocks/time",
+              label: "월별",
+            },
+            { to: "/statistics/stocks/zero", label: "재고 개수별" },
+          ].map(({ to, label }) => (
+            <NavLink
+              key={to}
+              to={to}
+              style={({ isActive }) => ({
+                backgroundColor: isActive ? "#265185" : "#f0f0f0",
+                color: isActive ? "white" : "#333",
+                padding: "10px 20px",
+                borderRadius: 6,
+                textDecoration: "none",
+                fontWeight: isActive ? "bold" : "normal",
+                transition: "background-color 0.3s",
+              })}
+            >
+              {label}
+            </NavLink>
+          ))}
+        </div>
+      </div>
+      <div>
+        <h3>지점별 입고량 및 출고량</h3>
         <input
           type="month"
           value={`${searchParams.year}-${searchParams.month
@@ -72,7 +104,7 @@ function BranchStockStatistics() {
       {loading ? (
         <div>불러오는 중...</div>
       ) : (
-        <div style={{ overflowX: "auto", width: 1200, overflowY: "clip" }}>
+        <div style={{ overflowX: "auto", width: "1500px", overflowY: "clip" }}>
           <div style={{ width: `${data.length * 100}px`, height: 700 }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
