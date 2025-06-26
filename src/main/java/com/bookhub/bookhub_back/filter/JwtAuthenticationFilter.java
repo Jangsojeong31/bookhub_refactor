@@ -18,8 +18,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -28,16 +26,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-            HttpServletRequest request
-            , HttpServletResponse response
-            , FilterChain filterChain
+        HttpServletRequest request
+        , HttpServletResponse response
+        , FilterChain filterChain
     ) throws ServletException, IOException {
         try {
             String authorizationHeader = request.getHeader("Authorization");
 
             String token = (authorizationHeader != null && authorizationHeader.startsWith("Bearer "))
-                    ? jwtProvider.removeBearer(authorizationHeader)
-                    : null;
+                ? jwtProvider.removeBearer(authorizationHeader)
+                : null;
 
             if (token == null || !jwtProvider.isValidToken(token)) {
                 filterChain.doFilter(request, response);
@@ -45,7 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             String username = jwtProvider.getUsernameFromJwt(token);
-            Set<String> roles = jwtProvider.getRolesFromJwt(token);
+            String roles = jwtProvider.getRolesFromJwt(token);
 
             setAuthenticationContext(request, username, roles);
         } catch (Exception e) {
@@ -54,14 +52,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private void setAuthenticationContext(HttpServletRequest request, String username, Set<String> roles) {
+    private void setAuthenticationContext(HttpServletRequest request, String username, String role) {
+        String normalizedRole = role.startsWith("ROLE_") ? role : "ROLE_" + role;
+        GrantedAuthority authority = new SimpleGrantedAuthority(normalizedRole);
 
-        List<GrantedAuthority> authorities = roles.stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                .collect(Collectors.toList());
+        AbstractAuthenticationToken authenticationToken =
+            new UsernamePasswordAuthenticationToken(username, null, List.of(authority));
 
-        AbstractAuthenticationToken authenticationToken
-            = new UsernamePasswordAuthenticationToken(username, null, authorities);
 
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
