@@ -10,13 +10,13 @@ function SignIn() {
   const navigate = useNavigate();
   const [cookies, setCookie] = useCookies(["accessToken", "tokenExpiresAt"]);
   const setLogin = useEmployeeStore((store) => store.setLogin);
+  const setEmployee = useEmployeeStore((state) => state.setEmployee);
+  const setLogoutTimer = useEmployeeStore((state) => state.setLogoutTimer);
 
   const [form, setForm] = useState({
     loginId: "",
     password: "",
   });
-
-  const setEmployee = useEmployeeStore((state) => state.setEmployee);
 
   const [message, setMessage] = useState("");
 
@@ -28,15 +28,13 @@ function SignIn() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const { loginId, password } = form;
-
-    if (!loginId || !password) {
+    if (!form.loginId || !form.password) {
       setMessage("아이디와 비밀번호를 입력해주세요.");
       return;
     }
 
     const response = await signInRequest(form);
-    const { code, message, data } = response;
+    const { code, data } = response;
 
     if (code != "SU" || !data) {
       alert("로그인에 실패하였습니다.");
@@ -66,6 +64,7 @@ function SignIn() {
 
     setLogin();
     setEmployee(employee);
+    setLogoutTimer(exprTime);
 
     alert("로그인 성공!");
     navigate("/main");
