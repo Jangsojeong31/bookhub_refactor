@@ -30,14 +30,9 @@ export function LocationTable({ data, onView, onEdit, onDelete }: Props) {
             <td>
               <button
                 onClick={() => {
-                  if (
-                    employee?.authorityName == "MANAGER" ||
-                    employee?.authorityName == "ADMIN"
-                  ) {
+                 
                     onEdit(row.locationId);
-                  } else {
-                    alert("권한이 없습니다.");
-                  }
+                  
                 }}
               >
                 수정
