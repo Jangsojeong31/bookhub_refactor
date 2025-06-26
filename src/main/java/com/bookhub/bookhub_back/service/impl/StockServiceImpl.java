@@ -100,6 +100,7 @@ public class StockServiceImpl implements StockService {
 
         StockUpdateResponseDto responseDto = StockUpdateResponseDto.builder()
                 .stockId(stock.getStockId())
+                .bookIsbn(stock.getBookIsbn().getIsbn())
                 .branchName(stock.getBranchId().getBranchName())
                 .type(dto.getType())
                 .bookTitle(stock.getBookIsbn().getBookTitle())
@@ -157,8 +158,13 @@ public class StockServiceImpl implements StockService {
             throw new EntityNotFoundException(ResponseCode.NO_EXIST_ID + bookIsbn);
         }
 
+
+
         responseDtos = stocks.stream()
                 .map(stock -> StockListResponseDto.builder()
+                        .stockId(stock.getStockId())
+                        .branchId(stock.getBranchId().getBranchId())
+                        .bookIsbn(stock.getBookIsbn().getIsbn())
                         .branchName(stock.getBranchId().getBranchName())
                         .bookTitle(stock.getBookIsbn().getBookTitle())
                         .amount(stock.getBookAmount())
@@ -180,6 +186,9 @@ public class StockServiceImpl implements StockService {
 
         responseDtos = stocks.stream()
                 .map(stock -> StockListResponseDto.builder()
+                        .stockId(stock.getStockId())
+                        .branchId(stock.getBranchId().getBranchId())
+                        .bookIsbn(stock.getBookIsbn().getIsbn())
                         .branchName(stock.getBranchId().getBranchName())
                         .bookTitle(stock.getBookIsbn().getBookTitle())
                         .amount(stock.getBookAmount())
@@ -201,6 +210,9 @@ public class StockServiceImpl implements StockService {
 
         responseDtos = stocks.stream()
                 .map(stock -> StockListResponseDto.builder()
+                        .stockId(stock.getStockId())
+                        .branchId(stock.getBranchId().getBranchId())
+                        .bookIsbn(stock.getBookIsbn().getIsbn())
                         .branchName(stock.getBranchId().getBranchName())
                         .bookTitle(stock.getBookIsbn().getBookTitle())
                         .amount(stock.getBookAmount())

@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class StockListResponseDto {
+    private Long stockId;
+    private Long branchId;
+    private String bookIsbn;
     private String branchName;
     private String bookTitle;
     private Long amount;
