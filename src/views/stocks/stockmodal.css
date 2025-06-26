@@ -150,6 +150,17 @@
   opacity: 0.9;
 }
 
+/* .btn-secondary {
+  background-color: #305882;
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+} */
+
 /* Error message */
 .error-message {
   color: #e74c3c;
