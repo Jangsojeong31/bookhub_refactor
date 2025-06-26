@@ -1,4 +1,5 @@
 import { LocationResponseDto } from "@/dtos/location/location.dto";
+import { useEmployeeStore } from "@/stores/employee.store";
 
 interface Props {
   data: LocationResponseDto[];
@@ -8,10 +9,11 @@ interface Props {
 }
 
 export function LocationTable({ data, onView, onEdit, onDelete }: Props) {
+  const employee = useEmployeeStore((state) => state.employee);
+
   return (
     <table border={1} cellPadding={6} cellSpacing={0} style={{ width: "100%" }}>
-      
-<thead>
+      <thead>
         <tr>
           <th>#</th>
           <th>제목</th>
@@ -26,9 +28,34 @@ export function LocationTable({ data, onView, onEdit, onDelete }: Props) {
             <td>{row.bookTitle}</td>
             <td>{row.floor}</td>
             <td>
-         
-              <button onClick={() => onEdit(row.locationId)}>수정</button>{" "}
-              <button onClick={() => onDelete(row.locationId)}>삭제</button>
+              <button
+                onClick={() => {
+                  if (
+                    employee?.authorityName == "MANAGER" ||
+                    employee?.authorityName == "ADMIN"
+                  ) {
+                    onEdit(row.locationId);
+                  } else {
+                    alert("권한이 없습니다.");
+                  }
+                }}
+              >
+                수정
+              </button>{" "}
+              <button
+                onClick={() => {
+                  if (
+                    employee?.authorityName == "MANAGER" ||
+                    employee?.authorityName == "ADMIN"
+                  ) {
+                    onDelete(row.locationId);
+                  } else {
+                    alert("권한이 없습니다.");
+                  }
+                }}
+              >
+                삭제
+              </button>
             </td>
           </tr>
         ))}

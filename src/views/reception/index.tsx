@@ -7,8 +7,22 @@ import RequireAuth from "@/components/auth/RequireAuth";
 function Reception() {
   return (
     <>
-      <Route path="/reception/confirmed" element={<ReceptionConfirm />} />
-      <Route path="/reception/pending" element={<ReceptionPending />} />
+      <Route
+        path="/reception/confirmed"
+        element={
+          <RequireAuth allowedRoles={["ADMIN", "MANAGER"]}>
+            <ReceptionConfirm />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/reception/pending"
+        element={
+          <RequireAuth allowedRoles={["ADMIN", "MANAGER"]}>
+            <ReceptionPending />
+          </RequireAuth>
+        }
+      />
       <Route
         path="/reception/logs"
         element={
