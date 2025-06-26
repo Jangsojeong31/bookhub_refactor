@@ -15,6 +15,7 @@ public interface ResponseCode {
     String TOKEN_CREATE_FAIL = "TCF"; // 토큰 생성 실패
     String TOKEN_EXPIRED = "TE"; // 토큰 만료
     String INVALID_TOKEN = "IT"; // 잘못된 토큰
+    String NOT_MATCH_USER_INFO = "NMUI";
 
     // 유효성 검사 관련
     String VALIDATION_FAIL = "VF"; // Validation failed
