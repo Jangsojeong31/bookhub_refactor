@@ -102,11 +102,7 @@ export default function LocationPage() {
         onClose={() => setUpdateOpen(false)}
         onSuccess={fetchData}
       />
-      {/* <LocationDetail
-        locationId={selectedId}
-        open={detailOpen}
-        onClose={() => setDetailOpen(false)}
-      /> */}
+ 
     </section>
   );
 }
