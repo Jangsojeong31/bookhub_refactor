@@ -11,10 +11,12 @@ import com.bookhub.bookhub_back.dto.employee.request.EmployeeUpdateRequestDto;
 import com.bookhub.bookhub_back.entity.Branch;
 import com.bookhub.bookhub_back.entity.Employee;
 import com.bookhub.bookhub_back.entity.EmployeeSignUpApproval;
+import com.bookhub.bookhub_back.provider.JwtProvider;
 import com.bookhub.bookhub_back.repository.BranchRepository;
 import com.bookhub.bookhub_back.repository.EmployeeRepository;
 import com.bookhub.bookhub_back.repository.EmployeeSignUpApprovalRepository;
 import com.bookhub.bookhub_back.service.MailService;
+import io.jsonwebtoken.Claims;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,7 +29,6 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -35,6 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MailServiceImpl implements MailService {
     private final JavaMailSender mailSender;
     private final Map<String, String> verificationTokens = new ConcurrentHashMap<>();
+    private final JwtProvider jwtProvider;
     private final EmployeeRepository employeeRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final EmployeeSignUpApprovalRepository employeeSignUpApprovalRepository;
@@ -54,8 +56,7 @@ public class MailServiceImpl implements MailService {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDto.fail(ResponseCode.NOT_MATCH_USER_TEL, ResponseMessageKorean.NO_EXIST_USER_TEL));
             }
 
-            String token = UUID.randomUUID().toString();
-            verificationTokens.put(token, dto.getEmail());
+            String token = jwtProvider.generateEmailValidToken(dto.getEmail(), dto.getPhoneNumber(), employee.getLoginId());
 
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
@@ -84,17 +85,29 @@ public class MailServiceImpl implements MailService {
     @Override
     public Mono<ResponseEntity<ResponseDto<String>>> verifyEmailId(String token) {
         return Mono.fromCallable(() -> {
-            String email = verificationTokens.get(token);
+            if (!jwtProvider.isValidToken(token)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ResponseDto.fail(ResponseCode.TOKEN_EXPIRED, ResponseMessageKorean.TOKEN_EXPIRED));
+            }
 
-            if (email == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    ResponseDto.fail(ResponseCode.TOKEN_EXPIRED, ResponseMessageKorean.TOKEN_EXPIRED));
+            Claims claims = jwtProvider.getClaims(token);
+            String email = claims.get("email", String.class);
+            String phoneNumber = claims.get("phoneNumber", String.class);
+            String loginId = claims.get("loginId", String.class);
+
+            if (email == null || phoneNumber == null || loginId == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ResponseDto.fail(ResponseCode.TOKEN_EXPIRED, ResponseMessageKorean.TOKEN_EXPIRED));
             }
 
             Employee employee = employeeRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("직원이 존재하지 않습니다."));
 
-            verificationTokens.remove(token);
+            if (!employee.getPhoneNumber().equals(phoneNumber) || !employee.getLoginId().equals(loginId)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ResponseDto.fail(ResponseCode.NOT_MATCH_USER_INFO, ResponseMessageKorean.NOT_MATCH_USER_INFO));
+            }
+
 
             return ResponseEntity.status(HttpStatus.OK)
                 .body(ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, employee.getLoginId()));
@@ -106,6 +119,7 @@ public class MailServiceImpl implements MailService {
         return Mono.fromCallable(() -> {
             Employee employee = employeeRepository.findByLoginId(dto.getLoginId())
                 .orElse(null);
+
             if (employee == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDto.fail(ResponseCode.NO_EXIST_USER_ID, ResponseMessageKorean.NO_EXIST_USER_ID));
             }
@@ -118,8 +132,7 @@ public class MailServiceImpl implements MailService {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDto.fail(ResponseCode.NOT_MATCH_USER_TEL, ResponseMessageKorean.NOT_MATCH_USER_TEL));
             }
 
-            String token = UUID.randomUUID().toString();
-            verificationTokens.put(token, dto.getEmail());
+            String token = jwtProvider.generateEmailValidToken(dto.getEmail(), dto.getPhoneNumber(), dto.getLoginId());
 
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
@@ -148,15 +161,23 @@ public class MailServiceImpl implements MailService {
     @Override
     public Mono<ResponseEntity<ResponseDto<String>>> verifyLoginIdPassword(String token) {
         return Mono.fromCallable(() -> {
-            String email = verificationTokens.get(token);
-
-            if (email == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    ResponseDto.fail(ResponseCode.TOKEN_EXPIRED, ResponseMessageKorean.TOKEN_EXPIRED));
+            if (!jwtProvider.isValidToken(token)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ResponseDto.fail(ResponseCode.TOKEN_EXPIRED, ResponseMessageKorean.TOKEN_EXPIRED));
             }
+
+            Claims claims = jwtProvider.getClaims(token);
+            String email = claims.get("email", String.class);
+            String phoneNumber = claims.get("phoneNumber", String.class);
+            String loginId = claims.get("loginId", String.class);
 
             Employee employee = employeeRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("직원이 존재하지 않습니다."));
+
+            if (!employee.getPhoneNumber().equals(phoneNumber) || !employee.getLoginId().equals(loginId)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ResponseDto.fail(ResponseCode.NOT_MATCH_USER_INFO, "토큰 정보와 사용자 정보가 일치하지 않습니다."));
+            }
 
             return ResponseEntity.status(HttpStatus.OK)
                 .body(ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS));
@@ -166,15 +187,22 @@ public class MailServiceImpl implements MailService {
     @Override
     public Mono<ResponseEntity<ResponseDto<String>>> passwordChange(String token, PasswordResetRequestDto dto) {
         return Mono.fromCallable(() -> {
-            String email = verificationTokens.get(token);
-
-            if (email == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    ResponseDto.fail(ResponseCode.TOKEN_EXPIRED, ResponseMessageKorean.TOKEN_EXPIRED));
+            if (!jwtProvider.isValidToken(token)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ResponseDto.fail(ResponseCode.TOKEN_EXPIRED, ResponseMessageKorean.TOKEN_EXPIRED));
             }
+
+            Claims claims = jwtProvider.getClaims(token);
+            String email = claims.get("email", String.class);
+            String loginId = claims.get("loginId", String.class);
 
             Employee employee = employeeRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("직원이 존재하지 않습니다."));
+
+            if (!employee.getLoginId().equals(loginId)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ResponseDto.fail(ResponseCode.NOT_MATCH_USER_INFO, "토큰 정보와 사용자 정보가 일치하지 않습니다."));
+            }
 
             String password = dto.getPassword();
             String confirmPassword = dto.getConfirmPassword();
@@ -225,8 +253,7 @@ public class MailServiceImpl implements MailService {
             });
         } else if (employee.getIsApproved() == IsApproved.DENIED && employeeSignUpApproval.getDeniedReason().equals("INVALID_EMPLOYEE_INFO")) {
             return Mono.fromCallable(() -> {
-                String token = UUID.randomUUID().toString();
-                verificationTokens.put(token, employee.getEmail());
+                String token = jwtProvider.generateEmailValidToken(employee.getEmail(), employee.getLoginId());
 
                 MimeMessage message = mailSender.createMimeMessage();
                 MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
@@ -254,20 +281,12 @@ public class MailServiceImpl implements MailService {
             });
         } else {
             return Mono.fromCallable(() -> {
-                String reasonLabel;
-                switch (employeeSignUpApproval.getDeniedReason()) {
-                    case "ACCOUNT_ALREADY_EXISTS":
-                        reasonLabel = "이미 계정이 발급된 사원";
-                        break;
-                    case "CONTRACT_EMPLOYEE_RESTRICTED":
-                        reasonLabel = "계약직/기간제 사용 제한";
-                        break;
-                    case "PENDING_RESIGNATION":
-                        reasonLabel = "퇴사 예정자";
-                        break;
-                    default:
-                        reasonLabel = "기타 사유";
-                }
+                String reasonLabel = switch (employeeSignUpApproval.getDeniedReason()) {
+                    case "ACCOUNT_ALREADY_EXISTS" -> "이미 계정이 발급된 사원";
+                    case "CONTRACT_EMPLOYEE_RESTRICTED" -> "계약직/기간제 사용 제한";
+                    case "PENDING_RESIGNATION" -> "퇴사 예정자";
+                    default -> "기타 사유";
+                };
 
                 MimeMessage message = mailSender.createMimeMessage();
                 MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
@@ -295,15 +314,22 @@ public class MailServiceImpl implements MailService {
     @Override
     public Mono<ResponseEntity<ResponseDto<String>>> verifyEmployeeUpdate(String token) {
         return Mono.fromCallable(() -> {
-            String email = verificationTokens.get(token);
-
-            if (email == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    ResponseDto.fail(ResponseCode.TOKEN_EXPIRED, ResponseMessageKorean.TOKEN_EXPIRED));
+            if (!jwtProvider.isValidToken(token)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ResponseDto.fail(ResponseCode.TOKEN_EXPIRED, ResponseMessageKorean.TOKEN_EXPIRED));
             }
+
+            Claims claims = jwtProvider.getClaims(token);
+            String email = claims.get("email", String.class);
+            String loginId = claims.get("loginId", String.class);
 
             Employee employee = employeeRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("직원이 존재하지 않습니다."));
+
+            if (!employee.getLoginId().equals(loginId)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ResponseDto.fail(ResponseCode.NOT_MATCH_USER_INFO, "토큰 정보와 사용자 정보가 일치하지 않습니다."));
+            }
 
             return ResponseEntity.status(HttpStatus.OK)
                 .body(ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS));
@@ -313,16 +339,22 @@ public class MailServiceImpl implements MailService {
     @Override
     public Mono<ResponseEntity<ResponseDto<String>>> employeeUpdate(String token, EmployeeUpdateRequestDto dto) {
         return Mono.fromCallable(() -> {
-            String email = verificationTokens.get(token);
-
-            if (email == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    ResponseDto.fail(ResponseCode.TOKEN_EXPIRED, ResponseMessageKorean.TOKEN_EXPIRED));
+            if (!jwtProvider.isValidToken(token)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ResponseDto.fail(ResponseCode.TOKEN_EXPIRED, ResponseMessageKorean.TOKEN_EXPIRED));
             }
+
+            Claims claims = jwtProvider.getClaims(token);
+            String email = claims.get("email", String.class);
+            String loginId = claims.get("loginId", String.class);
 
             Employee employee = employeeRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("직원이 존재하지 않습니다."));
 
+            if (!employee.getLoginId().equals(loginId)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ResponseDto.fail(ResponseCode.NOT_MATCH_USER_INFO, "토큰 정보와 사용자 정보가 일치하지 않습니다."));
+            }
             String phoneNumber = dto.getPhoneNumber();
             LocalDate birthDate = dto.getBirthDate();
             Long branchId = dto.getBranchId();
@@ -350,10 +382,9 @@ public class MailServiceImpl implements MailService {
 
             employeeSignUpApprovalRepository.save(employeeSignupApproval);
 
-            verificationTokens.remove(token);
 
             return ResponseEntity.status(HttpStatus.OK)
-                .body(ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, "비밀번호가 변경되었습니다."));
+                .body(ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, "회원가입 정보가 수정되었습니다."));
         });
     }
 }

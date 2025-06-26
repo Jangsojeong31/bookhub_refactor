@@ -24,9 +24,9 @@ public class JwtProvider {
     }
 
     public JwtProvider(
-            @Value("${jwt.secret}") String secret,
-            @Value("${jwt.expiration}") int jwtExpirationMs,
-            @Value("${jwt.email-expiration-ms}") long jwtEmailExpirationMs
+        @Value("${jwt.secret}") String secret,
+        @Value("${jwt.expiration}") int jwtExpirationMs,
+        @Value("${jwt.email-expiration-ms}") long jwtEmailExpirationMs
     ) {
         this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
         this.jwtExpirationMs = jwtExpirationMs;
@@ -35,21 +35,33 @@ public class JwtProvider {
 
     public String generateJwtToken(String username, Authority roles) {
         return Jwts.builder()
-                .claim("username", username)
-                .claim("role", roles.getAuthorityName())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
+            .claim("username", username)
+            .claim("role", roles.getAuthorityName())
+            .setIssuedAt(new Date())
+            .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+            .signWith(key, SignatureAlgorithm.HS256)
+            .compact();
     }
 
-    public String generateEmailValidToken(String username) {
+    public String generateEmailValidToken(String email, String phoneNumber, String loginId) {
         return Jwts.builder()
-                .claim("username", username)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtEmailExpirationMs))
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
+            .claim("email", email)
+            .claim("phoneNumber", phoneNumber)
+            .claim("loginId", loginId)
+            .setIssuedAt(new Date())
+            .setExpiration(new Date(System.currentTimeMillis() + jwtEmailExpirationMs))
+            .signWith(key, SignatureAlgorithm.HS256)
+            .compact();
+    }
+
+    public String generateEmailValidToken(String email, String loginId) {
+        return Jwts.builder()
+            .claim("email", email)
+            .claim("loginId", loginId)
+            .setIssuedAt(new Date())
+            .setExpiration(new Date(System.currentTimeMillis() + jwtEmailExpirationMs))
+            .signWith(key, SignatureAlgorithm.HS256)
+            .compact();
     }
 
     public String removeBearer(String bearerToken) {
@@ -70,14 +82,19 @@ public class JwtProvider {
 
     public Claims getClaims(String token) {
         JwtParser jwtParser = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build();
+            .setSigningKey(key)
+            .build();
         return jwtParser.parseClaimsJws(token).getBody();
     }
 
     public String getUsernameFromJwt(String token) {
         Claims claims = getClaims(token);
         return claims.get("username", String.class);
+    }
+
+    public String getLoginIdFromJwt(String token) {
+        Claims claims = getClaims(token);
+        return claims.get("loginId", String.class);
     }
 
     public String getRolesFromJwt(String token) {
