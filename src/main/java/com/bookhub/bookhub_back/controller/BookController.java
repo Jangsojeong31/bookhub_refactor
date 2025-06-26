@@ -31,7 +31,6 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.CREATED).body(book);
     }
 
-
     // 2. 책 수정
     @PutMapping(ApiMappingPattern.ADMIN_API + "/books/{isbn}")
     public ResponseDto<BookResponseDto> updateBook(
