@@ -2,6 +2,7 @@ import { zeroStockRequest } from "@/apis/statistics/stocksStatistics/stocksStati
 import { ZeroStockResponseDto } from "@/dtos/statistics/StocksStatistics/response/zeroStock.response.dto";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
+import { NavLink } from "react-router-dom";
 import {
   Bar,
   BarChart,
@@ -48,15 +49,45 @@ function ZeroStockStatistics() {
 
   return (
     <>
+    <div>
+        <h2>재고 통계</h2>
+        <div style={{ marginBottom: 16, display: "flex", gap: 12 }}>
+          {[
+            { to: "/statistics/stocks/branch", label: "지점별" },
+            { to: "/statistics/stocks/category", label: "카테고리별" },
+            {
+              to: "/statistics/stocks/time",
+              label: "월별",
+            },
+            { to: "/statistics/stocks/zero", label: "재고 개수별" },
+          ].map(({ to, label }) => (
+            <NavLink
+              key={to}
+              to={to}
+              style={({ isActive }) => ({
+                backgroundColor: isActive ? "#265185" : "#f0f0f0",
+                color: isActive ? "white" : "#333",
+                padding: "10px 20px",
+                borderRadius: 6,
+                textDecoration: "none",
+                fontWeight: isActive ? "bold" : "normal",
+                transition: "background-color 0.3s",
+              })}
+            >
+              {label}
+            </NavLink>
+          ))}
+        </div>
+      </div>
       <div>
+        <h3>재고가 0인 책 개수</h3>
         <button onClick={onFetchZeroStockCountChart}>새로고침</button>
-        <h2>재고가 0인 책 개수</h2>
       </div>
       {loading ? (
         <div>불러오는 중...</div>
       ) : (
-        <div style={{ overflowX: "auto", width: 1200, overflowY: "clip" }}>
-          <div style={{ width: `${data.length * 100}px`, height: 700 }}>
+        <div style={{ widows: "1500px", display: "flex", justifyContent:"center"}}>
+          <div style={{ width: `${data.length * 100}px`, height: "700px", marginTop: "50px"}}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={data}
