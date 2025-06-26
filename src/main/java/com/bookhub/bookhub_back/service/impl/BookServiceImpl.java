@@ -2,20 +2,19 @@ package com.bookhub.bookhub_back.service.impl;
 import com.bookhub.bookhub_back.common.constants.ResponseCode;
 import com.bookhub.bookhub_back.common.constants.ResponseMessage;
 import com.bookhub.bookhub_back.common.enums.BookStatus;
+import com.bookhub.bookhub_back.common.enums.FileTargetType;
 import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.book.request.BookCreateRequestDto;
 import com.bookhub.bookhub_back.dto.book.request.BookUpdateRequestDto;
 import com.bookhub.bookhub_back.dto.book.response.BookResponseDto;
-import com.bookhub.bookhub_back.entity.Book;
-import com.bookhub.bookhub_back.entity.BookCategory;
-import com.bookhub.bookhub_back.entity.DiscountPolicy;
-import com.bookhub.bookhub_back.entity.Employee;
+import com.bookhub.bookhub_back.entity.*;
 import com.bookhub.bookhub_back.provider.JwtProvider;
 import com.bookhub.bookhub_back.repository.*;
 import com.bookhub.bookhub_back.service.BookLogService;
 import com.bookhub.bookhub_back.service.BookService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,6 +36,7 @@ public class BookServiceImpl implements BookService {
     private final BookCategoryRepository categoryRepository;
     private final BookLogService bookLogService;
     private final EmployeeRepository employeeRepository;
+    private final UploadFileRepository uploadFileRepository;
     private final JwtProvider jwtProvider;
 
     @Value("${file.upload-dir}")
@@ -72,7 +72,7 @@ public class BookServiceImpl implements BookService {
         Book savedBook = bookRepository.save(book);
 
         if (coverImageFile != null && !coverImageFile.isEmpty()) {
-            String coverUrl = saveCoverImageFile(coverImageFile);
+            String coverUrl = saveAndRecordCoverImage(coverImageFile, dto.getIsbn());
             savedBook.setCoverUrl(coverUrl);
         }
 
@@ -116,16 +116,20 @@ public class BookServiceImpl implements BookService {
             book.setPolicyId(null);
         }
 
-
-        // 이미지 업데이트
         if (coverImageFile != null && !coverImageFile.isEmpty()) {
-            String coverUrl = saveCoverImageFile(coverImageFile);
+            uploadFileRepository.findFirstByTargetTypeAndTargetId(FileTargetType.BOOK, dto.getIsbn())
+                    .ifPresent(uploadFile -> {
+                        File file = new File(uploadFile.getFilePath());
+                        if (file.exists()) file.delete();
+                        uploadFileRepository.delete(uploadFile);
+                    });
+
+            String coverUrl = saveAndRecordCoverImage(coverImageFile, dto.getIsbn());
             book.setCoverUrl(coverUrl);
         }
 
         Book savedBook = bookRepository.save(book);
 
-        // 로그 기록
         if (!oldPrice.equals(dto.getBookPrice())) {
             bookLogService.logPriceChange(savedBook, oldPrice, employee);
         }
@@ -158,7 +162,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public ResponseDto<Void> hideBook(String isbn, String token) {
-        // 1. 로그인한 사용자 정보 추출
+
         String loginId = jwtProvider.getUsernameFromJwt(jwtProvider.removeBearer(token));
         Employee employee = employeeRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new IllegalArgumentException(ResponseCode.NO_EXIST_USER_ID));
@@ -166,11 +170,9 @@ public class BookServiceImpl implements BookService {
 
         Book book = bookRepository.findById(isbn).orElseThrow(()-> new IllegalArgumentException("삭제할 책을 찾을 수 없습니다."));
 
-        // 상태를 HIDDEN으로 변경
         book.setBookStatus(BookStatus.HIDDEN);
         bookRepository.save(book);
 
-        // hidden 로그 생성
         bookLogService.logHidden(book, employee);
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
@@ -199,15 +201,31 @@ public class BookServiceImpl implements BookService {
                 )
                 .build();
     }
-    // 실제 파일 저장 및 메타데이터 기록
-    private String saveCoverImageFile(MultipartFile file) throws IOException {
+
+    private String saveAndRecordCoverImage(MultipartFile file, String isbn) throws IOException {
         File dir = new File(uploadDir);
         if (!dir.exists()) dir.mkdirs();
 
         String originalName = file.getOriginalFilename();
         String uuid = UUID.randomUUID() + "_" + originalName;
-        file.transferTo(new File(uploadDir + "/" + uuid));
+        String filePath = uploadDir + "/" + uuid;
+        String fileType = file.getContentType();
+        long fileSize = file.getSize();
+
+        file.transferTo(new File(filePath));
+
+        UploadFile uploadFile = UploadFile.builder()
+                .originalName(originalName)
+                .fileName(uuid)
+                .filePath(filePath)
+                .fileType(fileType)
+                .fileSize(fileSize)
+                .targetId(isbn)
+                .targetType(FileTargetType.BOOK)
+                .build();
+        uploadFileRepository.save(uploadFile);
 
         return "/files/" + uuid;
     }
+
 }

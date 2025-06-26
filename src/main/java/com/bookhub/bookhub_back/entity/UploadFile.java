@@ -3,6 +3,9 @@ package com.bookhub.bookhub_back.entity;
 import com.bookhub.bookhub_back.common.enums.FileTargetType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "upload_Files")
@@ -29,6 +32,10 @@ public class UploadFile {
     @Enumerated(EnumType.STRING)
     @Column(name = "target_type", nullable = false)
     private FileTargetType targetType;
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false)
+    private LocalDate createdAt;
 
     @Builder
     public UploadFile(String originalName, String fileName, String filePath,
