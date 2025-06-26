@@ -116,12 +116,12 @@ function UpdateBook() {
                 <td>
                   <input
                     type="number"
-                    value={policyId ?? ""}
+                    value={categoryId ?? ""}
                     onChange={(e) => {
                       const val = e.target.value;
-                      setPolicyId(val === "" ? null : Number(val));
+                      setCategoryId(val === "" ? null : Number(val));
                     }}
-                    placeholder="정책ID (선택)"
+                    placeholder="카테고리ID"
                   />
                 </td>
                 <td>
