@@ -14,6 +14,7 @@ public class StockUpdateResponseDto {
     private Long stockId;
     private String branchName;
     private String type;
+    private String bookIsbn;
     private String bookTitle;
     private Long amount;
     private Long bookAmount;
