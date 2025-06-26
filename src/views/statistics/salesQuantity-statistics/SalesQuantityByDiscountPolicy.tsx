@@ -99,7 +99,7 @@ function SalesQuantityByDiscountPolicy() {
             key={to}
             to={to}
             style={({ isActive }) => ({
-              backgroundColor: isActive ? "#007bff" : "#f0f0f0",
+              backgroundColor: isActive ? "#265185" : "#f0f0f0",
               color: isActive ? "white" : "#333",
               padding: "10px 20px",
               borderRadius: 6,
@@ -113,58 +113,66 @@ function SalesQuantityByDiscountPolicy() {
         ))}
       </div>
 
-      <div style={{ margin: 16 }}>
-        <select
-          value={selectedYear}
-          onChange={(e) => setSelectedYear(Number(e.target.value))}
-        >
-          {yearRange.map((year) => (
-            <option key={year} value={year}>
-              {year}년
-            </option>
-          ))}
-        </select>
-        <select
-          value={selectedQuarter}
-          onChange={(e) => setSelectedQuarter(Number(e.target.value))}
-        >
-          <option value={1}>1분기 (1~3월)</option>
-          <option value={2}>2분기 (4~6월)</option>
-          <option value={3}>3분기 (7~9월)</option>
-          <option value={4}>4분기 (10~12월)</option>
-        </select>
-        <button onClick={onFetchChart}>새로고침</button>
-      </div>
-
-      {loading ? (
-        <div>불러오는 중...</div>
-      ) : (
-        <BarChart
-          width={1400}
-          height={400}
-          data={chartData}
-          layout="vertical"
-          margin={{ top: 20, bottom: 20, left: 100, right: 20 }}
-        >
-          <XAxis type="number" />
-          <YAxis dataKey="name" type="category" width={200} />
-          <Tooltip />
-          <Bar
-            dataKey="total"
-            fill="#8884d8"
-            label={{ position: "right", fill: "#333", fontSize: 12 }}
+      <div style={{ margin: 30 }}>
+        <div style={{ display: "flex", gap: 12, margin: 16 }}>
+          <select
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(Number(e.target.value))}
+            style={{ width: 150 }}
           >
-            {chartData.map((data, idx) => (
-              <Cell key={idx} cursor="pointer" />
+            {yearRange.map((year) => (
+              <option key={year} value={year}>
+                {year}년
+              </option>
             ))}
-          </Bar>
-        </BarChart>
-      )}
+          </select>
+          <select
+            value={selectedQuarter}
+            onChange={(e) => setSelectedQuarter(Number(e.target.value))}
+            style={{ width: 150 }}
+          >
+            <option value={1}>1분기 (1~3월)</option>
+            <option value={2}>2분기 (4~6월)</option>
+            <option value={3}>3분기 (7~9월)</option>
+            <option value={4}>4분기 (10~12월)</option>
+          </select>
+          <div>
+            <button onClick={onFetchChart} style={{ margin: 10 }}>
+              새로고침
+            </button>
+          </div>
+        </div>
 
-      <p>{message}</p>
-      <p style={{ textAlign: "center", marginTop: 16 }}>
-        {/* {`'${activeItem.name}'요일 매출: ${activeItem.total.toLocaleString()}원`} */}
-      </p>
+        {loading ? (
+          <div>불러오는 중...</div>
+        ) : (
+          <BarChart
+            width={1400}
+            height={400}
+            data={chartData}
+            layout="vertical"
+            margin={{ top: 20, bottom: 20, left: 100, right: 20 }}
+          >
+            <XAxis type="number" />
+            <YAxis dataKey="name" type="category" width={200} />
+            <Tooltip />
+            <Bar
+              dataKey="total"
+              fill="#0088FE"
+              label={{ position: "right", fill: "#333", fontSize: 12 }}
+            >
+              {chartData.map((data, idx) => (
+                <Cell key={idx} cursor="pointer" />
+              ))}
+            </Bar>
+          </BarChart>
+        )}
+
+        <p>{message}</p>
+        <p style={{ textAlign: "center", marginTop: 16 }}>
+          {/* {`'${activeItem.name}'요일 매출: ${activeItem.total.toLocaleString()}원`} */}
+        </p>
+      </div>
     </div>
   );
 }

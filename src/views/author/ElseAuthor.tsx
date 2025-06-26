@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import React, { useState } from "react";
 import {
   checkDuplicateAuthorEmail,
@@ -9,6 +10,7 @@ import { AuthorResponseDto } from "@/dtos/author/response/author.response.dto";
 import { NavLink } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import Modal from "@/apis/constants/Modal";
+import * as style from "@/styles/style";
 
 // & 기능: 이름으로 조회, 수정, 삭제
 
@@ -24,9 +26,9 @@ function ElseAuthor() {
   const [modalMessage, setModalMessage] = useState("");
   const [modalStatus, setModalStatus] = useState(false);
   const [cookies] = useCookies(["accessToken"]);
-  
-    const [currentPage, setCurrentPage] = useState(0);
-      const itemsPerPage = 10;
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 10;
 
   const onSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -63,6 +65,11 @@ function ElseAuthor() {
     }
 
     setSearchForm({ authorName: "" });
+  };
+
+  // enter키 누르면 조회
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") onGetAllAuthorsByNameClick();
   };
 
   // * 수정 모달창
@@ -105,7 +112,7 @@ function ElseAuthor() {
 
       if (udpateCode != "SU") {
         setMessage(message);
-        
+
         return;
       }
 
@@ -160,6 +167,7 @@ function ElseAuthor() {
     }
   };
 
+  // 페이지네이션
   const totalPages = Math.ceil(authors.length / itemsPerPage);
 
   const goToPage = (page: number) => {
@@ -187,8 +195,16 @@ function ElseAuthor() {
         <td>{author.authorName}</td>
         <td>{author.authorEmail}</td>
         <td>
-          <button onClick={() => openUpdateModal(author)}>수정</button>
-          <button onClick={() => onDeleteAuthorClick(author.authorId)}>
+          <button
+            onClick={() => openUpdateModal(author)}
+            css={style.modifyButton}
+          >
+            수정
+          </button>
+          <button
+            onClick={() => onDeleteAuthorClick(author.authorId)}
+            css={style.deleteButton}
+          >
             삭제
           </button>
         </td>
@@ -198,23 +214,63 @@ function ElseAuthor() {
 
   const modalContent: React.ReactNode = (
     <>
-      <h3>저자 수정 모달</h3>
-      <input
-        type="text"
-        name="authorName"
-        value={updateForm.authorName}
-        onChange={onUpdateInputChange}
-        placeholder={updateForm.authorName}
-      />
-      <input
-        type="text"
-        name="authorEmail"
-        value={updateForm.authorEmail}
-        onChange={onUpdateInputChange}
-        placeholder={updateForm.authorEmail}
-      />
-      <button onClick={() => onUpdateAuthorClick(authorId)}>수정</button>
-      {modalMessage && <p>{modalMessage}</p>}
+      <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 10,
+            width: 500,
+            height: 500,
+            backgroundColor: "white",
+            position: "absolute",
+          }}
+        >
+          <h2 style={{ color: "#265185", textAlign: "center" }}>저자 수정</h2>
+
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <p>저자 이름</p>
+            <input
+              type="text"
+              name="authorName"
+              value={updateForm.authorName}
+              onChange={onUpdateInputChange}
+              placeholder={updateForm.authorName}
+              style={{
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+                width: 400,
+                height: 50,
+              }}
+            />
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <p>저자 이메일</p>
+            <input
+              type="text"
+              name="authorEmail"
+              value={updateForm.authorEmail}
+              onChange={onUpdateInputChange}
+              placeholder={updateForm.authorEmail}
+              style={{
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+                width: 400,
+                height: 50,
+              }}
+            />
+          </div>
+          {modalMessage && <p>{modalMessage}</p>}
+          <button
+            onClick={() => onUpdateAuthorClick(authorId)}
+            css={style.createButton}
+            style={{ margin: "10px auto", marginRight: 0, marginTop: "auto" }}
+          >
+            수정
+          </button>
+        </div>
+      </div>
     </>
   );
 
@@ -227,8 +283,10 @@ function ElseAuthor() {
         value={searchForm.authorName}
         placeholder="조회할 저자 이름을 입력하세요"
         onChange={onSearchInputChange}
+        onKeyDown={handleKeyDown}
+        css={style.searchInput}
       />
-      <button onClick={onGetAllAuthorsByNameClick}>조회</button>
+      {/* <button onClick={onGetAllAuthorsByNameClick}>조회</button> */}
       <table>
         <thead>
           <tr>
@@ -244,15 +302,19 @@ function ElseAuthor() {
       {modalStatus && (
         <Modal
           isOpen={modalStatus}
-          onClose={() => setModalStatus(false)}
+          onClose={() => {setModalStatus(false), setMessage("")}}
           children={modalContent}
-        />
+        ></Modal>
       )}
 
-       {/* 페이지네이션 */}
+      {/* 페이지네이션 */}
       {pagedAuthors.length > 0 && (
         <div className="footer">
-          <button className="pageBtn" onClick={goPrev} disabled={currentPage === 0}>
+          <button
+            className="pageBtn"
+            onClick={goPrev}
+            disabled={currentPage === 0}
+          >
             {"<"}
           </button>
           {Array.from({ length: totalPages }, (_, i) => i).map((i) => (

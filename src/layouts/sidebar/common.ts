@@ -19,8 +19,7 @@ export const commonMenu: SidebarMenu[] = [
   {
     title: '발주 하기',
     submenu: [
-      { label: '발주서 작성', path: '/purchase-order/create' },
-      { label: '조회/수정/삭제', path: '/purchase-order/else' },
+      { label: '발주 요청서 작성 및 조회', path: '/purchase-order' },
     ],
   },
   {

@@ -10,8 +10,8 @@ import ElsePurchaseOrderApproval from './purchaseOrderApproval/ElsePurchaseOrder
 function PurchaseOrder() {
   return (
     <>
-      <Route path= '/purchase-order/create' element={<CreatePurchaseOrder />} />
-      <Route path= '/purchase-order/else' element={<ElsePurchaseOrder />} />
+      {/* <Route path= '/purchase-order/create' element={<CreatePurchaseOrder />} /> */}
+      <Route path= '/purchase-order' element={<ElsePurchaseOrder />} />
       <Route path= '/purchase-order/approve' element={<ApprovePurchaseOrder />} />
       <Route path= '/purchase-order-approval' element={<ElsePurchaseOrderApproval />} />
     </>

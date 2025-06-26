@@ -1,9 +1,9 @@
+/** @jsxImportSource @emotion/react */
+import * as style from "@/styles/style";
 import React, { useState } from "react";
 import { AuthorRequestDto } from "@/dtos/author/request/author.request.dto";
 import { AuthorCreateRequestDto } from "@/dtos/author/request/author-create.request.dto";
 import { checkDuplicateAuthorEmail, createAuthor } from "@/apis/author/author";
-import Modal from "../../apis/constants/Modal";
-import { NavLink } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import ElseAuthor from "./ElseAuthor";
 
@@ -15,7 +15,6 @@ function CreateAuthor() {
   });
   const [authors, setAuthors] = useState<AuthorRequestDto[]>([]);
   const [message, setMessage] = useState("");
-  const [modalStatus, setModalStatus] = useState(false);
   const [cookies] = useCookies(["accessToken"]);
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -113,36 +112,111 @@ function CreateAuthor() {
 
   return (
     <div style={{ display: "flex", height: "100vh" }}>
-      <div style={{ flex: 1.5, backgroundColor: "#f0f0f0", padding: "20px" }}>
+      <div
+        style={{
+          flex: 1.5,
+          padding: "20px",
+        }}
+      >
         <h2>저자 등록</h2>
-        <input
-          type="text"
-          placeholder="저자 이름"
-          name="authorName"
-          value={form.authorName}
-          onChange={onInputChange}
-        />
-        <input
-          type="email"
-          placeholder="저자 이메일"
-          name="authorEmail"
-          value={form.authorEmail}
-          onChange={onInputChange}
-        />
-        <button onClick={onAddAuthor}>+</button>
-        <button onClick={onCreateAuthorClick}>등록</button>
+        <button onClick={onCreateAuthorClick} css={style.createButton}>
+          등록
+        </button>
         {message && <p>{message}</p>}
-        <table>
+
+        <table
+          style={{
+            width: "100%",
+            margin: "16px auto",
+            borderCollapse: "collapse",
+            backgroundColor: "white",
+          }}
+        >
           <thead>
             <tr>
               <th>저자 이름</th>
               <th>저자 이메일</th>
             </tr>
           </thead>
-          <tbody>{authorList}</tbody>
+          <tbody>
+            <tr>
+              <td
+                style={{
+                  padding: "0",
+                  height: "48px",
+                }}
+              >
+                <input
+                  type="text"
+                  placeholder="등록하실 저자 이름을 입력하세요."
+                  name="authorName"
+                  value={form.authorName}
+                  onChange={onInputChange}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    boxSizing: "border-box",
+                    padding: "4px 8px",
+                    border: "1px solid transparent",
+                  }}
+                />
+              </td>
+              <td
+                style={{
+                  padding: "0",
+                  height: "48px",
+                }}
+              >
+                <input
+                  type="email"
+                  placeholder="등록하실 저자 이메일을 입력하세요."
+                  name="authorEmail"
+                  value={form.authorEmail}
+                  onChange={onInputChange}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    boxSizing: "border-box",
+                    padding: "4px 8px",
+                    border: "1px solid transparent",
+                  }}
+                />
+              </td>
+              <td
+                style={{
+                  border: "1px solid #ccc",
+                  padding: "0",
+                  height: "48px",
+                  width: 30,
+                }}
+              >
+                <button
+                  onClick={onAddAuthor}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    boxSizing: "border-box",
+                    padding: "4px 8px",
+                    border: "1px solid transparent",
+                  }}
+                >
+                  추가
+                </button>
+              </td>
+            </tr>
+            {authorList}
+          </tbody>
         </table>
       </div>
-      <div style={{ flex: 2, backgroundColor: "#d0d0d0", padding: "20px" }}>
+      <div
+        style={{ width: 1, backgroundColor: "#ccc", height: 1000, margin: 30 }}
+      ></div>
+      <div
+        style={{
+          flex: 2,
+          padding: "20px",
+        }}
+      >
         <ElseAuthor />
       </div>
     </div>
