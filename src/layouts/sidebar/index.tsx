@@ -32,10 +32,10 @@ export default function Sidebar() {
   };
 
   const toggleAdminMode = () => {
-    if (!isAdmin) {
-      alert("관리자 권한이 필요합니다.");
-      return;
-    }
+    // if (!isAdmin) {
+    //   alert("관리자 권한이 필요합니다.");
+    //   return;
+    // }
 
     const nextMode = !isAdminMode;
     setIsAdminMode(nextMode);

@@ -6,7 +6,6 @@ function Stock() {
   return (
     <Routes>
       <Route path = "/" element = {<StockPage/>}/>
-     
       <Route path = "/search/:branchId" element = {<StockPage/>}/>
       <Route path = "/search/title" element = {<StockPage/>}/>
       <Route path = "/search/book/:bookIsbn" element = {<StockPage/>}/>
