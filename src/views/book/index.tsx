@@ -5,7 +5,9 @@ import SearchBook from "./SearchBook";
 import BookLogs from "./book-logs/BookLogs";
 import RequireAuth from "@/components/auth/RequireAuth";
 
+
 function Book() {
+  const navigate = useNavigate();
   return (
     <>
       <Route
@@ -40,5 +42,4 @@ function Book() {
     </>
   );
 }
-
 export default Book;
