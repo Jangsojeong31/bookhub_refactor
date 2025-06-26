@@ -66,7 +66,7 @@ public class MailServiceImpl implements MailService {
                             <h2>[이메일 인증 요청]</h2>
                             <p>
                                 안녕하세요,<br><br>
-                                이메일 인증을 위해 아래 버튼을 클릭해 주세요.
+                                아이디 찾기 이메일 인증을 위해 아래 버튼을 클릭해 주세요.
                             </p>
                             <a href="http://localhost:5174/auth/login-id-find?token=%s">이메일 인증하기</a>
                             <p>본 이메일은 인증 목적으로 발송되었습니다. 인증을 원하지 않으시면 무시하셔도 됩니다.</p>
@@ -130,7 +130,7 @@ public class MailServiceImpl implements MailService {
                             <h2>[이메일 인증 요청]</h2>
                             <p>
                                 안녕하세요,<br><br>
-                                이메일 인증을 위해 아래 버튼을 클릭해 주세요.
+                                비밀번호 변경 이메일 인증을 위해 아래 버튼을 클릭해 주세요.
                             </p>
                             <a href="http://localhost:5174/auth/password-change?token=%s">이메일 인증하기</a>
                             <p>본 이메일은 인증 목적으로 발송되었습니다. 인증을 원하지 않으시면 무시하셔도 됩니다.</p>
@@ -208,9 +208,9 @@ public class MailServiceImpl implements MailService {
                 MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
                 helper.setTo(employee.getEmail());
-                helper.setSubject("이메일 인증 요청");
+                helper.setSubject("회원가입 승인 결과");
                 String htmlContent = """
-                                <h2>[이메일 인증 요청]</h2>
+                                <h2>[회원가입 승인 결과]</h2>
                                 <p>
                                     안녕하세요,<br><br>
                                     회원가입이 승인되었습니다.
@@ -232,9 +232,9 @@ public class MailServiceImpl implements MailService {
                 MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
                 helper.setTo(employee.getEmail());
-                helper.setSubject("이메일 인증 요청");
+                helper.setSubject("회원가입 승인 결과");
                 String htmlContent = """
-                                <h2>[이메일 인증 요청]</h2>
+                                <h2>[회원가입 승인 결과]</h2>
                                 <p>
                                     안녕하세요,<br><br>
                                     회원 가입 승인이 거절되었습니다.
@@ -273,9 +273,9 @@ public class MailServiceImpl implements MailService {
                 MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
                 helper.setTo(employee.getEmail());
-                helper.setSubject("이메일 인증 요청");
+                helper.setSubject("회원가입 승인 결과");
                 String htmlContent = """
-                                <h2>[이메일 인증 요청]</h2>
+                                <h2>[회원가입 승인 결과]</h2>
                                 <p>
                                     안녕하세요,<br><br>
                                     회원가입이 거절되었습니다.
