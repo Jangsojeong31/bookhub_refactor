@@ -17,13 +17,15 @@
 }
 
 .contain .de-select,
-.contain .de-button {
+.contain .de-button,
+.contain .de-input{
   width: 100%;
   max-width: 400px;
   padding: 10px 12px;
   margin: 6px 0 12px;
   border-radius: 8px;
   box-sizing: border-box;
+  border: 1px solid #4a90e2 ;
   font-size: 18px;
 }
 
@@ -32,7 +34,8 @@
   transition: border-color 0.3s;
 }
 
-.contain .custom-select:focus {
+.contain .custom-select:focus,
+.contain .de-input:focus {
   border-color: #4a90e2;
   outline: none;
 }

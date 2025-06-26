@@ -25,7 +25,7 @@ export const adminMenu: SidebarMenu[] = [
     title: '지점 관리',
     submenu: [
       { label: '지점 조회', path: '/branches' },
-      { label: '지점 등록 및 삭제', path: '/branches/manage' },
+      { label: '지점 관리', path: '/branches/manage' },
     ],
   },
   {
