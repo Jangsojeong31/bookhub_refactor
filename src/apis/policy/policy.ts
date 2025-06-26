@@ -4,7 +4,7 @@ import {
   responseErrorHandler,
   bearerAuthorization
 } from '@/apis/axiosConfig';
-import { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { ResponseDto } from '@/dtos';
 import { PageResponseDto } from '@/dtos/page-response.dto';
 import { PolicyDetailResponseDto, PolicyListResponseDto } from '@/dtos/policy/policy.response.dto';
@@ -28,16 +28,12 @@ export const getPolicies = async (
   end?: string
 ): Promise<ResponseDto<PageResponseDto<PolicyListResponseDto>>> => {
   try {
-    let url = `${GET_ALL_POLICIES_URL}?page=${page}&size=${size}`;
-    if (keyword?.trim()) url += `&keyword=${encodeURIComponent(keyword.trim())}`;
-    if (type)           url += `&type=${type}`;
-    if (start)          url += `&start=${start}`;
-    if (end)            url += `&end=${end}`;
-
-    const response = await axiosInstance.get(
-      url,
-      bearerAuthorization(accessToken)
-    );
+    const response: AxiosResponse<
+      ResponseDto<PageResponseDto<PolicyListResponseDto>>
+    > = await axios.get(GET_ALL_POLICIES_URL, {
+      params: { page, size, keyword, type, start, end },
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
     return responseSuccessHandler(response);
   } catch (error) {
     return responseErrorHandler(
