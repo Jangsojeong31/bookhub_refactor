@@ -235,17 +235,29 @@ public class DiscountPolicyServiceImpl implements DiscountPolicyService {
         Pageable pageable = PageRequest.of(page, size, Sort.by("policyId").descending());
 
         Specification<DiscountPolicy> spec = Specification.where(null);
+
         if (keyword != null && !keyword.isBlank()) {
-            spec = spec.and((r, q, cb) -> cb.like(r.get("title"), "%" + keyword.trim() + "%"));
+            spec = spec.and((r, q, cb) ->
+                    cb.like(r.get("policyTitle"), "%" + keyword.trim() + "%")
+            );
         }
+
         if (type != null) {
-            spec = spec.and((r, q, cb) -> cb.equal(r.get("type"), type));
+            spec = spec.and((r, q, cb) ->
+                    cb.equal(r.get("policyType"), type)
+            );
         }
+
         if (start != null) {
-            spec = spec.and((r, q, cb) -> cb.greaterThanOrEqualTo(r.get("startDate"), start));
+            spec = spec.and((r, q, cb) ->
+                    cb.greaterThanOrEqualTo(r.get("startDate"), start)
+            );
         }
+
         if (end != null) {
-            spec = spec.and((r, q, cb) -> cb.lessThanOrEqualTo(r.get("endDate"), end));
+            spec = spec.and((r, q, cb) ->
+                    cb.lessThanOrEqualTo(r.get("endDate"), end)
+            );
         }
 
         Page<DiscountPolicy> result = policyRepository.findAll(spec, pageable);
@@ -270,5 +282,6 @@ public class DiscountPolicyServiceImpl implements DiscountPolicyService {
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, pageDto);
     }
+
 
 }
