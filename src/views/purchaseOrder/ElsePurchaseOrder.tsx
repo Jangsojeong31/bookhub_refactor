@@ -10,7 +10,6 @@ import { PurchaseOrderResponseDto } from "@/dtos/purchaseOrder/response/purchase
 import { PurchaseOrderStatus } from "@/dtos/purchaseOrderApproval/request/purchaseOrder-approve.request.dto";
 import React, { useState } from "react";
 import { useCookies } from "react-cookie";
-import CreateAuthor from "../author/CreateAuthor";
 import CreatePurchaseOrder from "./CreatePurchaseOrder";
 
 function ElsePurchaseOrder() {
@@ -332,7 +331,7 @@ function ElsePurchaseOrder() {
             검색
           </button>
         </div>
-              </div>
+      </div>
       {purchaseOrders && (
         <table>
           <thead>

@@ -31,8 +31,12 @@ function SalesQuantityByCategory() {
 
   // 차트 처음 불러오기
   useEffect(() => {
-    fetchLegend();
-    onFetchChart();
+    const initialize = async () => {
+      await fetchLegend();
+      await onFetchChart();
+    };
+
+    initialize();
   }, []);
 
   // 새로고침하면 차트 갱신
@@ -44,7 +48,7 @@ function SalesQuantityByCategory() {
     const { code, message, data } = response;
 
     if (code != "SU") {
-      // setMessage(message);
+      alert(`${message}`);
       return;
     }
 
@@ -311,11 +315,7 @@ function SalesQuantityByCategory() {
           </div>
         )}
       </div>
-
       <p>{message}</p>
-      <p style={{ textAlign: "center", marginTop: 16 }}>
-        {/* {`'${activeItem.name}'요일 매출: ${activeItem.total.toLocaleString()}원`} */}
-      </p>
     </div>
   );
 }

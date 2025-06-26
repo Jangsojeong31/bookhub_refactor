@@ -29,7 +29,7 @@ function ElsePurchaseOrderApproval() {
   >([]);
 
   const [currentPage, setCurrentPage] = useState(0);
-    const itemsPerPage = 10;
+  const itemsPerPage = 10;
 
   const navigate = useNavigate();
 
@@ -157,20 +157,16 @@ function ElsePurchaseOrderApproval() {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between"}}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
         <div
           style={{
             flex: "2",
-                display: "flex",
-               
+            display: "flex",
+
             gap: "12px",
-           
-            
-            
           }}
         >
           <input
-          
             type="text"
             name="employeeName"
             value={searchForm.employeeName}
@@ -178,7 +174,7 @@ function ElsePurchaseOrderApproval() {
             onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
               setSearchForm({ ...searchForm, employeeName: e.target.value });
             }}
-            style={{border: "1px solid #ccc", textAlign: "center"}}
+            style={{ border: "1px solid #ccc", textAlign: "center" }}
           />
           <select
             name="isApproved"
@@ -201,17 +197,18 @@ function ElsePurchaseOrderApproval() {
             <option value="true">승인</option>
             <option value="false">승인 거부</option>
           </select>
-          <button onClick={onGetPurchaseOrderByCriteria}
-          style={{border: "1px solid #ccc"}}>검색</button>
+          <button
+            onClick={onGetPurchaseOrderByCriteria}
+            style={{ border: "1px solid #ccc" }}
+          >
+            검색
+          </button>
         </div>
 
         <div
           style={{
-            
             display: "flex",
             gap: "12px",
-          
-            
           }}
         >
           <input
@@ -220,7 +217,7 @@ function ElsePurchaseOrderApproval() {
             value={dateForm.startDate}
             placeholder="시작일"
             onInput={onInputChange}
-            style={{border: "1px solid #ccc", width: 150}}
+            style={{ border: "1px solid #ccc", width: 150 }}
           />
           <input
             type="date"
@@ -228,10 +225,14 @@ function ElsePurchaseOrderApproval() {
             value={dateForm.endDate}
             placeholder="종료일"
             onInput={onInputChange}
-            style={{border: "1px solid #ccc", width: 150}}
+            style={{ border: "1px solid #ccc", width: 150 }}
           />
-          <button onClick={onGetPurchaseOrderApprovalByDate}
-          style={{border: "1px solid #ccc"}}>검색</button>
+          <button
+            onClick={onGetPurchaseOrderApprovalByDate}
+            style={{ border: "1px solid #ccc" }}
+          >
+            검색
+          </button>
         </div>
       </div>
 
@@ -264,7 +265,7 @@ function ElsePurchaseOrderApproval() {
         </table>
       )}
       {message && <p>{message}</p>}
-       {/* 페이지네이션 */}
+      {/* 페이지네이션 */}
       {purchaseOrderApprovals.length > 0 && (
         <div className="footer">
           <button

@@ -49,7 +49,7 @@ function WeeklySalesQuantity() {
     const { code, message, data } = response;
 
     if (code != "SU") {
-      // setMessage(message);
+      alert(`${message}`);
       return;
     }
 
@@ -93,7 +93,7 @@ function WeeklySalesQuantity() {
 
   return (
     <div
-      style={{ width: "100%", maxWidth: 600, margin: "0 auto", padding: 32 }}
+      style={{ width: "100%", maxWidth: 600, margin: "0 auto", padding: 10 }}
     >
       <h4>주간 통계</h4>
 
@@ -121,7 +121,7 @@ function WeeklySalesQuantity() {
           ))}
         </select>
         <div>
-          <button onClick={onFetchChart} style={{ margin: 10}}>
+          <button onClick={onFetchChart} style={{ margin: 10 }}>
             새로고침
           </button>
         </div>
@@ -143,10 +143,6 @@ function WeeklySalesQuantity() {
           </BarChart>
         </ResponsiveContainer>
       )}
-
-      <p style={{ textAlign: "center", marginTop: 16 }}>
-        {/* {`'${activeItem.name}'요일 매출: ${activeItem.total.toLocaleString()}원`} */}
-      </p>
     </div>
   );
 }

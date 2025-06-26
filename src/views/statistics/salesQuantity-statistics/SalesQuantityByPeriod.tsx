@@ -1,19 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { useCookies } from "react-cookie";
-import {
-  BarChart,
-  Bar,
-  Cell,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-import { getSalesQuantityByBranch } from "@/apis/statistics/salesQuantityStatistics/salesQuantityStatistics";
-import { responseErrorHandler } from "@/apis/axiosConfig";
-import { SalesQuantityStatisticsReponseDto } from "@/dtos/statistics/salesQuantityStatistics/response/salesQuantity.response.dto";
 import { NavLink } from "react-router-dom";
-import DailiySalesQuantity from "./DailySalesQuantity";
 import WeeklySalesQuantity from "./WeeklySalesQuantity";
 import DailySalesQuantity from "./DailySalesQuantity";
 import MonthlySalesQuantity from "./MonthlySalesQuantity";
@@ -50,13 +35,13 @@ function SaleQuantityByPeriod() {
         ))}
       </div>
 
-      <div style={{ marginTop: 32 }}>
+      <div style={{ marginTop: 0, marginLeft: 20 }}>
         <DailySalesQuantity />
       </div>
       <div
         style={{
           display: "flex",
-          gap: 24,
+          gap: 20,
           marginBottom: 64,
         }}
       >
