@@ -10,8 +10,7 @@ import "@/views/main/MainSearchBar.css";
 const featureRoutes = {
   "재고 현황": "/stocks",
   "진열위치 관리": "/branch/locations",
-  "발주서 작성": "/purchase-order/create",
-  "발주서 조회/수정/삭제": "/purchase-order/else",
+  "발주 요청서 작성 및 조회": "/purchase-order",
   "수령 내역 조회": "/reception/confirmed",
   "수령 확인": "/reception/pending",
   "정책 조회": "/policies",
@@ -132,7 +131,7 @@ function MainPage() {
               <p>재고 검색</p>
             </span>
           </a>
-          <a href="/purchase-order/create">
+          <a href="/purchase-order">
             <span>
               <CiDeliveryTruck className="icon" />
               <p>발주 신청</p>
