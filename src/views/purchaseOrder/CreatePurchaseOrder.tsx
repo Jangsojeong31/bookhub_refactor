@@ -4,10 +4,9 @@ import Modal from "@/apis/constants/Modal";
 import { createPurchaseOrder } from "@/apis/purchaseOrder/purchaseOrder";
 import { PurchaseOrderCreateRequestDto } from "@/dtos/purchaseOrder/request/purchaseOrder-create.request.dto";
 import { PurchaseOrderRequestDto } from "@/dtos/purchaseOrder/request/purchaseOrder.request.dto";
-import { PurchaseOrderResponseDto } from "@/dtos/purchaseOrder/response/purchaseOrder.response.dto";
 import React, { useState } from "react";
 import { useCookies } from "react-cookie";
-import './CreateModal.css'
+import "./CreateModal.css";
 
 function CreatePurchaseOrder() {
   const [form, setForm] = useState({
@@ -103,106 +102,102 @@ function CreatePurchaseOrder() {
 
   const modalContent: React.ReactNode = (
     <>
-      <h3 style={{color: "#265185"}}>발주 요청서 작성</h3>
+      <h3 style={{ color: "#265185" }}>발주 요청서 작성</h3>
       <div>{message}</div>
-      <div
-      className="parent">
-
-<div className="center">
-<div className="table-scroll-container">
-
-      <table
-        style={{
-          width: 500,
-          margin: "16px 0",
-          borderCollapse: "collapse",
-          backgroundColor: "white",
-        }}
-      >
-        <thead>
-          <tr>
-            <th>ISBN</th>
-            <th>발주량</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td
+      <div className="parent">
+        <div className="center">
+          <div className="table-scroll-container">
+            <table
               style={{
-                padding: "0",
-                height: "48px",
+                width: 500,
+                margin: "16px 0",
+                borderCollapse: "collapse",
+                backgroundColor: "white",
               }}
             >
-              <input
-                type="text"
-                placeholder="ISBN을 입력해주세요"
-                name="isbn"
-                value={form.isbn}
-                onChange={onInputChange}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  boxSizing: "border-box",
-                  padding: "4px 8px",
-                  border: "1px solid transparent",
-                }}
-              />
-            </td>
-            <td
-              style={{
-                padding: "0",
-                height: "48px",
-              }}
-            >
-              <input
-                type="text"
-                placeholder="발주량을 입력해주세요"
-                name="purchaseOrderAmount"
-                value={form.purchaseOrderAmount}
-                onChange={onInputChange}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  boxSizing: "border-box",
-                  padding: "4px 8px",
-                  border: "1px solid transparent",
-                }}
-                />
-            </td>
-            <td
-              style={{
-                border: "1px solid #ccc",
-                padding: "0",
-                height: "48px",
-                width: 30,
-              }}
-            >
-              <button
-                onClick={onAddPurchaseOrder}
-                style={{
-                  width: "30",
-                  height: "100%",
-                  boxSizing: "border-box",
-                  padding: "4px 8px",
-                  border: "1px solid transparent",
-                }}
-              >
-                추가
-              </button>
-            </td>
-          </tr>
-          {reqeustPurchaseOrderList}
-        </tbody>
-      </table>
-                </div>
-                </div>
-                <div className="right">
-
-                  <button onClick={onCreatePurchaseOrderClick} css={style.createButton}>
-                    등록
-                  </button>
-                </div>
-                </div>
+              <thead>
+                <tr>
+                  <th>ISBN</th>
+                  <th>발주량</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td
+                    style={{
+                      padding: "0",
+                      height: "48px",
+                    }}
+                  >
+                    <input
+                      type="text"
+                      placeholder="ISBN을 입력해주세요"
+                      name="isbn"
+                      value={form.isbn}
+                      onChange={onInputChange}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        boxSizing: "border-box",
+                        padding: "4px 8px",
+                        border: "1px solid transparent",
+                      }}
+                    />
+                  </td>
+                  <td
+                    style={{
+                      padding: "0",
+                      height: "48px",
+                    }}
+                  >
+                    <input
+                      type="text"
+                      placeholder="발주량을 입력해주세요"
+                      name="purchaseOrderAmount"
+                      value={form.purchaseOrderAmount}
+                      onChange={onInputChange}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        boxSizing: "border-box",
+                        padding: "4px 8px",
+                        border: "1px solid transparent",
+                      }}
+                    />
+                  </td>
+                  <td
+                    style={{
+                      border: "1px solid #ccc",
+                      padding: "0",
+                      height: "48px",
+                      width: 30,
+                    }}
+                  >
+                    <button
+                      onClick={onAddPurchaseOrder}
+                      style={{
+                        width: "30",
+                        height: "100%",
+                        boxSizing: "border-box",
+                        padding: "4px 8px",
+                        border: "1px solid transparent",
+                      }}
+                    >
+                      추가
+                    </button>
+                  </td>
+                </tr>
+                {reqeustPurchaseOrderList}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div className="right">
+          <button onClick={onCreatePurchaseOrderClick} css={style.createButton}>
+            등록
+          </button>
+        </div>
+      </div>
     </>
   );
 
@@ -211,7 +206,7 @@ function CreatePurchaseOrder() {
       <button onClick={() => setModalStatus(true)} css={style.createButton}>
         발주 요청서 작성
       </button>
-    
+
       {modalStatus && (
         <Modal
           isOpen={modalStatus}

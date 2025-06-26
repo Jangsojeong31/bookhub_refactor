@@ -4,6 +4,6 @@ export interface BestSellerResponseDto {
   authorName: string;
   categoryName: string;
   publisherName: string;
-  coverUrl: string;
+  coverUrl?: string;
   totalSales: number;
 }

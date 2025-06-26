@@ -39,7 +39,7 @@ function MonthlySalesQuantity() {
     const { code, message, data } = response;
 
     if (code != "SU") {
-      // setMessage(message);
+      alert(`${message}`)
       return;
     }
 
@@ -63,7 +63,7 @@ function MonthlySalesQuantity() {
 
   return (
     <div
-      style={{ width: "100%", maxWidth: 800, margin: "0 auto", padding: 32 }}
+      style={{ width: "100%", maxWidth: 750, margin: "0 auto", padding: 10 }}
     >
       <h4>월별 통계</h4>
 

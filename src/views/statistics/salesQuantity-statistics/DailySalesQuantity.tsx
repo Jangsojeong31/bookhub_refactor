@@ -43,7 +43,7 @@ function DailySalesQuantity() {
     const { code, message, data } = response;
 
     if (code != "SU") {
-      // setMessage(message);
+      alert(`${message}`)
       return;
     }
 
@@ -71,7 +71,7 @@ function DailySalesQuantity() {
 
   return (
     <div
-      style={{ width: "100%", maxWidth: 1600, margin: "0 auto", padding: 32 }}
+      style={{ width: "100%", maxWidth: 1500, margin: "0 auto", padding: 32 }}
     >
       <h4>일일 통계</h4>
 
@@ -98,7 +98,7 @@ function DailySalesQuantity() {
       ) : (
         <ResponsiveContainer width="100%" height={240}>
           <BarChart data={chartData}>
-            <XAxis dataKey="name" />
+            <XAxis dataKey="name" angle={-30} textAnchor="end" />
             <YAxis />
             <Tooltip />
             <Bar dataKey="total">
@@ -109,10 +109,6 @@ function DailySalesQuantity() {
           </BarChart>
         </ResponsiveContainer>
       )}
-
-      <p style={{ textAlign: "center", marginTop: 16 }}>
-        {/* {`'${activeItem.name}'요일 매출: ${activeItem.total.toLocaleString()}원`} */}
-      </p>
     </div>
   );
 }

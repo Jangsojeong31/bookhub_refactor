@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
-import {
-  BarChart,
-  Bar,
-  Cell,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { BarChart, Bar, Cell, XAxis, YAxis, Tooltip } from "recharts";
 import { getSalesQuantityByBranch } from "@/apis/statistics/salesQuantityStatistics/salesQuantityStatistics";
 import { NavLink } from "react-router-dom";
 
@@ -42,7 +34,6 @@ function SaleQuantityByBranch() {
     const { code, message, data } = response;
 
     if (code != "SU") {
-      // setMessage(message);
       return;
     }
 
@@ -92,63 +83,58 @@ function SaleQuantityByBranch() {
         ))}
       </div>
 
-<div style={{margin: 30}}>
-
-      <div style={{ display: "flex", gap: 12, margin: 16 }}>
-        <select
-          value={selectedYear}
-          onChange={(e) => setSelectedYear(Number(e.target.value))}
-          style={{ width: 150 }}
-        >
-          {yearRange.map((year) => (
-            <option key={year} value={year}>
-              {year}년
-            </option>
-          ))}
-        </select>
-        <select
-          value={selectedMonth}
-          onChange={(e) => setSelectedMonth(Number(e.target.value))}
-          style={{ width: 150 }}
-        >
-          {[...Array(12)].map((_, idx) => (
-            <option key={idx + 1} value={idx + 1}>
-              {idx + 1}월
-            </option>
-          ))}
-        </select>
-        <div>
-          <button onClick={onFetchChart} style={{ margin: 10 }}>
-            새로고침
-          </button>
-        </div>
-      </div>
-
-      {loading ? (
-        <div>불러오는 중...</div>
-      ) : (
-        <BarChart
-          width={1400}
-          height={400}
-          data={chartData}
-          margin={{ top: 20, right: 20, bottom: 40, left: 20 }}
-        >
-          <XAxis dataKey="name" angle={-30} textAnchor="end" />
-          <YAxis />
-          <Tooltip />
-          <Bar dataKey="total">
-            {chartData.map((data, idx) => (
-              <Cell key={idx} cursor="pointer" fill="#0088FE" />
+      <div style={{ margin: 30 }}>
+        <div style={{ display: "flex", gap: 12, margin: 16 }}>
+          <select
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(Number(e.target.value))}
+            style={{ width: 150 }}
+          >
+            {yearRange.map((year) => (
+              <option key={year} value={year}>
+                {year}년
+              </option>
             ))}
-          </Bar>
-        </BarChart>
-      )}
+          </select>
+          <select
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(Number(e.target.value))}
+            style={{ width: 150 }}
+          >
+            {[...Array(12)].map((_, idx) => (
+              <option key={idx + 1} value={idx + 1}>
+                {idx + 1}월
+              </option>
+            ))}
+          </select>
+          <div>
+            <button onClick={onFetchChart} style={{ margin: 10 }}>
+              새로고침
+            </button>
+          </div>
+        </div>
 
-      <p style={{ textAlign: "center", marginTop: 16 }}>
-        {/* {`'${activeItem.name}'요일 매출: ${activeItem.total.toLocaleString()}원`} */}
-      </p>
+        {loading ? (
+          <div>불러오는 중...</div>
+        ) : (
+          <BarChart
+            width={1400}
+            height={600}
+            data={chartData}
+            margin={{ top: 40, right: 20, bottom: 40, left: 20 }}
+          >
+            <XAxis dataKey="name" angle={-30} textAnchor="end" />
+            <YAxis />
+            <Tooltip />
+            <Bar dataKey="total" barSize={40}>
+              {chartData.map((data, idx) => (
+                <Cell key={idx} cursor="pointer" fill="#0088FE" />
+              ))}
+            </Bar>
+          </BarChart>
+        )}
+      </div>
     </div>
-</div>
   );
 }
 

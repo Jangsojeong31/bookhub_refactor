@@ -1,19 +1,8 @@
-import {
-  getSalesQuantityByBranch,
-  getSalesQuantityByDiscountPolicy,
-} from "@/apis/statistics/salesQuantityStatistics/salesQuantityStatistics";
+import { getSalesQuantityByDiscountPolicy } from "@/apis/statistics/salesQuantityStatistics/salesQuantityStatistics";
 import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { NavLink } from "react-router-dom";
-import {
-  ResponsiveContainer,
-  BarChart,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Bar,
-  Cell,
-} from "recharts";
+import { BarChart, XAxis, YAxis, Tooltip, Bar, Cell } from "recharts";
 
 type ChartData = { name: string; total: number };
 
@@ -55,7 +44,7 @@ function SalesQuantityByDiscountPolicy() {
     const { code, message, data } = response;
 
     if (code != "SU") {
-      // setMessage(message);
+      alert(`${message}`);
       return;
     }
 
@@ -148,10 +137,10 @@ function SalesQuantityByDiscountPolicy() {
         ) : (
           <BarChart
             width={1400}
-            height={400}
+            height={600}
             data={chartData}
             layout="vertical"
-            margin={{ top: 20, bottom: 20, left: 100, right: 20 }}
+            margin={{ top: 40, bottom: 20, left: 20, right: 20 }}
           >
             <XAxis type="number" />
             <YAxis dataKey="name" type="category" width={200} />
@@ -160,6 +149,7 @@ function SalesQuantityByDiscountPolicy() {
               dataKey="total"
               fill="#0088FE"
               label={{ position: "right", fill: "#333", fontSize: 12 }}
+              barSize={40}
             >
               {chartData.map((data, idx) => (
                 <Cell key={idx} cursor="pointer" />
@@ -167,11 +157,7 @@ function SalesQuantityByDiscountPolicy() {
             </Bar>
           </BarChart>
         )}
-
         <p>{message}</p>
-        <p style={{ textAlign: "center", marginTop: 16 }}>
-          {/* {`'${activeItem.name}'요일 매출: ${activeItem.total.toLocaleString()}원`} */}
-        </p>
       </div>
     </div>
   );

@@ -10,27 +10,14 @@ import React, { useState } from "react";
 import { useCookies } from "react-cookie";
 
 function ApprovePurchaseOrder() {
-  const [searchForm, setSearchForm] = useState({
-    employeeName: "",
-    bookTitle: "",
-    approvalStatus: "",
-  });
-
   const [cookies] = useCookies(["accessToken"]);
   const [message, setMessage] = useState("");
-  const [purchaseOrderId, setPurchaseOrderId] = useState<number>(0);
   const [purchaseOrders, setPurchaseOrders] = useState<
     PurchaseOrderResponseDto[]
   >([]);
-  const [modalStatus, setModalStatus] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
-
-  const onSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setSearchForm({ ...searchForm, [name]: value });
-  };
 
   //* 발주 요청서 업데이트
   const onGetAllPurchaseOrdersRequested = async () => {
@@ -188,8 +175,6 @@ function ApprovePurchaseOrder() {
         return;
       }
 
-      // '승인 거부 하시겠습니까?' 모달창 띄우기
-
       alert("승인 거부되었습니다.");
       setPurchaseOrders(purchaseOrders);
       onGetAllPurchaseOrdersRequested();
@@ -203,8 +188,11 @@ function ApprovePurchaseOrder() {
 
   return (
     <div>
-      <button className="searchAll" onClick={onGetAllPurchaseOrdersRequested}
-      style={{margin: "0"}}>
+      <button
+        className="searchAll"
+        onClick={onGetAllPurchaseOrdersRequested}
+        style={{ margin: "0" }}
+      >
         발주 요청서 업데이트
       </button>
       {purchaseOrders && (
