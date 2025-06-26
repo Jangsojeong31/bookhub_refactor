@@ -183,7 +183,6 @@ function PublisherPage() {
         <button className="searchAll" onClick={onSearchAll}>전체 조회</button>
       </div>
 
-      // 수정 모달 
       {isUpdateOpen && selectedPublisher && (
         <UpdatePublisher
           publisher={selectedPublisher}

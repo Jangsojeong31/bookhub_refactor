@@ -4,20 +4,10 @@ import { StockCreateResponseDto, StockUpdateResponseDto, StockListResponseDto } 
 import axios from "axios";
 import { UPDATE_STOCK_URL, STOCK_SEARCH_BOOK_URL, STOCK_SEARCH_TITLE_URL, STOCK_SEARCH_BRANCH_URL } from "../constants/csy.constants";
 
-// export const createStock = (
-//   dto: StockCreateRequestDto,
-//   accessToken: string
-// ): Promise<ResponseDto<StockCreateResponseDto>> =>
-//   axios
-//     .post(STOCK_BASE_URL, dto, { headers: { Authorization: `Bearer ${accessToken}` } })
-//     .then((res) => res.data);
+
 
 export const updateStock = (
-  branchId: number,
-  stockId: number,
-  dto: StockUpdateRequestDto,
-  accessToken: string
-): Promise<ResponseDto<StockUpdateResponseDto>> =>
+ stockId: number, dto: StockUpdateRequestDto, accessToken: string): Promise<ResponseDto<StockUpdateResponseDto>> =>
   axios
     .put(UPDATE_STOCK_URL(stockId), dto, {
       headers: { Authorization: `Bearer ${accessToken}` },

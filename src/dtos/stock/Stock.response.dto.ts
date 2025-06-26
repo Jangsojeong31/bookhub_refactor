@@ -5,6 +5,7 @@ import { StockActionType } from "@/apis/enums/StockActionType";
 export interface StockListResponseDto {
   stockId: number;
   branchId: number;
+  bookIsbn: string;
   branchName: string;
   bookTitle: string;
   amount: number;
@@ -18,6 +19,8 @@ export interface StockUpdateResponseDto {
   amount: number;
   bookAmount: number;
 }
+
+
 
 export interface StockCreateResponseDto {
   stockId: number;
