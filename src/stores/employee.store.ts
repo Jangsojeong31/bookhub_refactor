@@ -3,9 +3,10 @@ import { createJSONStorage, persist } from "zustand/middleware";
 
 type ApprovalStatus = "PENDING" | "APPROVED" | "DENIED";
 type EmployeeStatus = "EMPLOYED" | "EXITED";
+let logoutTimer: ReturnType<typeof setTimeout> | null = null;
 
 export type Employee = {
-  employeeId: number,
+  employeeId: number;
   employeeNumber: number;
   employeeName: string;
   branchId: number;
@@ -14,12 +15,12 @@ export type Employee = {
   positionName: string;
   authorityId: number;
   authorityName: string;
-  email: string
+  email: string;
   phoneNumber: string;
   birthDate: string;
-  status: EmployeeStatus
-  isApproved: ApprovalStatus
-  createdAt: Date
+  status: EmployeeStatus;
+  isApproved: ApprovalStatus;
+  createdAt: Date;
 };
 
 interface EmployeeStore {
@@ -30,6 +31,7 @@ interface EmployeeStore {
   isLogin: boolean;
   setLogin: () => void;
   setLogout: () => void;
+  setLogoutTimer: (milliseconds: number) => void;  
 }
 
 export const useEmployeeStore = create<EmployeeStore>()(
@@ -37,12 +39,23 @@ export const useEmployeeStore = create<EmployeeStore>()(
     (set) => ({
       employee: null,
       isLogin: false,
-
       setEmployee: (employee) => set({ employee }),
       clearEmployee: () => set({ employee: null }),
-
       setLogin: () => set({ isLogin: true }),
-      setLogout: () => set({ isLogin: false, employee: null }),
+      setLogout: () => {
+        if (logoutTimer) clearTimeout(logoutTimer);
+        set({ isLogin: false, employee: null });
+        localStorage.removeItem("sidebarActiveIndex");
+        alert("로그아웃하였습니다.")
+      },
+      setLogoutTimer: (milliseconds: number) => {
+        if (logoutTimer) clearTimeout(logoutTimer);
+        logoutTimer = setTimeout(() => {
+          alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+          useEmployeeStore.getState().setLogout();
+          window.location.href = "/auth/login";
+        }, milliseconds);
+      },
     }),
     {
       name: "employee-storage",

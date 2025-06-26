@@ -38,67 +38,7 @@ import BookLogs from "./views/book/book-logs/BookLogs";
 import RequireAuth from "./components/auth/RequireAuth";
 
 function App() {
-  const [cookies, setCookie, removeCookie] = useCookies([
-    "accessToken",
-    "tokenExpiresAt",
-  ]);
-  const token = cookies.accessToken;
-  const expiresAt = cookies.tokenExpiresAt
-    ? new Date(cookies.tokenExpiresAt)
-    : null;
-
-  const navigate = useNavigate();
-  const location = useLocation();
-  const logout = useEmployeeStore((state) => state.setLogout);
-  const setLogin = useEmployeeStore((state) => state.setLogin);
   const isLogin = useEmployeeStore((state) => state.isLogin);
-
-  const hasShownLogoutAlertRef = useRef(false);
-
-  useEffect(() => {
-    const now = new Date();
-
-    if (token && expiresAt && now > expiresAt) {
-      handleLogout("세션이 만료되었습니다. 다시 로그인해주세요.");
-      return;
-    }
-
-    if (token) {
-      setLogin();
-      hasShownLogoutAlertRef.current = false;
-    } else {
-      if (
-        !location.pathname.startsWith("/auth") &&
-        !hasShownLogoutAlertRef.current
-      ) {
-        handleLogout("로그아웃되었습니다.");
-      }
-    }
-  }, [token, expiresAt, navigate, location.pathname]);
-
-  useEffect(() => {
-    if (token && expiresAt) {
-      const timeout = expiresAt.getTime() - new Date().getTime();
-
-      const timer = setTimeout(() => {
-        handleLogout("세션이 만료되었습니다. 다시 로그인해주세요.");
-      }, timeout);
-
-      return () => clearTimeout(timer);
-    }
-  }, [token, expiresAt]);
-
-  const handleLogout = (message: string) => {
-    if (!hasShownLogoutAlertRef.current) {
-      alert(message);
-      hasShownLogoutAlertRef.current = true;
-      localStorage.removeItem("sidebarActiveIndex");
-      logout();
-      removeCookie("accessToken");
-      removeCookie("tokenExpiresAt");
-      navigate("/auth/login");
-    }
-  };
 
   if (!isLogin) {
     return <Routes>{Auth()}</Routes>;
