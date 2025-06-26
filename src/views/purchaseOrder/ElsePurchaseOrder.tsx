@@ -1,3 +1,5 @@
+/** @jsxImportSource @emotion/react */
+import * as style from "@/styles/style";
 import Modal from "@/apis/constants/Modal";
 import {
   deletePurchaseOrder,
@@ -8,6 +10,8 @@ import { PurchaseOrderResponseDto } from "@/dtos/purchaseOrder/response/purchase
 import { PurchaseOrderStatus } from "@/dtos/purchaseOrderApproval/request/purchaseOrder-approve.request.dto";
 import React, { useState } from "react";
 import { useCookies } from "react-cookie";
+import CreateAuthor from "../author/CreateAuthor";
+import CreatePurchaseOrder from "./CreatePurchaseOrder";
 
 function ElsePurchaseOrder() {
   const [searchForm, setSearchForm] = useState<{
@@ -34,8 +38,7 @@ function ElsePurchaseOrder() {
   const [modalStatus, setModalStatus] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(0);
-    const itemsPerPage = 10;
-  
+  const itemsPerPage = 10;
 
   const onSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -203,7 +206,7 @@ function ElsePurchaseOrder() {
       alert("삭제 중 오류가 발생했습니다.");
     }
   };
-  
+
   const totalPages = Math.ceil(purchaseOrders.length / itemsPerPage);
 
   const goToPage = (page: number) => {
@@ -224,7 +227,7 @@ function ElsePurchaseOrder() {
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
-  
+
   // *노출 리스트
   const responsePurchaseOrderList = pagedPurchaseOrders.map(
     (purchaseOrder, index) => {
@@ -250,7 +253,12 @@ function ElsePurchaseOrder() {
               : "거부"}
           </td>
           <td>
-            <button onClick={() => openUpdateModal(purchaseOrder)}>수정</button>
+            <button
+              onClick={() => openUpdateModal(purchaseOrder)}
+              css={style.modifyButton}
+            >
+              수정
+            </button>
             <button
               onClick={() =>
                 onDeletePurchaseOrderClick(
@@ -258,6 +266,7 @@ function ElsePurchaseOrder() {
                   purchaseOrder.purchaseOrderId
                 )
               }
+              css={style.deleteButton}
             >
               삭제
             </button>
@@ -267,51 +276,63 @@ function ElsePurchaseOrder() {
     }
   );
 
-
   return (
     <div>
-      <input
-        type="text"
-        name="employeeName"
-        value={searchForm.employeeName}
-        placeholder="발주담당자(검색창)"
-        onInput={onSearchInputChange}
-      />
-      <input
-        type="text"
-        name="bookIsbn"
-        value={searchForm.bookIsbn}
-        placeholder="ISBN(검색창)"
-        onInput={onSearchInputChange}
-      />
-      <select
-        name="approvalStatus"
-        value={
-          searchForm.approvalStatus == null
-            ? ""
-            : String(searchForm.approvalStatus)
-        }
-        onChange={(e) =>
-          setSearchForm({
-            ...searchForm,
-            approvalStatus:
-              e.target.value == ""
-                ? null
-                : e.target.value === "REQUESTED"
-                ? PurchaseOrderStatus.REQUESTED
-                : e.target.value === "APPROVED"
-                ? PurchaseOrderStatus.APPROVED
-                : PurchaseOrderStatus.REJECTED,
-          })
-        }
-      >
-        <option value="">전체</option>
-        <option value="REQUESTED">요청중</option>
-        <option value="APPROVED">승인</option>
-        <option value="REJECTED">승인 거부</option>
-      </select>
-      <button onClick={onGetPurchaseOrderByCriteria}>조회</button>
-      {/* <button onClick={onGetAllPurchaseOrders}>전체 조회</button> */}
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div>
+          <CreatePurchaseOrder />
+        </div>
+        <div style={{ display: "flex", gap: "12px" }}>
+          <input
+            type="text"
+            name="employeeName"
+            value={searchForm.employeeName}
+            placeholder="발주담당자"
+            onInput={onSearchInputChange}
+            style={{ border: "1px solid #ccc", textAlign: "center" }}
+          />
+          <input
+            type="text"
+            name="bookIsbn"
+            value={searchForm.bookIsbn}
+            placeholder="ISBN"
+            onInput={onSearchInputChange}
+            style={{ border: "1px solid #ccc", textAlign: "center" }}
+          />
+          <select
+            name="approvalStatus"
+            value={
+              searchForm.approvalStatus == null
+                ? ""
+                : String(searchForm.approvalStatus)
+            }
+            onChange={(e) =>
+              setSearchForm({
+                ...searchForm,
+                approvalStatus:
+                  e.target.value == ""
+                    ? null
+                    : e.target.value === "REQUESTED"
+                    ? PurchaseOrderStatus.REQUESTED
+                    : e.target.value === "APPROVED"
+                    ? PurchaseOrderStatus.APPROVED
+                    : PurchaseOrderStatus.REJECTED,
+              })
+            }
+          >
+            <option value="">전체</option>
+            <option value="REQUESTED">요청중</option>
+            <option value="APPROVED">승인</option>
+            <option value="REJECTED">승인 거부</option>
+          </select>
+          <button
+            onClick={onGetPurchaseOrderByCriteria}
+            style={{ border: "1px solid #ccc", width: "50px" }}
+          >
+            검색
+          </button>
+        </div>
+              </div>
       {purchaseOrders && (
         <table>
           <thead>
@@ -341,10 +362,14 @@ function ElsePurchaseOrder() {
         />
       )}
       {message && <p>{message}</p>}
-       {/* 페이지네이션 */}
+      {/* 페이지네이션 */}
       {purchaseOrders.length > 0 && (
         <div className="footer">
-          <button className="pageBtn" onClick={goPrev} disabled={currentPage === 0}>
+          <button
+            className="pageBtn"
+            onClick={goPrev}
+            disabled={currentPage === 0}
+          >
             {"<"}
           </button>
           {Array.from({ length: totalPages }, (_, i) => i).map((i) => (

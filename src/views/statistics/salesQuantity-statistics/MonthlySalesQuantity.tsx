@@ -67,10 +67,11 @@ function MonthlySalesQuantity() {
     >
       <h4>월별 통계</h4>
 
-      <div style={{ margin: 16 }}>
+      <div style={{display: "flex", gap: 12, margin: 16}}>
         <select
           value={selectedYear}
           onChange={(e) => setSelectedYear(Number(e.target.value))}
+          style={{ width: 150 }}
         >
           {yearRange.map((year) => (
             <option key={year} value={year}>
@@ -78,8 +79,10 @@ function MonthlySalesQuantity() {
             </option>
           ))}
         </select>
-        <button onClick={onFetchChart}>새로고침</button>
-        <p>[{selectedYear}년]</p>
+        <div>
+
+        <button onClick={onFetchChart} style={{ margin: 10}}>새로고침</button>
+        </div>
       </div>
 
       {loading ? (
@@ -92,7 +95,7 @@ function MonthlySalesQuantity() {
             <Tooltip />
             <Bar dataKey="total">
               {chartData.map((data, idx) => (
-                <Cell key={idx} cursor="pointer" fill="#8884d8" />
+                <Cell key={idx} cursor="pointer" fill="#FFBB28" />
               ))}
             </Bar>
           </BarChart>

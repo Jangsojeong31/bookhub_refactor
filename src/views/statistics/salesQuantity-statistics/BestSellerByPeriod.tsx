@@ -10,6 +10,7 @@ import { useCookies } from "react-cookie";
 function BestSellerByPeriod() {
   const [bestSeller, setBestSeller] = useState<BestSellerResponseDto[]>([]);
   const [cookies] = useCookies(["accessToken"]);
+  const [bestSellerTitle, setBestSellerTitle] = useState("");
 
   const onWeeklyBestSellers = async () => {
     const token = cookies.accessToken;
@@ -97,27 +98,39 @@ function BestSellerByPeriod() {
 
   return (
     <div>
-      <button
-        className="searchAll"
-        style={{ backgroundColor: "#2b5480" }}
-        onClick={onWeeklyBestSellers}
+      <h2>기간별 베스트셀러 순위</h2>
+      <div
+        style={{ display: "flex", justifyContent: "space-between", height: 30 }}
       >
-        주간 베스트셀러
-      </button>
-      <button
-        className="searchAll"
-        style={{ backgroundColor: "#2b5480" }}
-        onClick={onMonthlyBestSellers}
-      >
-        월간 베스트셀러
-      </button>
-      <button
-        className="searchAll"
-        style={{ backgroundColor: "#2b5480" }}
-        onClick={onYearlyBestSellers}
-      >
-        연간 베스트셀러
-      </button>
+        <div style={{ display: "flex", height: 30, padding: 0 }}>
+          <button
+            className="searchAll"
+            style={{ backgroundColor: "#2b5480" }}
+            onClick={() => {
+              onWeeklyBestSellers(), setBestSellerTitle("주간 베스트셀러");
+            }}
+          >
+            주간 베스트셀러
+          </button>
+          <button
+            className="searchAll"
+            style={{ backgroundColor: "#2b5480" }}
+            onClick={() => {onMonthlyBestSellers(), setBestSellerTitle("월간 베스트셀러");}}
+          >
+            월간 베스트셀러
+          </button>
+          <button
+            className="searchAll"
+            style={{ backgroundColor: "#2b5480" }}
+            onClick={() => {onYearlyBestSellers(), setBestSellerTitle("연간 베스트셀러") }}
+          >
+            연간 베스트셀러
+          </button>
+        </div>
+        <div style={{ height: 30 }}>
+          <h3 style={{ marginTop: 0 }}>{bestSellerTitle}</h3>
+        </div>
+      </div>
       {bestSeller && (
         <table>
           <thead>

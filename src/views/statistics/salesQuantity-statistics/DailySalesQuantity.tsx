@@ -75,19 +75,22 @@ function DailySalesQuantity() {
     >
       <h4>일일 통계</h4>
 
-      <div style={{ margin: 16 }}>
+      <div style={{ display: "flex", gap: 12, margin: 16 }}>
+        
+
         <select
           value={selectedMonth}
           onChange={(e) => setSelectedMonth(Number(e.target.value))}
-        >
+          style={{width: 150}}
+          >
           {[...Array(12)].map((_, idx) => (
             <option key={idx + 1} value={idx + 1}>
               {idx + 1}월
             </option>
           ))}
         </select>
-        <button onClick={onFetchChart}>새로고침</button>
-        <p>[{selectedMonth}월]</p>
+        <button onClick={onFetchChart}
+        style={{margin: 10}}>새로고침</button>
       </div>
 
       {loading ? (
@@ -100,7 +103,7 @@ function DailySalesQuantity() {
             <Tooltip />
             <Bar dataKey="total">
               {chartData.map((data, idx) => (
-                <Cell key={idx} cursor="pointer" fill="#8884d8" />
+                <Cell key={idx} cursor="pointer" fill="#0088FE" />
               ))}
             </Bar>
           </BarChart>

@@ -1,3 +1,5 @@
+/** @jsxImportSource @emotion/react */
+import * as style from "@/styles/style";
 import {
   getAllPurchaseOrderRequested,
   updatePurchaseOrderStatus,
@@ -109,6 +111,7 @@ function ApprovePurchaseOrder() {
               onClick={() =>
                 onPurchaseOrderApproveClick(purchaseOrder.purchaseOrderId)
               }
+              css={style.modifyButton}
             >
               승인
             </button>
@@ -116,6 +119,7 @@ function ApprovePurchaseOrder() {
               onClick={() =>
                 onPurchaseOrderRejectClick(purchaseOrder.purchaseOrderId)
               }
+              css={style.deleteButton}
             >
               승인 거부
             </button>
@@ -199,7 +203,8 @@ function ApprovePurchaseOrder() {
 
   return (
     <div>
-      <button className="searchAll" onClick={onGetAllPurchaseOrdersRequested}>
+      <button className="searchAll" onClick={onGetAllPurchaseOrdersRequested}
+      style={{margin: "0"}}>
         발주 요청서 업데이트
       </button>
       {purchaseOrders && (

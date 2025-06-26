@@ -78,7 +78,7 @@ function SaleQuantityByBranch() {
             key={to}
             to={to}
             style={({ isActive }) => ({
-              backgroundColor: isActive ? "#007bff" : "#f0f0f0",
+              backgroundColor: isActive ? "#265185" : "#f0f0f0",
               color: isActive ? "white" : "#333",
               padding: "10px 20px",
               borderRadius: 6,
@@ -92,10 +92,13 @@ function SaleQuantityByBranch() {
         ))}
       </div>
 
-      <div style={{ margin: 16 }}>
+<div style={{margin: 30}}>
+
+      <div style={{ display: "flex", gap: 12, margin: 16 }}>
         <select
           value={selectedYear}
           onChange={(e) => setSelectedYear(Number(e.target.value))}
+          style={{ width: 150 }}
         >
           {yearRange.map((year) => (
             <option key={year} value={year}>
@@ -106,6 +109,7 @@ function SaleQuantityByBranch() {
         <select
           value={selectedMonth}
           onChange={(e) => setSelectedMonth(Number(e.target.value))}
+          style={{ width: 150 }}
         >
           {[...Array(12)].map((_, idx) => (
             <option key={idx + 1} value={idx + 1}>
@@ -113,20 +117,28 @@ function SaleQuantityByBranch() {
             </option>
           ))}
         </select>
-        <button onClick={onFetchChart}>새로고침</button>
+        <div>
+          <button onClick={onFetchChart} style={{ margin: 10 }}>
+            새로고침
+          </button>
+        </div>
       </div>
 
       {loading ? (
         <div>불러오는 중...</div>
       ) : (
-        <BarChart width={1400} height={400} data={chartData}
-        margin={{ top: 20, right: 20, bottom: 40, left: 20 }}>
+        <BarChart
+          width={1400}
+          height={400}
+          data={chartData}
+          margin={{ top: 20, right: 20, bottom: 40, left: 20 }}
+        >
           <XAxis dataKey="name" angle={-30} textAnchor="end" />
           <YAxis />
           <Tooltip />
           <Bar dataKey="total">
             {chartData.map((data, idx) => (
-              <Cell key={idx} cursor="pointer" fill="#8884d8" />
+              <Cell key={idx} cursor="pointer" fill="#0088FE" />
             ))}
           </Bar>
         </BarChart>
@@ -136,6 +148,7 @@ function SaleQuantityByBranch() {
         {/* {`'${activeItem.name}'요일 매출: ${activeItem.total.toLocaleString()}원`} */}
       </p>
     </div>
+</div>
   );
 }
 

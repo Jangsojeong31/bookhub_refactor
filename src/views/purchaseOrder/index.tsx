@@ -11,6 +11,12 @@ import RequireAuth from "@/components/auth/RequireAuth";
 function PurchaseOrder() {
   return (
     <>
+<<<<<<< refactor/files-jsj
+      {/* <Route path= '/purchase-order/create' element={<CreatePurchaseOrder />} /> */}
+      <Route path= '/purchase-order' element={<ElsePurchaseOrder />} />
+      <Route path= '/purchase-order/approve' element={<ApprovePurchaseOrder />} />
+      <Route path= '/purchase-order-approval' element={<ElsePurchaseOrderApproval />} />
+=======
       <Route path="/purchase-order/create" element={<CreatePurchaseOrder />} />
       <Route path="/purchase-order/else" element={<ElsePurchaseOrder />} />
       <Route
@@ -29,6 +35,7 @@ function PurchaseOrder() {
           </RequireAuth>
         }
       />
+>>>>>>> develop
     </>
   );
 }

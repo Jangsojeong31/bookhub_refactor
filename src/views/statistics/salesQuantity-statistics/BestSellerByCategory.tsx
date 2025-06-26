@@ -113,6 +113,7 @@ function BestSellerByCategory() {
 
   return (
     <div>
+      <h2>카테고리별 베스트셀러 순위</h2>
       <p>국내 / 해외</p>
       <select
         id="topCategory"

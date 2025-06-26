@@ -135,7 +135,7 @@ function ElsePurchaseOrderApproval() {
             )}
           </td>
 
-          <td>[발주서 사항]</td>
+          <td></td>
           <td>{purchaseOrderApproval.poDetail.branchName}</td>
           <td>{purchaseOrderApproval.poDetail.employeeName}</td>
           <td>{purchaseOrderApproval.poDetail.isbn}</td>
@@ -157,23 +157,28 @@ function ElsePurchaseOrderApproval() {
 
   return (
     <div>
-      <div style={{ display: "flex" }}>
+      <div style={{ display: "flex", justifyContent: "space-between"}}>
         <div
           style={{
-            flex: 1,
-            display: "flex",
+            flex: "2",
+                display: "flex",
+               
             gap: "12px",
-            marginBottom: "16px",
+           
+            
+            
           }}
         >
           <input
+          
             type="text"
             name="employeeName"
             value={searchForm.employeeName}
-            placeholder="승인담당자(검색창)"
+            placeholder="승인담당자"
             onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
               setSearchForm({ ...searchForm, employeeName: e.target.value });
             }}
+            style={{border: "1px solid #ccc", textAlign: "center"}}
           />
           <select
             name="isApproved"
@@ -196,15 +201,17 @@ function ElsePurchaseOrderApproval() {
             <option value="true">승인</option>
             <option value="false">승인 거부</option>
           </select>
-          <button onClick={onGetPurchaseOrderByCriteria}>조회</button>
+          <button onClick={onGetPurchaseOrderByCriteria}
+          style={{border: "1px solid #ccc"}}>검색</button>
         </div>
 
         <div
           style={{
-            flex: 1,
+            
             display: "flex",
             gap: "12px",
-            marginBottom: "16px",
+          
+            
           }}
         >
           <input
@@ -213,6 +220,7 @@ function ElsePurchaseOrderApproval() {
             value={dateForm.startDate}
             placeholder="시작일"
             onInput={onInputChange}
+            style={{border: "1px solid #ccc", width: 150}}
           />
           <input
             type="date"
@@ -220,8 +228,10 @@ function ElsePurchaseOrderApproval() {
             value={dateForm.endDate}
             placeholder="종료일"
             onInput={onInputChange}
+            style={{border: "1px solid #ccc", width: 150}}
           />
-          <button onClick={onGetPurchaseOrderApprovalByDate}>조회</button>
+          <button onClick={onGetPurchaseOrderApprovalByDate}
+          style={{border: "1px solid #ccc"}}>검색</button>
         </div>
       </div>
 

@@ -1,7 +1,5 @@
 import { getCategoryTree } from "@/apis/category/category";
-import {
-  getSalesQuantityByCategory,
-} from "@/apis/statistics/salesQuantityStatistics/salesQuantityStatistics";
+import { getSalesQuantityByCategory } from "@/apis/statistics/salesQuantityStatistics/salesQuantityStatistics";
 import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { data, NavLink } from "react-router-dom";
@@ -191,7 +189,7 @@ function SalesQuantityByCategory() {
             key={to}
             to={to}
             style={({ isActive }) => ({
-              backgroundColor: isActive ? "#007bff" : "#f0f0f0",
+              backgroundColor: isActive ? "#265185" : "#f0f0f0",
               color: isActive ? "white" : "#333",
               padding: "10px 20px",
               borderRadius: 6,
@@ -204,112 +202,115 @@ function SalesQuantityByCategory() {
           </NavLink>
         ))}
       </div>
-      <button onClick={onFetchChart}>새로고침</button>
 
-      {loading ? (
-        <div>불러오는 중...</div>
-      ) : (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "0 20px",
-          }}
-        >
+      <div style={{ margin: 30 }}>
+        <button onClick={onFetchChart}>새로고침</button>
+
+        {loading ? (
+          <div>불러오는 중...</div>
+        ) : (
           <div
             style={{
               display: "flex",
-              flexDirection: "column",
+              justifyContent: "space-between",
               alignItems: "center",
+              padding: "0 20px",
             }}
           >
-            <h3>국내 도서</h3>
-            <PieChart width={600} height={600}>
-              <Pie
-                data={chartData1.filter((item) => item.total > 0)}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={renderCustomizedLabelWithData(
-                  chartData1.filter((item) => item.total > 0)
-                )}
-                outerRadius={150}
-                fill="#8884d8"
-                nameKey="name"
-                dataKey="total"
-              >
-                {chartData1
-                  .filter((item) => item.total > 0)
-                  .map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-              </Pie>
-              <Legend
-                layout="vertical"
-                verticalAlign="middle"
-                align="right"
-                wrapperStyle={{
-                  right: -40,
-                  top: "50%",
-                  transform: "translate(0, -50%)",
-                  lineHeight: "24px",
-                }}
-                content={renderCustomLegend(legendData1)}
-              />
-            </PieChart>
-          </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <h3>국내 도서</h3>
+              <PieChart width={600} height={600}>
+                <Pie
+                  data={chartData1.filter((item) => item.total > 0)}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={renderCustomizedLabelWithData(
+                    chartData1.filter((item) => item.total > 0)
+                  )}
+                  outerRadius={150}
+                  fill="#8884d8"
+                  nameKey="name"
+                  dataKey="total"
+                >
+                  {chartData1
+                    .filter((item) => item.total > 0)
+                    .map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                </Pie>
+                <Legend
+                  layout="vertical"
+                  verticalAlign="middle"
+                  align="right"
+                  wrapperStyle={{
+                    right: -40,
+                    top: "50%",
+                    transform: "translate(0, -50%)",
+                    lineHeight: "24px",
+                  }}
+                  content={renderCustomLegend(legendData1)}
+                />
+              </PieChart>
+            </div>
 
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <h3>해외도서</h3>
-            <PieChart width={600} height={600}>
-              <Pie
-                data={chartData2.filter((item) => item.total > 0)}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={renderCustomizedLabelWithData(
-                  chartData2.filter((item) => item.total > 0)
-                )}
-                outerRadius={150}
-                fill="#8884d8"
-                nameKey="name"
-                dataKey="total"
-              >
-                {chartData2
-                  .filter((item) => item.total > 0)
-                  .map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-              </Pie>
-              <Legend
-                layout="vertical"
-                verticalAlign="middle"
-                align="right"
-                wrapperStyle={{
-                  right: -40,
-                  top: "50%",
-                  transform: "translate(0, -50%)",
-                  lineHeight: "24px",
-                }}
-                content={renderCustomLegend(legendData2)}
-              />
-            </PieChart>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <h3>해외도서</h3>
+              <PieChart width={600} height={600}>
+                <Pie
+                  data={chartData2.filter((item) => item.total > 0)}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={renderCustomizedLabelWithData(
+                    chartData2.filter((item) => item.total > 0)
+                  )}
+                  outerRadius={150}
+                  fill="#8884d8"
+                  nameKey="name"
+                  dataKey="total"
+                >
+                  {chartData2
+                    .filter((item) => item.total > 0)
+                    .map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                </Pie>
+                <Legend
+                  layout="vertical"
+                  verticalAlign="middle"
+                  align="right"
+                  wrapperStyle={{
+                    right: -40,
+                    top: "50%",
+                    transform: "translate(0, -50%)",
+                    lineHeight: "24px",
+                  }}
+                  content={renderCustomLegend(legendData2)}
+                />
+              </PieChart>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       <p>{message}</p>
       <p style={{ textAlign: "center", marginTop: 16 }}>

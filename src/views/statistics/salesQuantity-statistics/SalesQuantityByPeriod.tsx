@@ -36,7 +36,7 @@ function SaleQuantityByPeriod() {
             key={to}
             to={to}
             style={({ isActive }) => ({
-              backgroundColor: isActive ? "#007bff" : "#f0f0f0",
+              backgroundColor: isActive ? "#265185" : "#f0f0f0",
               color: isActive ? "white" : "#333",
               padding: "10px 20px",
               borderRadius: 6,
