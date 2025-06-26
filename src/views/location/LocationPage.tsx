@@ -7,16 +7,16 @@ import { CreateLocation } from "./CreateLocation";
 import { LocationTable } from "./LocationTable";
 import { UpdateLocation } from "./UpdateLocation";
 
-
 export default function LocationPage() {
   const [cookies] = useCookies(["accessToken"]);
-  const branchId = useEmployeeStore(state => state.employee?.branchId);
+  const branchId = useEmployeeStore((state) => state.employee?.branchId);
   const [data, setData] = useState<LocationResponseDto[]>([]);
   const [keyword, setKeyword] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
   const [updateOpen, setUpdateOpen] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const employee = useEmployeeStore((state) => state.employee);
 
   // 지점별 진열 위치 조회
   const fetchData = async () => {
@@ -53,18 +53,40 @@ export default function LocationPage() {
         <input
           placeholder="책 제목 검색"
           value={keyword}
-          onChange={e => setKeyword(e.target.value)}
+          onChange={(e) => setKeyword(e.target.value)}
           style={{ marginRight: "0.5rem" }}
         />
-        <button type="submit" style={{ marginRight: "0.5rem" }}>검색</button>
-        <button type="button" onClick={() => setCreateOpen(true)}>등록</button>
+        <button type="submit" style={{ marginRight: "0.5rem" }}>
+          검색
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            if (
+              employee?.authorityName == "MANAGER" ||
+              employee?.authorityName == "ADMIN"
+            ) {
+              setCreateOpen(true);
+            } else {
+              alert("권한이 없습니다.");
+            }
+          }}
+        >
+          등록
+        </button>
       </form>
 
       {/* 목록 테이블 */}
       <LocationTable
         data={data}
-        onView={id => { setSelectedId(id); setDetailOpen(true); }}
-        onEdit={id => { setSelectedId(id); setUpdateOpen(true); }}
+        onView={(id) => {
+          setSelectedId(id);
+          setDetailOpen(true);
+        }}
+        onEdit={(id) => {
+          setSelectedId(id);
+          setUpdateOpen(true);
+        }}
         onDelete={handleDelete}
       />
 
