@@ -27,7 +27,7 @@ const featureRoutes = {
   "책 수정 및 삭제": "/books/edit",
   "책 로그": "/booklogs",
   "지점 조회": "/branches",
-  "지점 등록 및 삭제": "/branches/manage",
+  "지점 관리": "/branches/manage",
   "로그인 승인": "/employees/approval",
   "사원 정보 수정": "/employees/edit",
   "사원 정보 조회": "/employees",

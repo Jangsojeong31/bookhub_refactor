@@ -1,6 +1,7 @@
 /* index.css */
 html,
 body {
+  max-width: 4000px;
   margin: 0;
   padding: 0;
   height: 100%;
