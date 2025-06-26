@@ -1,5 +1,3 @@
-// views/category/CategoryMain.tsx
-
 import { useState } from "react";
 import { CategoryTreeResponseDto } from "@/dtos/category/response/category-tree.response.dto";
 import { getCategoryTree } from "@/apis/category/category";
@@ -22,7 +20,7 @@ function CategoryMain() {
       alert("로그인이 필요합니다.");
       return;
     }
-
+    
     const res = await getCategoryTree("DOMESTIC", token);
     if (res.code === "SU") {
       setCategories(res.data ?? []);

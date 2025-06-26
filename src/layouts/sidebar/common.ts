@@ -5,8 +5,8 @@ export const commonMenu: SidebarMenu[] = [
   {
     title: '재고검색',
     submenu: [
-      { label: '재고 등록', path: '/stocks' },
-      { label: '재고 현황', path: '' },
+      { label: '재고 현황', path: '/stocks' },
+  
     ],
   },
   {

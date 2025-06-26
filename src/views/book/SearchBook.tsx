@@ -3,14 +3,19 @@ import { searchBook } from "@/apis/book/book";
 import { BookResponseDto } from "@/dtos/book/response/book-response.dto";
 import { useCookies } from "react-cookie";
 import { PolicyDetailResponseDto } from "@/dtos/policy/policy.response.dto";
+import { getPolicyDetail } from "@/apis/policy/policy";
 import "./book.css";
+import { getPolicyByCategory } from "@/apis/category/category";
 
 function SearchBook() {
   const [cookies] = useCookies(["accessToken"]);
+
   const [keyword, setKeyword] = useState("");
   const [books, setBooks] = useState<BookResponseDto[]>([]);
+
   const [bookPolicyMap, setBookPolicyMap] = useState<Record<number, PolicyDetailResponseDto>>({});
   const [categoryPolicyMap, setCategoryPolicyMap] = useState<Record<number, PolicyDetailResponseDto>>({});
+
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
 
@@ -22,64 +27,61 @@ function SearchBook() {
     }
 
     try {
-      const res = await searchBook(keyword, token);
-      if (res.code !== "SU") throw new Error(res.message);
-      const fetchedBooks = res.data || [];
-      setBooks(fetchedBooks);
-      setCurrentPage(0);
+    const res = await searchBook(keyword, token);
+    if (res.code !== "SU") throw new Error(res.message);
 
-      const ids = Array.from(
-        new Set(
-          fetchedBooks
-            .map((b) => b.policyId)
-            .filter((id): id is number => id !== null && id !== undefined && id > 0)
-        )
-      );
+    const fetchedBooks = res.data || [];
+    setBooks(fetchedBooks);
+    setCurrentPage(0);
 
-      const bookMap: Record<number, PolicyDetailResponseDto> = {};
-      await Promise.all(
-        ids.map(async (id) => {
-          try {
-            const res = await fetch(`http://localhost:8080/api/v1/common/policies/${id}`, {
-              headers: { Authorization: `Bearer ${token}` },
-            });
-            const data = await res.json();
-            bookMap[id] = data.data;
-          } catch (e) {
-            console.error("책 정책 로딩 실패", e);
-          }
-        })
-      );
-      setBookPolicyMap(bookMap);
-
-      const categoryIds = Array.from(
-        new Set(
-          fetchedBooks.map((b) => b.categoryId).filter((id): id is number => id !== null && id !== undefined && id > 0)
-        )
-      );
-
-      const catMap: Record<number, PolicyDetailResponseDto> = {};
-      await Promise.all(
-        categoryIds.map(async (categoryId) => {
-          try {
-            const res = await fetch(`http://localhost:8080/api/v1/common/categories/${categoryId}/policy`, {
-              headers: { Authorization: `Bearer ${token}` },
-            });
-            const data = await res.json();
-            const policyDto: PolicyDetailResponseDto = data.data;
-            if (!policyDto) return;
-            catMap[categoryId] = policyDto;
-          } catch (e) {
-            console.error(`카테고리 ${categoryId} 정책 로딩 실패`, e);
-          }
-        })
-      );
-      setCategoryPolicyMap(catMap);
+    await fetchBookPolicies(fetchedBooks, token);
+    await fetchCategoryPolicies(fetchedBooks, token);
     } catch (e) {
       alert("도서 검색 실패");
       console.error(e);
     }
   };
+
+  const fetchBookPolicies = async (books: BookResponseDto[], token: string) => {
+  const ids = Array.from(new Set(
+    books.map(b => b.policyId).filter((id): id is number => id != null && id > 0)
+  ));
+
+  const map: Record<number, PolicyDetailResponseDto> = {};
+
+  await Promise.all(ids.map(async id => {
+    try {
+      const res = await getPolicyDetail(id, token);
+      if (res.code === "SU" && res.data){
+        map[id] = res.data;
+      }
+    } catch (err) {
+      console.error(`책 정책 로딩 실패 [id: ${id}]`, err);
+    }
+  }));
+  setBookPolicyMap(map);
+};
+
+  const fetchCategoryPolicies = async (books: BookResponseDto[], token: string) => {
+  const categoryIds = Array.from(new Set(
+    books.map(b => b.categoryId).filter((id): id is number => id != null && id > 0)
+  ));
+
+  const map: Record<number, PolicyDetailResponseDto> = {};
+
+  await Promise.all(categoryIds.map(async id => {
+    try {
+      const res = await getPolicyByCategory(id, token);
+      if (res.code === "SU" && res.data){
+        map[id] = res.data;
+      }
+    } catch (err) {
+      console.error(`카테고리 정책 로딩 실패 [id: ${id}]`, err);
+    }
+  }));
+
+  setCategoryPolicyMap(map);
+};
 
   const isPolicyActive = (startDate?: string, endDate?: string) => {
     const now = new Date();
@@ -105,6 +107,11 @@ function SearchBook() {
   };
 
   const totalPages = Math.ceil(books.length / itemsPerPage);
+  const pagesPerGroup = 5;
+  const currentGroup = Math.floor(currentPage / pagesPerGroup);
+  const startPage = currentGroup * pagesPerGroup;
+  const endPage = Math.min(startPage + pagesPerGroup, totalPages);
+
   const goToPage = (page: number) => page >= 0 && page < totalPages && setCurrentPage(page);
   const goPrev = () => currentPage > 0 && setCurrentPage(currentPage - 1);
   const goNext = () => currentPage < totalPages - 1 && setCurrentPage(currentPage + 1);
@@ -114,7 +121,7 @@ function SearchBook() {
   return (
     <div>
       <div className="topBar">
-        <h2>📚 도서 통합 검색</h2>
+        <h2>도서 통합 검색</h2>
         <input
           className="book-input"
           value={keyword}
@@ -196,7 +203,7 @@ function SearchBook() {
           <button className="pageBtn" onClick={goPrev} disabled={currentPage === 0}>
             {"<"}
           </button>
-          {Array.from({ length: totalPages }, (_, i) => i).map((i) => (
+          {Array.from({ length: endPage - startPage }, (_, i) => startPage + i).map((i) => (
             <button
               key={i}
               className={`pageBtn${i === currentPage ? " current" : ""}`}

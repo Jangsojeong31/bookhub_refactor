@@ -1,11 +1,10 @@
 .header {
-  width: 98%;
+  min-width: 1920px;
   height: 60px;
   background-color: rgba(124, 183, 255, 0.13);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 30px;
   border-radius: none;
 }
 
@@ -20,4 +19,5 @@
   gap: 20px;
   font-size: 14px;
   color: #333;
+  margin: 30px;
 }

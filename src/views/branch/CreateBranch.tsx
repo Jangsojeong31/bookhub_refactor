@@ -21,7 +21,7 @@ function CreateBranch() {
     branchName: "",
     branchLocation: "",
   });
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const totalPages = Math.ceil(branchList.length / ITEMS_PAGE);
   const [createBranch, setCreateBranch] = useState({
     branchName: "",
@@ -75,8 +75,8 @@ function CreateBranch() {
   };
 
   const paginatedBranchList = branchList.slice(
-    (currentPage - 1) * ITEMS_PAGE,
-    currentPage * ITEMS_PAGE
+    currentPage * ITEMS_PAGE,
+    (currentPage + 1) * ITEMS_PAGE
   );
 
   const onOpenCreateModal = () => {
@@ -84,11 +84,11 @@ function CreateBranch() {
       alert("인증 토큰이 없습니다.");
       return;
     }
-    
+
     setCreateBranch({
       branchName: "",
-      branchLocation: ""
-    })
+      branchLocation: "",
+    });
 
     setModalStatus(true);
   };
@@ -114,24 +114,26 @@ function CreateBranch() {
 
   const modalContent = (
     <>
-      <h2>지점 등록</h2>
-      <input
-        type="text"
-        name="branchName"
-        value={createBranch.branchName}
-        placeholder="지점 명"
-        onChange={onCreateInputChange}
-      />
-      <br />
-      <input
-        type="text"
-        name="branchLocation"
-        value={createBranch.branchLocation}
-        placeholder="지점 위치"
-        onChange={onCreateInputChange}
-      />
-      <br />
-      <button onClick={onCreateClick}>등록</button>
+      <div className="contain">
+        <h1>지점 등록</h1>
+        <input
+          type="text"
+          name="branchName"
+          value={createBranch.branchName}
+          placeholder="지점 명"
+          onChange={onCreateInputChange}
+          className="de-input"
+        />
+        <input
+          type="text"
+          name="branchLocation"
+          value={createBranch.branchLocation}
+          placeholder="지점 위치"
+          onChange={onCreateInputChange}
+          className="de-input"
+        />
+        <button onClick={onCreateClick} className="de-button">등록</button>
+      </div>
     </>
   );
 
@@ -152,53 +154,72 @@ function CreateBranch() {
     }
     setModalUpdateStatus(true);
   };
-  
+
   const modalUpdateContent = (
     <>
-      <h2>지점 수정</h2>
-      <input
-        type="text"
-        name="branchName"
-        value={branchDetail.branchName}
-        placeholder="지점 명"
-        onChange={onUpdateInputChange}
+      <div className="contain">
+        <h1>지점 수정</h1>
+        <input
+          type="text"
+          name="branchName"
+          value={branchDetail.branchName}
+          placeholder="지점 명"
+          onChange={onUpdateInputChange}
+          className="de-input"
         />
-      <br />
-      <input
-        type="text"
-        name="branchLocation"
-        value={branchDetail.branchLocation}
-        placeholder="지점 위치"
-        onChange={onUpdateInputChange}
+        <input
+          type="text"
+          name="branchLocation"
+          value={branchDetail.branchLocation}
+          placeholder="지점 위치"
+          onChange={onUpdateInputChange}
+          className="de-input"
         />
-      <br />
-      <button onClick={() => onUpdateClick(branchDetail.branchId)}>수정</button>
+        <button onClick={() => onUpdateClick(branchDetail.branchId)} className="de-button">
+          수정
+        </button>
+      </div>
     </>
   );
-  
+
   const onUpdateClick = async (branchId: number) => {
     if (!token) {
       alert("인증 토큰이 없습니다.");
       return;
     }
-    
+
     const response = await branchUpdateRequest(branchId, branchDetail, token);
     const { code, message } = response;
-    
+
     if (code === "SU") {
       alert("지점이 수정되었습니다.");
     } else {
       alert(message);
       return;
     }
-    
+
     setModalUpdateStatus(false);
     onSearchClick();
   };
 
+  const goToPage = (page: number) => {
+    if (page >= 0 && page < totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const goPrev = () => {
+    if (currentPage > 0) setCurrentPage(currentPage - 1);
+  };
+
+  const goNext = () => {
+    if (currentPage < totalPages - 1) setCurrentPage(currentPage + 1);
+  };
+
   return (
-    <div>
-      <div>
+    <div className="searchContainer">
+      <h2>지점 관리</h2>
+      <div className="search-row">
         <input
           type="text"
           name="branchLocation"
@@ -206,11 +227,13 @@ function CreateBranch() {
           placeholder="지점 주소"
           onChange={onInputChange}
         />
-        <button onClick={onSearchClick}>검색</button>
-        <button onClick={onResetClick}>최기화</button>
-        <button style={{ float: "right" }} onClick={onOpenCreateModal}>
-          등록
-        </button>
+        <div className="search-button">
+          <button onClick={onSearchClick}>검색</button>
+          <button onClick={onResetClick}>최기화</button>
+          <button style={{ float: "right" }} onClick={onOpenCreateModal}>
+            등록
+          </button>
+        </div>
       </div>
       <table>
         <thead>
@@ -228,31 +251,40 @@ function CreateBranch() {
               <td>{branch.branchLocation}</td>
               <td>{new Date(branch.createdAt).toLocaleString()}</td>
               <td>
-                <button onClick={() => onOpenUpdateModal(branch)}>수정</button>
+                <button onClick={() => onOpenUpdateModal(branch)}  className="approval-button">수정</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      {totalPages > 1 && (
-        <div style={{ marginTop: "20px" }}>
+      {branchList.length > 0 && (
+        <div className="footer">
           <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
+            className="pageBtn"
+            onClick={goPrev}
+            disabled={currentPage === 0}
           >
-            이전
+            {"<"}
           </button>
-          <span style={{ margin: "0 10px" }}>
-            {currentPage} / {totalPages}
+          {Array.from({ length: totalPages }, (_, i) => i).map((i) => (
+            <button
+              key={i}
+              className={`pageBtn${i === currentPage ? " current" : ""}`}
+              onClick={() => goToPage(i)}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            className="pageBtn"
+            onClick={goNext}
+            disabled={currentPage >= totalPages - 1}
+          >
+            {">"}
+          </button>
+          <span className="pageText">
+            {totalPages > 0 ? `${currentPage + 1} / ${totalPages}` : "0 / 0"}
           </span>
-          <button
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
-            disabled={currentPage === totalPages}
-          >
-            다음
-          </button>
         </div>
       )}
       {modalStatus && (

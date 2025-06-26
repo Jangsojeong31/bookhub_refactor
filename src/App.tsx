@@ -26,6 +26,7 @@ import Reception from "./views/reception";
 // import 'react-datepicker/dist/react-datepicker.css';
 import SalesQuantityStatistics from "./views/statistics/salesQuantity-statistics";
 import StockLog from "./views/stock-logs";
+import Stock from "./views/stocks";
 import Revenue from "./views/statistics/revenue";
 
 import StockStatistics from "./views/statistics/stockstatistics";
@@ -33,6 +34,8 @@ import StockStatistics from "./views/statistics/stockstatistics";
 import Branch from "./views/branch";
 import AlertPage from "./views/alert/AlertPage";
 import LocationPage from "./views/location/LocationPage";
+import BookLogs from "./views/book/book-logs/BookLogs";
+import RequireAuth from "./components/auth/RequireAuth";
 
 function App() {
   const [cookies, setCookie, removeCookie] = useCookies([
@@ -118,31 +121,50 @@ function App() {
             style={{
               flex: 1,
               padding: "30px",
-              overflowY: "auto",
-              minHeight: 0,
-              minWidth: 0,
+              minWidth: "1500px",
             }}
           >
             <Routes>
               <Route path="/" element={<Navigate to="/main" />} />
               {/* <Route path="/publishers" element={<Publisher />} /> */}
               <Route path="/alerts/*" element={<AlertPage />} />
+              <Route path="/books/*" element={<Book />} />
+              <Route path="/booklogs/*" element={<BookLogs />} />
 
               <Route path="/publishers/*" element={<Publisher />} />
               <Route path="/policies/*" element={<Policy />} />
               <Route path="/branch/locations" element={<LocationPage />} />
-              <Route path="/stock-logs/*" element={<StockLog />} />
-              <Route path="/statistics/revenue/*" element={<Revenue />} />
+              <Route
+                path="/stock-logs/*"
+                element={
+                  <RequireAuth allowedRoles={["ADMIN"]}>
+                    <StockLog />
+                  </RequireAuth>
+                }
+              />
+              <Route path="/stocks/*" element={<Stock />} />
+              <Route
+                path="/statistics/revenue/*"
+                element={
+                  <RequireAuth allowedRoles={["ADMIN"]}>
+                    <Revenue />
+                  </RequireAuth>
+                }
+              />
               <Route
                 path="/statistics/stocks/*"
-                element={<StockStatistics />}
+                element={
+                  <RequireAuth allowedRoles={["ADMIN"]}>
+                    <StockStatistics />
+                  </RequireAuth>
+                }
               />
               {Main()}
               {/* {Alert()} */}
 
               {/* {Publisher()} */}
 
-              {Book()}
+              {/*Book()*/}
               {Branch()}
               {/* {BookLocation() */}
               {Category()}

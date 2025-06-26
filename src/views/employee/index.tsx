@@ -10,15 +10,54 @@ import RequireAuth from "@/components/auth/RequireAuth";
 function Employee() {
   return (
     <>
-      <Route path="/employees" element={<EmployeeSearch />} />
-      <Route path="/employees/approval" element={<EmployeeSignUpApprovals />} />
-      <Route path="/employees/edit" element={<EmployeeChange />} />
+      <Route
+        path="/employees"
+        element={
+          <RequireAuth allowedRoles={["ADMIN"]}>
+            <EmployeeSearch />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/employees/approval"
+        element={
+          <RequireAuth allowedRoles={["ADMIN"]}>
+            <EmployeeSignUpApprovals />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/employees/edit"
+        element={
+          <RequireAuth allowedRoles={["ADMIN"]}>
+            <EmployeeChange />
+          </RequireAuth>
+        }
+      />
       <Route
         path="/employees/approval/logs"
-        element={<EmployeeSignUpApprovalsSearch />}
+        element={
+          <RequireAuth allowedRoles={["ADMIN"]}>
+            <EmployeeSignUpApprovalsSearch />
+          </RequireAuth>
+        }
       />
-      <Route path="/employees/logs" element={<EmployeeChangeLogsSearch />} />
-      <Route path="/employees/retired/logs" element={<EmployeeExitLogs />} />
+      <Route
+        path="/employees/logs"
+        element={
+          <RequireAuth allowedRoles={["ADMIN"]}>
+            <EmployeeChangeLogsSearch />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/employees/retired/logs"
+        element={
+          <RequireAuth allowedRoles={["ADMIN"]}>
+            <EmployeeExitLogs />
+          </RequireAuth>
+        }
+      />
     </>
   );
 }

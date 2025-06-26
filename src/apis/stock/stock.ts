@@ -1,63 +1,52 @@
 import { ResponseDto } from "@/dtos";
-import { StockListResponseDto } from "@/dtos/stock/Stock.response.dto";
-import { axiosInstance, bearerAuthorization, responseErrorHandler, responseSuccessHandler } from "../axiosConfig";
-import { AxiosError } from "axios";
-import { STOCK_SEARCH_BOOK_URL, STOCK_SEARCH_TITLE_URL } from "../constants/csy.constants";
-import { error } from "console";
+import { StockUpdateRequestDto } from "@/dtos/stock/Stock.request.dto";
+import { StockCreateResponseDto, StockUpdateResponseDto, StockListResponseDto } from "@/dtos/stock/Stock.response.dto";
+import axios from "axios";
+import { UPDATE_STOCK_URL, STOCK_SEARCH_BOOK_URL, STOCK_SEARCH_TITLE_URL, STOCK_SEARCH_BRANCH_URL } from "../constants/csy.constants";
 
-export const stockSearchByBranch = async(
-  branchId : number,
+// export const createStock = (
+//   dto: StockCreateRequestDto,
+//   accessToken: string
+// ): Promise<ResponseDto<StockCreateResponseDto>> =>
+//   axios
+//     .post(STOCK_BASE_URL, dto, { headers: { Authorization: `Bearer ${accessToken}` } })
+//     .then((res) => res.data);
+
+export const updateStock = (
+  branchId: number,
+  stockId: number,
+  dto: StockUpdateRequestDto,
   accessToken: string
-): Promise<ResponseDto<StockListResponseDto[]>> => {
-  try{
-    let url = `${STOCK_SEARCH_BOOK_URL}`;
-    if(branchId) url+= `branchId=${encodeURIComponent(branchId)}`;
+): Promise<ResponseDto<StockUpdateResponseDto>> =>
+  axios
+    .put(UPDATE_STOCK_URL(stockId), dto, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+    .then((res) => res.data);
 
-    const response = await axiosInstance.get(
-      url,
-      bearerAuthorization(accessToken)
-    );
-    return responseSuccessHandler(response);
-
-  }catch(err){
-    return responseErrorHandler(error as unknown as AxiosError<ResponseDto<null>>);
-  }
-}
-
-export const stockSearchByBookIsbn = async(
-  bookIsbn : string,
+export const getStockByIsbn = (
+  isbn: string,
   accessToken: string
-): Promise<ResponseDto<StockListResponseDto[]>> => {
-  try{
-    let url = `${STOCK_SEARCH_TITLE_URL}`;
-    if(bookIsbn?.trim()) url+= `bookIsbn=${encodeURIComponent(bookIsbn.trim())}`;
+): Promise<ResponseDto<StockListResponseDto[]>> =>
+  axios
+    .get(STOCK_SEARCH_BOOK_URL(isbn), { headers: { Authorization: `Bearer ${accessToken}` } })
+    .then((res) => res.data);
 
-    const response = await axiosInstance.get(
-      url,
-      bearerAuthorization(accessToken)
-    );
-    return responseSuccessHandler(response);
-
-  }catch(err){
-    return responseErrorHandler(error as unknown as AxiosError<ResponseDto<null>>);
-  }
-}
-
-export const stockSearchByBookTitle = async(
-  bookTitle : string,
+export const getStockByTitle = (
+  title: string,
   accessToken: string
-): Promise<ResponseDto<StockListResponseDto[]>> => {
-  try{
-    let url = `${STOCK_SEARCH_BOOK_URL}`;
-    if(bookTitle?.trim()) url+= `bookTitle=${encodeURIComponent(bookTitle.trim())}`;
+): Promise<ResponseDto<StockListResponseDto[]>> =>
+  axios
+    .get(STOCK_SEARCH_TITLE_URL, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      params: { bookTitle: title },
+    })
+    .then((res) => res.data);
 
-    const response = await axiosInstance.get(
-      url,
-      bearerAuthorization(accessToken)
-    );
-    return responseSuccessHandler(response);
-
-  }catch(err){
-    return responseErrorHandler(error as unknown as AxiosError<ResponseDto<null>>);
-  }
-}
+export const getStockByBranch = (
+  branchId: number,
+  accessToken: string
+): Promise<ResponseDto<StockListResponseDto[]>> =>
+  axios
+    .get(STOCK_SEARCH_BRANCH_URL(branchId), { headers: { Authorization: `Bearer ${accessToken}` } })
+    .then((res) => res.data);

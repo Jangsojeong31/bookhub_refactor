@@ -4,7 +4,6 @@ import { getCategoryTree } from "@/apis/category/category";
 import { useCookies } from "react-cookie";
 import "./CategoryTree.css";
 
-
 interface CategoryTreeProps {
   onSelect: (category: CategoryTreeResponseDto) => void;
 }
@@ -36,9 +35,8 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({ onSelect }) => {
       }
     }
 
-    // 토글 동작 추가
     setExpandedType((prev) => (prev === type ? null : type));
-    setExpandedCategoryIds([]); // 펼친 대분류 초기화
+    setExpandedCategoryIds([]);
   };
 
   const toggleCategory = (id: number) => {
@@ -85,9 +83,7 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({ onSelect }) => {
 
   return (
     <div className="category-container">
-      <h2>📚 전체 도서 카테고리</h2>
-
-      {/* 국내 도서 */}
+      <h2>전체 도서 카테고리</h2>
       <div>
         <div
           className="category-type"
@@ -97,8 +93,6 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({ onSelect }) => {
         </div>
         {expandedType === "DOMESTIC" && renderCategoryTree(categoriesMap.DOMESTIC)}
       </div>
-
-      {/* 해외 도서 */}
       <div>
         <div
           className="category-type"

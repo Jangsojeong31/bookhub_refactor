@@ -10,10 +10,7 @@ export default function Sidebar() {
   const employee = useEmployeeStore((state) => state.employee);
   const isAdmin = employee?.authorityName.includes("ADMIN");
 
-  const [isAdminMode, setIsAdminMode] = useState(() => {
-    return localStorage.getItem("sidebarIsAdminMode") === "false";
-  });
-
+  const [isAdminMode, setIsAdminMode] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number | null>(() => {
     const savedIndex = localStorage.getItem("sidebarActiveIndex");
     return savedIndex !== null ? Number(savedIndex) : null;

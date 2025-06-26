@@ -85,28 +85,59 @@ function UpdatePolicy({ isOpen, onClose, onUpdated,policyDetail,policyId }: Prop
   if (!isOpen) return null;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <div className='modal-content'>
-        <h2>정책 수정</h2>
-        <select value={policyType} onChange={e => setPolicyType(e.target.value as PolicyType)}>
-          <option value={PolicyType.BOOK_DISCOUNT}>도서 할인</option>
-          <option value={PolicyType.TOTAL_PRICE_DISCOUNT}>총 금액 할인</option>
-          <option value={PolicyType.CATEGORY_DISCOUNT}>카테고리 할인</option>
-        </select>
-        <div className='date-row'>
-          <input type='date' value={startDate} onChange={e => setStartDate(e.target.value)} />
-          <input type='date' value={endDate} onChange={e => setEndDate(e.target.value)} />
-        </div>
-        <input type='text' placeholder='제목을 입력하세요' value={policyTitle} onChange={e => setPolicyTitle(e.target.value)} />
-        <textarea placeholder='설명을 입력하세요' value={policyDescription} onChange={e => setPolicyDescription(e.target.value)} />
-        <div className='number-row'>
-          <input type='number' placeholder='총 금액' value={totalPriceAchieve ?? ''} onChange={e => setTotalPriceAchieve(e.target.value ? Number(e.target.value) : undefined)} />
-          <input type='number' placeholder='할인율(%)' value={discountPercent} onChange={e => setDiscountPercent(Number(e.target.value))} />
-        </div>
-        {message && <p className='error-message'>{message}</p>}
-        <button onClick={onUpdateClick} className='btn-save'>수정</button>
+   <div className="modal-overlay">
+    
+  <div className="policy-detail-modal">
+    <h2 className="modal-title">정책 수정</h2>
+    <div className="form-group">
+      <label>정책 타입</label>
+      <select value={policyType} onChange={e => setPolicyType(e.target.value as PolicyType)}>
+        <option value={PolicyType.BOOK_DISCOUNT}>도서 할인</option>
+        <option value={PolicyType.TOTAL_PRICE_DISCOUNT}>총 금액 할인</option>
+        <option value={PolicyType.CATEGORY_DISCOUNT}>카테고리 할인</option>
+      </select>
+    </div>
+
+    <div className="form-group two-cols">
+      <div>
+        <label>시작일</label>
+        <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
       </div>
-    </Modal>
+      <div>
+        <label>종료일</label>
+        <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
+      </div>
+    </div>
+
+    <div className="form-group">
+      <label>제목</label>
+      <input type="text" placeholder="제목을 입력하세요" value={policyTitle} onChange={e => setPolicyTitle(e.target.value)} />
+    </div>
+
+    <div className="form-group">
+      <label>설명</label>
+      <textarea placeholder="설명을 입력하세요" value={policyDescription} onChange={e => setPolicyDescription(e.target.value)} />
+    </div>
+
+    <div className="form-group two-cols">
+      <div>
+        <label>총 금액</label>
+        <input type="number" placeholder="총 금액" value={totalPriceAchieve ?? ''} onChange={e => setTotalPriceAchieve(e.target.value ? Number(e.target.value) : undefined)} />
+      </div>
+      <div>
+        <label>할인율(%)</label>
+        <input type="number" placeholder="할인율(%)" value={discountPercent} onChange={e => setDiscountPercent(Number(e.target.value))} />
+      </div>
+    </div>
+
+    {message && <p className="error-message">{message}</p>}
+
+    <div className="modal-footer">
+      <button onClick={onUpdateClick} className="btn-primary">수정</button>
+    </div>
+  </div>
+</div>
+
   );
 }
 

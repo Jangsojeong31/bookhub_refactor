@@ -11,7 +11,7 @@ function BranchSearch() {
   const token = cookies.accessToken;
   const [searchForm, setSearchForm] = useState({ branchLocation: "" });
   const [branchList, setBranchList] = useState<BranchSearchResponseDto[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const totalPages = Math.ceil(branchList.length / ITEMS_PAGE);
 
   const onInputChange = (
@@ -44,13 +44,28 @@ function BranchSearch() {
   };
 
   const paginatedBranchList = branchList.slice(
-    (currentPage - 1) * ITEMS_PAGE,
-    currentPage * ITEMS_PAGE
+    (currentPage ) * ITEMS_PAGE,
+    (currentPage + 1) * ITEMS_PAGE
   );
 
+  const goToPage = (page: number) => {
+    if (page >= 0 && page < totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const goPrev = () => {
+    if (currentPage > 0) setCurrentPage(currentPage - 1);
+  };
+
+  const goNext = () => {
+    if (currentPage < totalPages - 1) setCurrentPage(currentPage + 1);
+  };
+
   return (
-    <div>
-      <div>
+    <div className="searchContainer">
+      <h2>지점 조회</h2>
+      <div className="search-row">
         <input
           type="text"
           name="branchLocation"
@@ -58,8 +73,10 @@ function BranchSearch() {
           placeholder="지점 주소"
           onChange={onInputChange}
         />
-        <button onClick={onSearchClick}>검색</button>
-        <button onClick={onResetClick}>최기화</button>
+        <div className="search-button">
+          <button onClick={onSearchClick}>검색</button>
+          <button onClick={onResetClick}>최기화</button>
+        </div>
       </div>
       <table>
         <thead>
@@ -79,25 +96,34 @@ function BranchSearch() {
           ))}
         </tbody>
       </table>
-      {totalPages > 1 && (
-        <div style={{ marginTop: "20px" }}>
+      {branchList.length > 0 && (
+        <div className="footer">
           <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
+            className="pageBtn"
+            onClick={goPrev}
+            disabled={currentPage === 0}
           >
-            이전
+            {"<"}
           </button>
-          <span style={{ margin: "0 10px" }}>
-            {currentPage} / {totalPages}
+          {Array.from({ length: totalPages }, (_, i) => i).map((i) => (
+            <button
+              key={i}
+              className={`pageBtn${i === currentPage ? " current" : ""}`}
+              onClick={() => goToPage(i)}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            className="pageBtn"
+            onClick={goNext}
+            disabled={currentPage >= totalPages - 1}
+          >
+            {">"}
+          </button>
+          <span className="pageText">
+            {totalPages > 0 ? `${currentPage + 1} / ${totalPages}` : "0 / 0"}
           </span>
-          <button
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
-            disabled={currentPage === totalPages}
-          >
-            다음
-          </button>
         </div>
       )}
     </div>
