@@ -12,9 +12,6 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 public class JwtProvider {
@@ -39,7 +36,7 @@ public class JwtProvider {
     public String generateJwtToken(String username, Authority roles) {
         return Jwts.builder()
                 .claim("username", username)
-                .claim("roles", List.of(roles.getAuthorityName()))
+                .claim("role", roles.getAuthorityName())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -83,18 +80,8 @@ public class JwtProvider {
         return claims.get("username", String.class);
     }
 
-    public Set<String> getRolesFromJwt(String token) {
+    public String getRolesFromJwt(String token) {
         Claims claims = getClaims(token);
-        Object rolesObj = claims.get("roles");
-
-        if (rolesObj instanceof String rolesStr) {
-            return Set.of(rolesStr.split(","));
-        }
-
-        if (rolesObj instanceof List<?> list) {
-            return list.stream().map(Object::toString).collect(Collectors.toSet());
-        }
-
-        return Set.of();
+        return claims.get("role", String.class);
     }
 }
