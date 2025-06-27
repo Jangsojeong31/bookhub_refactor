@@ -95,7 +95,9 @@ public interface RevenueStatisticsRepository extends JpaRepository<CustomerOrder
         GROUP BY DATE(co.customer_order_date_at)
         ORDER BY orderDate ASC;
 """, nativeQuery = true)
-    List<WeeklyRevenueStatisticsProjection> findWeeklySales(@Param("year") int year, @Param("month") int month);
+    List<WeeklyRevenueStatisticsProjection> findWeeklySales(
+            @Param("year") int year,
+            @Param("month") int month);
 }
 
 
