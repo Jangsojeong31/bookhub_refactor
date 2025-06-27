@@ -9,12 +9,11 @@
   flex-direction: column;
   gap: 1rem;
   padding: 1.5rem 2rem;
-  padding-bottom: 4rem; /* 하단 등록 버튼 공간 확보 */
+  padding-bottom: 4rem; 
   max-height: 80vh;
   overflow-y: auto;
 }
 
-/* placeholder 색상 통일 */
 .policy-frame ::placeholder {
   color: #CCC;
 }
@@ -28,7 +27,6 @@
   gap: 1rem;
 }
 
-/* 카테고리는 왼쪽, 시작일(첫 번째 date)은 오른쪽으로 밀기 */
 .filters select {
   flex: 0 0 auto;
 }
