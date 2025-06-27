@@ -39,7 +39,7 @@ public class RevenueStatisticsServiceImpl implements RevenueStatisticsService {
         Map<String, Long> salesMap = new LinkedHashMap<>();
         for(String weekday : weekdays) salesMap.put(weekday,0L);
         for(Object[] row : result){
-            String weekday = (String) row[0];
+            String weekday = String.valueOf(row[0]);
             Long total = ((Number) row[1]).longValue();
             salesMap.put(weekday,total);
         }
