@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar } from "recharts";
 
-const WeekdayRevenue: React.FC = () => {
+function WeekdayRevenue() {
   const [cookies] = useCookies(['accessToken']);
   const token = cookies.accessToken;
   const [year, setYear] = useState<number>(new Date().getFullYear());

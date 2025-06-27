@@ -10,7 +10,19 @@ interface FormData {
   endDate: string;
 }
 
-const BranchRevenue: React.FC = () => {
+const COLOR_PALETTE = [
+  "#8884d8",
+  "#82ca9d",
+  "#ffc658",
+  "#ff8042",
+  "#8dd1e1",
+  "#a4de6c",
+  "#d0ed57",
+  "#d066e1"
+  // 필요하면 더 추가
+];
+
+function BranchRevenue() {
   const [cookies] = useCookies(['accessToken']);
   const token = cookies.accessToken;
   const [form, setForm] = useState<FormData>({ startDate: '', endDate: '' });
@@ -39,7 +51,7 @@ const BranchRevenue: React.FC = () => {
       form.startDate,
       form.endDate
     );
-    if (res.code === 'SUCCESS') {
+    if (res.code === 'SU') {
 const raw: BranchRevenueResponseDto[] = res.data ?? [];      const branchMap: Record<string, any> = {};
       const cats = new Set<string>();
       raw.forEach((item) => {
@@ -96,8 +108,9 @@ const raw: BranchRevenueResponseDto[] = res.data ?? [];      const branchMap: Re
           <YAxis />
           <Tooltip />
           <Legend />
-          {categories.map((cat) => (
-            <Bar key={cat} dataKey={cat} stackId="a" />
+          {categories.map((cat,idx) => (
+            <Bar key={cat} dataKey={cat} stackId="a"
+            fill={COLOR_PALETTE[idx % COLOR_PALETTE.length]} />
           ))}
         </BarChart>
       )}

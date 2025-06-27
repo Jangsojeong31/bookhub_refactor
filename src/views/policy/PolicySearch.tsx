@@ -149,11 +149,11 @@ const PolicySearch: React.FC = () => {
       </table>
 
       <div className="pagination">
-        <button className="btn-primary" disabled={currentPage === 0} onClick={() => goToPage(currentPage - 1)}>
+        <button className="modifyBtn" disabled={currentPage === 0} onClick={() => goToPage(currentPage - 1)}>
           이전
         </button>
         <span>{currentPage + 1} / {totalPages}</span>
-        <button className="btn-primary" disabled={currentPage + 1 >= totalPages} onClick={() => goToPage(currentPage + 1)}>
+        <button className="modifyBtn" disabled={currentPage + 1 >= totalPages} onClick={() => goToPage(currentPage + 1)}>
           다음
         </button>
       </div>

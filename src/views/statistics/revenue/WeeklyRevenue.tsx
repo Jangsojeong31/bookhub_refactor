@@ -92,9 +92,10 @@ function WeeklyRevenue() {
 
   return (
     <div
-      style={{ width: "100%", maxWidth: 600, margin: "0 auto", padding: 32 }}
+    className="p-4"
+      // style={{ width: "100%", maxWidth: 600, margin: "0 auto", padding: 32 }}
     >
-      <h4>주간 통계</h4>
+      <h2 className="text-xl font-semibold mb-4">주간 매출 통계</h2>
 
       <div style={{ margin: 16 }}>
         <select
