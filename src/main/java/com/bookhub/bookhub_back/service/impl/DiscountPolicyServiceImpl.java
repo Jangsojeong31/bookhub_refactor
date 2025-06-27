@@ -18,7 +18,10 @@ import com.bookhub.bookhub_back.repository.AuthorityRepository;
 import com.bookhub.bookhub_back.repository.DiscountPolicyRepository;
 import com.bookhub.bookhub_back.repository.EmployeeRepository;
 import com.bookhub.bookhub_back.service.DiscountPolicyService;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -223,65 +226,159 @@ public class DiscountPolicyServiceImpl implements DiscountPolicyService {
     }
 
     //9) 할인정책 통합 검색
-    @Override
-    public ResponseDto<PageResponseDto<DiscountPolicyListResponseDto>> getFilteredPolicies(
-            int page,
-            int size,
-            String keyword,
-            PolicyType type,
-            LocalDate start,
-            LocalDate end
-    ) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("policyId").descending());
+//    @Override
+//    public ResponseDto<PageResponseDto<DiscountPolicyListResponseDto>> getFilteredPolicies(
+//            int page,
+//            int size,
+//            String keyword,
+//            PolicyType type,
+//            LocalDate start,
+//            LocalDate end
+//    ) {
+//        Pageable pageable = PageRequest.of(page, size, Sort.by("policyId").descending());
+//
+//        Specification<DiscountPolicy> spec = Specification.where(null);
+//
+//        if (keyword != null && !keyword.isBlank()) {
+//            spec = spec.and((r, q, cb) ->
+//                    cb.like(r.get("policyTitle"), "%" + keyword.trim() + "%")
+//            );
+//        }
+//
+//        if (type != null) {
+//            spec = spec.and((r, q, cb) ->
+//                    cb.equal(r.get("policyType"), type)
+//            );
+//        }
+//
+//        if (start != null) {
+//            spec = spec.and((r, q, cb) ->
+//                    cb.greaterThanOrEqualTo(r.get("startDate"), start)
+//            );
+//        }
+//
+//        if (end != null) {
+//            spec = spec.and((r, q, cb) ->
+//                    cb.lessThanOrEqualTo(r.get("endDate"), end)
+//            );
+//        }
+//
+//        Page<DiscountPolicy> result = policyRepository.findAll(spec, pageable);
+//
+//        List<DiscountPolicyListResponseDto> content = result.getContent().stream()
+//                .map(policy -> DiscountPolicyListResponseDto.builder()
+//                        .policyId(policy.getPolicyId())
+//                        .policyTitle(policy.getPolicyTitle())
+//                        .policyType(policy.getPolicyType())
+//                        .startDate(policy.getStartDate())
+//                        .endDate(policy.getEndDate())
+//                        .build()
+//                )
+//                .collect(Collectors.toList());
+//
+//        PageResponseDto<DiscountPolicyListResponseDto> pageDto = PageResponseDto.of(
+//                content,
+//                result.getTotalElements(),
+//                result.getTotalPages(),
+//                result.getNumber()
+//        );
+//
+//        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, pageDto);
+//    }
 
-        Specification<DiscountPolicy> spec = Specification.where(null);
+//    @PersistenceContext
+//    private final EntityManager em;
+//
+//    @Override
+//    public ResponseDto<PageResponseDto<DiscountPolicyListResponseDto>> getFilteredPolicies(
+//            int page, int size,
+//            String keyword, PolicyType type,
+//            LocalDate start, LocalDate end
+//    ) {
+//        // 1) JPQL 기본문
+//        StringBuilder jpql = new StringBuilder("SELECT p FROM DiscountPolicy p WHERE 1=1");
+//        if (keyword != null && !keyword.isBlank())    jpql.append(" AND p.policyTitle LIKE :kw");
+//        if (type != null)                              jpql.append(" AND p.policyType = :tp");
+//        if (start != null)                             jpql.append(" AND p.startDate >= :st");
+//        if (end != null)                               jpql.append(" AND p.endDate <= :ed");
+//        jpql.append(" ORDER BY p.policyId DESC");
+//
+//        // 2) 데이터 쿼리
+//        TypedQuery<DiscountPolicy> q = em.createQuery(jpql.toString(), DiscountPolicy.class);
+//        if (keyword != null && !keyword.isBlank())    q.setParameter("kw", "%" + keyword.trim() + "%");
+//        if (type != null)                              q.setParameter("tp", type);
+//        if (start != null)                             q.setParameter("st", start);
+//        if (end != null)                               q.setParameter("ed", end);
+//        q.setFirstResult(page * size);
+//        q.setMaxResults(size);
+//        List<DiscountPolicy> list = q.getResultList();
+//
+//        // 3) 카운트 쿼리
+//        StringBuilder countJpql = new StringBuilder("SELECT COUNT(p) FROM DiscountPolicy p WHERE 1=1");
+//        if (keyword != null && !keyword.isBlank())    countJpql.append(" AND p.policyTitle LIKE :kw");
+//        if (type != null)                              countJpql.append(" AND p.policyType = :tp");
+//        if (start != null)                             countJpql.append(" AND p.startDate >= :st");
+//        if (end != null)                               countJpql.append(" AND p.endDate <= :ed");
+//        TypedQuery<Long> countQ = em.createQuery(countJpql.toString(), Long.class);
+//        if (keyword != null && !keyword.isBlank())    countQ.setParameter("kw", "%" + keyword.trim() + "%");
+//        if (type != null)                              countQ.setParameter("tp", type);
+//        if (start != null)                             countQ.setParameter("st", start);
+//        if (end != null)                               countQ.setParameter("ed", end);
+//        long total = countQ.getSingleResult();
+//
+//        // 4) DTO 매핑
+//        List<DiscountPolicyListResponseDto> content = list.stream()
+//                .map(p -> DiscountPolicyListResponseDto.builder()
+//                        .policyId(p.getPolicyId())
+//                        .policyTitle(p.getPolicyTitle())
+//                        .policyType(p.getPolicyType())
+//                        .startDate(p.getStartDate())
+//                        .endDate(p.getEndDate())
+//                        .build())
+//                .collect(Collectors.toList());
+//
+//        PageResponseDto<DiscountPolicyListResponseDto> pageDto =
+//                PageResponseDto.of(content, total, (int)Math.ceil((double)total/size), page);
+//
+//        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, pageDto);
+//    }
+@Override
+public ResponseDto<PageResponseDto<DiscountPolicyListResponseDto>> getFilteredPolicies(
+        int page,
+        int size,
+        String keyword,
+        PolicyType type,
+        LocalDate start,
+        LocalDate end
+) {
+    Pageable pageable = PageRequest.of(page, size);
+    Page<DiscountPolicy> result = policyRepository.findFiltered(
+            // 만약 빈 문자열("") 대신 null로 전달하고 싶다면, Service 에서 변환해줘도 됩니다.
+            keyword != null && keyword.isBlank() ? null : keyword,
+            type,
+            start,
+            end,
+            pageable
+    );
 
-        if (keyword != null && !keyword.isBlank()) {
-            spec = spec.and((r, q, cb) ->
-                    cb.like(r.get("policyTitle"), "%" + keyword.trim() + "%")
-            );
-        }
+    List<DiscountPolicyListResponseDto> content = result.getContent().stream()
+            .map(p -> DiscountPolicyListResponseDto.builder()
+                    .policyId(p.getPolicyId())
+                    .policyTitle(p.getPolicyTitle())
+                    .policyType(p.getPolicyType())
+                    .startDate(p.getStartDate())
+                    .endDate(p.getEndDate())
+                    .build()
+            ).collect(Collectors.toList());
 
-        if (type != null) {
-            spec = spec.and((r, q, cb) ->
-                    cb.equal(r.get("policyType"), type)
-            );
-        }
+    PageResponseDto<DiscountPolicyListResponseDto> pageDto = PageResponseDto.of(
+            content,
+            result.getTotalElements(),
+            result.getTotalPages(),
+            result.getNumber()
+    );
 
-        if (start != null) {
-            spec = spec.and((r, q, cb) ->
-                    cb.greaterThanOrEqualTo(r.get("startDate"), start)
-            );
-        }
-
-        if (end != null) {
-            spec = spec.and((r, q, cb) ->
-                    cb.lessThanOrEqualTo(r.get("endDate"), end)
-            );
-        }
-
-        Page<DiscountPolicy> result = policyRepository.findAll(spec, pageable);
-
-        List<DiscountPolicyListResponseDto> content = result.getContent().stream()
-                .map(policy -> DiscountPolicyListResponseDto.builder()
-                        .policyId(policy.getPolicyId())
-                        .policyTitle(policy.getPolicyTitle())
-                        .policyType(policy.getPolicyType())
-                        .startDate(policy.getStartDate())
-                        .endDate(policy.getEndDate())
-                        .build()
-                )
-                .collect(Collectors.toList());
-
-        PageResponseDto<DiscountPolicyListResponseDto> pageDto = PageResponseDto.of(
-                content,
-                result.getTotalElements(),
-                result.getTotalPages(),
-                result.getNumber()
-        );
-
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, pageDto);
-    }
-
+    return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, pageDto);
+}
 
 }
