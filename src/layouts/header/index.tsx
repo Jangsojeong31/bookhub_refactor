@@ -7,7 +7,7 @@ import { useEmployeeStore } from "@/stores/employee.store";
 import AlertIcon from "@/apis/constants/AlertIcon";
 
 export default function Header() {
-  const [cookies, , removeCookie] = useCookies(["accessToken"]);
+  const [cookies, , removeCookie] = useCookies(["accessToken", "tokenExpiresAt"]);
   const logout = useEmployeeStore((state) => state.setLogout);
   const employee = useEmployeeStore((state) => state.employee);
   const clearEmployee = useEmployeeStore((state) => state.clearEmployee);
@@ -16,6 +16,7 @@ export default function Header() {
   const onLogoutClick = async () => {
     await logoutRequest();
     removeCookie("accessToken", { path: "/" });
+    removeCookie("tokenExpiresAt", { path: "/" });
     clearEmployee();
     logout();
     navigate("/auth/login");
