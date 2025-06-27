@@ -104,7 +104,7 @@ function BranchStockStatistics() {
       {loading ? (
         <div>불러오는 중...</div>
       ) : (
-        <div style={{ overflowX: "auto", width: "1500px", overflowY: "clip" }}>
+        <div style={{ overflowX: "auto", width: "100%", overflowY: "clip", display: 'flex', justifyContent: "center"}}>
           <div style={{ width: `${data.length * 100}px`, height: 700 }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart

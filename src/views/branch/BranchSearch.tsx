@@ -34,17 +34,19 @@ function BranchSearch() {
       setBranchList(data);
     } else {
       setBranchList([]);
-      setCurrentPage(1);
     }
+
+    setCurrentPage(0);
   };
 
   const onResetClick = () => {
     setSearchForm({ branchLocation: "" });
     setBranchList([]);
+    setCurrentPage(0);
   };
 
   const paginatedBranchList = branchList.slice(
-    (currentPage ) * ITEMS_PAGE,
+    currentPage * ITEMS_PAGE,
     (currentPage + 1) * ITEMS_PAGE
   );
 

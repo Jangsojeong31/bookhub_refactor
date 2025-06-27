@@ -153,21 +153,24 @@ function TimeStockStatistics() {
         />
         <button onClick={onSearchClick}>검색</button>
       </div>
-        <div style={{ width: "1500px", height: "900px"}}>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-          }}
-          >
+      <div
+        style={{
+          width: "100%",
+          height: "900px",
+          display: "flex",
+          justifyContent: "center"
+        }}
+      >
+        <div style={{display: "flex",
+            flexDirection: "row",}}>
           {data.length > 0 && (
-            <div style={{display: "flex", flexDirection: "column"}}>
+            <div style={{ display: "flex", flexDirection: "column" }}>
               <h2>월별 지점 입고량</h2>
               <ResponsiveContainer width={750} height={700}>
                 <LineChart
                   data={chartData}
                   margin={{ top: 30, right: 30, left: 30, bottom: 5 }}
-                  >
+                >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" />
                   <YAxis />
@@ -175,13 +178,13 @@ function TimeStockStatistics() {
                   <Legend />
                   {branches.map((branch, idx) => (
                     <Line
-                    key={`${branch} - in`}
-                    type="monotone"
-                    dataKey={`${branch}_in`}
-                    stroke={COLORS[idx % COLORS.length]}
-                    name={`${branch}`}
-                    strokeWidth={2}
-                    connectNulls={false}
+                      key={`${branch} - in`}
+                      type="monotone"
+                      dataKey={`${branch}_in`}
+                      stroke={COLORS[idx % COLORS.length]}
+                      name={`${branch}`}
+                      strokeWidth={2}
+                      connectNulls={false}
                     />
                   ))}
                 </LineChart>
@@ -190,8 +193,8 @@ function TimeStockStatistics() {
           )}
 
           {data.length > 0 && (
-            <div style={{display: "flex", flexDirection: "column"}}>
-                <h2>월별 지점 손실량</h2>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <h2>월별 지점 손실량</h2>
               <ResponsiveContainer width={750} height={700}>
                 <LineChart
                   data={chartData}

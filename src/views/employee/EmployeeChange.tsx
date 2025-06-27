@@ -142,6 +142,8 @@ function EmployeeChange() {
       setMessage(message);
       return;
     }
+
+    setCurrentPage(0);
   };
 
   const paginatedEmployees = employeeList.slice(

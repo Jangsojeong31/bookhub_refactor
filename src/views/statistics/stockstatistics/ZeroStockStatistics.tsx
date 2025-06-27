@@ -86,7 +86,7 @@ function ZeroStockStatistics() {
       {loading ? (
         <div>불러오는 중...</div>
       ) : (
-        <div style={{ widows: "1500px", display: "flex", justifyContent:"center"}}>
+        <div style={{ width: "100%", display: "flex", justifyContent:"center"}}>
           <div style={{ width: `${data.length * 100}px`, height: "700px", marginTop: "50px"}}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
