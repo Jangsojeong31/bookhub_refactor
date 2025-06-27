@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Random;
 
 @Service
@@ -152,8 +151,6 @@ public class AuthServiceImpl implements AuthService {
         EmployeeSignInResponseDto responseDto = null;
         Employee employee = null;
 
-        int exprTime = jwtProvider.getExpiration();
-
         employee = employeeRepository.findByLoginId(loginId)
             .orElseThrow(null);
 
@@ -170,8 +167,9 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String token = jwtProvider.generateJwtToken(loginId, employee.getAuthorityId());
+        int exprTime = jwtProvider.getExpiration();
 
-        EmployeeResponseDto reeponse = EmployeeResponseDto.builder()
+        EmployeeResponseDto response = EmployeeResponseDto.builder()
             .employeeId(employee.getEmployeeId())
             .employeeName(employee.getName())
             .employeeNumber(employee.getEmployeeNumber())
@@ -192,7 +190,7 @@ public class AuthServiceImpl implements AuthService {
         responseDto = EmployeeSignInResponseDto.builder()
             .token(token)
             .exprTime(exprTime)
-            .employee(reeponse)
+            .employee(response)
             .build();
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, responseDto);

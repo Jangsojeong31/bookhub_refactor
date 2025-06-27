@@ -28,14 +28,11 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
 public class MailServiceImpl implements MailService {
     private final JavaMailSender mailSender;
-    private final Map<String, String> verificationTokens = new ConcurrentHashMap<>();
     private final JwtProvider jwtProvider;
     private final EmployeeRepository employeeRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -214,8 +211,6 @@ public class MailServiceImpl implements MailService {
             String encodePassword = bCryptPasswordEncoder.encode(password);
             employee.setPassword(encodePassword);
             employeeRepository.save(employee);
-
-            verificationTokens.remove(token);
 
             return ResponseEntity.status(HttpStatus.OK)
                 .body(ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, "비밀번호가 변경되었습니다."));
