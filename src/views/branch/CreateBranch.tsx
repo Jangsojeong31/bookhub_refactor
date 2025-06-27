@@ -61,17 +61,18 @@ function CreateBranch() {
     const response = await branchSearchRequest(searchForm, token);
     const { code, message, data } = response;
 
+    setCurrentPage(0);
     if (code === "SU" && data) {
       setBranchList(data);
     } else {
       setBranchList([]);
-      setCurrentPage(1);
     }
   };
 
   const onResetClick = () => {
     setSearchForm({ branchLocation: "" });
     setBranchList([]);
+    setCurrentPage(0);
   };
 
   const paginatedBranchList = branchList.slice(
@@ -132,7 +133,9 @@ function CreateBranch() {
           onChange={onCreateInputChange}
           className="de-input"
         />
-        <button onClick={onCreateClick} className="de-button">등록</button>
+        <button onClick={onCreateClick} className="de-button">
+          등록
+        </button>
       </div>
     </>
   );
@@ -175,7 +178,10 @@ function CreateBranch() {
           onChange={onUpdateInputChange}
           className="de-input"
         />
-        <button onClick={() => onUpdateClick(branchDetail.branchId)} className="de-button">
+        <button
+          onClick={() => onUpdateClick(branchDetail.branchId)}
+          className="de-button"
+        >
           수정
         </button>
       </div>
@@ -251,7 +257,12 @@ function CreateBranch() {
               <td>{branch.branchLocation}</td>
               <td>{new Date(branch.createdAt).toLocaleString()}</td>
               <td>
-                <button onClick={() => onOpenUpdateModal(branch)}  className="approval-button">수정</button>
+                <button
+                  onClick={() => onOpenUpdateModal(branch)}
+                  className="approval-button"
+                >
+                  수정
+                </button>
               </td>
             </tr>
           ))}

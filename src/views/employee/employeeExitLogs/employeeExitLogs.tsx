@@ -51,6 +51,8 @@ function EmployeeExitLogs() {
     } else {
       setEmployeeExitLogs([]);
     }
+
+    setCurrentPage(0);
   };
 
   const onResetClick = () => {
@@ -63,7 +65,7 @@ function EmployeeExitLogs() {
     });
 
     setEmployeeExitLogs([]);
-    setCurrentPage(1);
+    setCurrentPage(0);
   };
 
   const paginatedEmployeeExitLogs = employeeExitLogs.slice(

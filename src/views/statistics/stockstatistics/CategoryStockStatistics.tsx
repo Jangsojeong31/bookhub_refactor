@@ -146,7 +146,7 @@ function CategoryStockStatistics() {
       </div>
       <div
         style={{
-          width: "1500px",
+          width: "100%",
           height: "700px",
           display: "flex",
           flexDirection: "column",

@@ -1,6 +1,6 @@
 import { employeeSignUpApprovalSearchRequest } from "@/apis/employeeSignUpApprovals/employeeSignUpApprovals";
 import { EmployeeSignUpApprovalsResponseDto } from "@/dtos/employee/response/employee-sign-up-approvals.response.dto";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import "@/styles/employee/employeeSelect.css";
 
@@ -61,6 +61,8 @@ function EmployeeSignUpApprovalsSearch() {
     } else {
       setEmployeeApprovalList([]);
     }
+
+    setCurrentPage(0);
   };
 
   const onResetClick = () => {
@@ -74,7 +76,7 @@ function EmployeeSignUpApprovalsSearch() {
     });
 
     setEmployeeApprovalList([]);
-    setCurrentPage(1);
+    setCurrentPage(0);
   };
 
   const paginatedEmployeeApprovalList = employeeApprovalList.slice(

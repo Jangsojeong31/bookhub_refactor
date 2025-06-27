@@ -48,6 +48,7 @@ function EmployeeChangeLogsSearch() {
     } else {
       setEmployeeChangeLogs([]);
     }
+    setCurrentPage(0);
   };
 
   const onResetClcik = () => {
@@ -59,7 +60,7 @@ function EmployeeChangeLogsSearch() {
       endUpdatedAt: "",
     });
     setEmployeeChangeLogs([]);
-    setCurrentPage(1);
+    setCurrentPage(0);
   };
 
   const paginatedEmployeeChangeLogList = employeeChangeLogs.slice(
