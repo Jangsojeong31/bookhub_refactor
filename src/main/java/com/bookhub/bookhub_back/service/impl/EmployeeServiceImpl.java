@@ -181,7 +181,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Long prePositionId = employee.getPositionId().getPositionId();
         Long preAuthorityId = employee.getAuthorityId().getAuthorityId();
 
-        if (dto.getBranchId() != null && !dto.getBranchId().equals(preBranchId)) {
+        if (dto.getBranchId() != 0 && !dto.getBranchId().equals(preBranchId)) {
             employee.setBranchId(branchRepository.findById(dto.getBranchId())
                 .orElseThrow(() -> new IllegalArgumentException("지점 정보가 정확하지 않습니다.")));
 
@@ -196,16 +196,18 @@ public class EmployeeServiceImpl implements EmployeeService {
             employeeChangeLogRepository.save(employeeChangeLog);
 
             alertService.createAlert(AlertCreateRequestDto.builder()
-                    .employeeId(employee.getEmployeeId())
-                    .alertType(String.valueOf(AlertType.CHANGE_BRANCH_SUCCESS))
-                    .alertTargetTable("EMPLOYEES")
-                    .targetPk(employee.getEmployeeId())
-                    .message("지점이 [" + employee.getBranchId().getBranchName() + "]로 변경되었습니다.")
-                    .build()
+                .employeeId(employee.getEmployeeId())
+                .alertType(String.valueOf(AlertType.CHANGE_BRANCH_SUCCESS))
+                .alertTargetTable("EMPLOYEES")
+                .targetPk(employee.getEmployeeId())
+                .message("지점이 [" + employee.getBranchId().getBranchName() + "]로 변경되었습니다.")
+                .build()
             );
+        } else {
+            return ResponseDto.fail(ResponseCode.INVALID_INPUT_BRANCH, ResponseMessageKorean.INVALID_INPUT_BRANCH);
         }
 
-        if (dto.getPositionId() != null && !dto.getPositionId().equals(prePositionId)) {
+        if (dto.getPositionId() != 0 && !dto.getPositionId().equals(prePositionId)) {
             employee.setPositionId(positionRepository.findById(dto.getPositionId())
                 .orElseThrow(() -> new IllegalArgumentException("직급 정보가 정확하지 않습니다.")));
 
@@ -220,16 +222,18 @@ public class EmployeeServiceImpl implements EmployeeService {
             employeeChangeLogRepository.save(employeeChangeLog);
 
             alertService.createAlert(AlertCreateRequestDto.builder()
-                    .employeeId(employee.getEmployeeId())
-                    .alertType(String.valueOf(AlertType.CHANGE_POSITION_SUCCESS))
-                    .alertTargetTable("EMPLOYEES")
-                    .targetPk(employee.getEmployeeId())
-                    .message("직급이 [" + employee.getPositionId().getPositionName() + "]로 변경되었습니다.")
-                    .build()
+                .employeeId(employee.getEmployeeId())
+                .alertType(String.valueOf(AlertType.CHANGE_POSITION_SUCCESS))
+                .alertTargetTable("EMPLOYEES")
+                .targetPk(employee.getEmployeeId())
+                .message("직급이 [" + employee.getPositionId().getPositionName() + "]로 변경되었습니다.")
+                .build()
             );
+        } else {
+            return ResponseDto.fail(ResponseCode.INVALID_INPUT_POSITION, ResponseMessageKorean.INVALID_INPUT_POSITION);
         }
 
-        if (dto.getAuthorityId() != null && !dto.getAuthorityId().equals(preAuthorityId)) {
+        if (dto.getAuthorityId() != 0 && !dto.getAuthorityId().equals(preAuthorityId)) {
             employee.setAuthorityId(authorityRepository.findById(dto.getAuthorityId())
                 .orElseThrow(() -> new IllegalArgumentException("권한 정보가 정확하지 않습니다.")));
 
@@ -244,13 +248,15 @@ public class EmployeeServiceImpl implements EmployeeService {
             employeeChangeLogRepository.save(employeeChangeLog);
 
             alertService.createAlert(AlertCreateRequestDto.builder()
-                    .employeeId(employee.getEmployeeId())
-                    .alertType(String.valueOf(AlertType.CHANGE_PERMISSION_SUCCESS))
-                    .alertTargetTable("EMPLOYEES")
-                    .targetPk(employee.getEmployeeId())
-                    .message("권한이 [" + employee.getAuthorityId().getAuthorityName() + "]로 변경되었습니다.")
-                    .build()
+                .employeeId(employee.getEmployeeId())
+                .alertType(String.valueOf(AlertType.CHANGE_PERMISSION_SUCCESS))
+                .alertTargetTable("EMPLOYEES")
+                .targetPk(employee.getEmployeeId())
+                .message("권한이 [" + employee.getAuthorityId().getAuthorityName() + "]로 변경되었습니다.")
+                .build()
             );
+        } else {
+            return ResponseDto.fail(ResponseCode.INVALID_INPUT_AUTHORITY, ResponseMessageKorean.INVALID_INPUT_AUTHORITY);
         }
 
         employeeRepository.save(employee);
