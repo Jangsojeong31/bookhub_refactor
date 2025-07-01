@@ -20,6 +20,9 @@ public interface ResponseCode {
     // 유효성 검사 관련
     String VALIDATION_FAIL = "VF"; // Validation failed
     String INVALID_INPUT = "IV"; // Invalid input
+    String INVALID_INPUT_BRANCH = "IVB"; // Invalid input
+    String INVALID_INPUT_POSITION = "IVP"; // Invalid input
+    String INVALID_INPUT_AUTHORITY = "IVA"; // Invalid input
     String REQUIRED_FIELD_MISSING = "RM"; // 필수값 누락
     String FORMAT_ERROR = "FE"; // 형식 오류
 

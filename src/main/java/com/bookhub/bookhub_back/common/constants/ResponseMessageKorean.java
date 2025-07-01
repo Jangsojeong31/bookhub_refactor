@@ -21,6 +21,9 @@ public interface ResponseMessageKorean {
     // 유효성 검사
     String VALIDATION_FAIL = "입력값이 유효하지 않습니다.";
     String INVALID_INPUT = "잘못된 입력값입니다.";
+    String INVALID_INPUT_BRANCH = "잘못된 입력값입니다.";
+    String INVALID_INPUT_POSITION = "잘못된 입력값입니다.";
+    String INVALID_INPUT_AUTHORITY = "잘못된 입력값입니다.";
     String REQUIRED_FIELD_MISSING = "필수 입력값이 누락되었습니다.";
     String FORMAT_ERROR = "입력 형식이 올바르지 않습니다.";
 
