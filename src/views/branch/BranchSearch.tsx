@@ -1,6 +1,5 @@
 import { branchSearchRequest } from "@/apis/branch/branch";
 import { BranchSearchResponseDto } from "@/dtos/branch/response/branch-search.respnse.dto";
-import { tr } from "date-fns/locale";
 import React, { useState } from "react";
 import { useCookies } from "react-cookie";
 
@@ -11,6 +10,7 @@ function BranchSearch() {
   const token = cookies.accessToken;
   const [searchForm, setSearchForm] = useState({ branchLocation: "" });
   const [branchList, setBranchList] = useState<BranchSearchResponseDto[]>([]);
+  const [message, setMessage] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const totalPages = Math.ceil(branchList.length / ITEMS_PAGE);
 
@@ -32,8 +32,10 @@ function BranchSearch() {
 
     if (code === "SU" && data) {
       setBranchList(data);
+      setMessage("");
     } else {
       setBranchList([]);
+      setMessage(message);
     }
 
     setCurrentPage(0);
@@ -42,6 +44,7 @@ function BranchSearch() {
   const onResetClick = () => {
     setSearchForm({ branchLocation: "" });
     setBranchList([]);
+    setMessage("");
     setCurrentPage(0);
   };
 
@@ -49,6 +52,11 @@ function BranchSearch() {
     currentPage * ITEMS_PAGE,
     (currentPage + 1) * ITEMS_PAGE
   );
+
+  const pagesPerGroup = 5;
+  const currentGroup = Math.floor(currentPage / pagesPerGroup);
+  const startPage = currentGroup * pagesPerGroup;
+  const endPage = Math.min(startPage + pagesPerGroup, totalPages);
 
   const goToPage = (page: number) => {
     if (page >= 0 && page < totalPages) {
@@ -80,6 +88,7 @@ function BranchSearch() {
           <button onClick={onResetClick}>최기화</button>
         </div>
       </div>
+      {message && <p>{message}</p>}
       <table>
         <thead>
           <tr>
@@ -107,7 +116,10 @@ function BranchSearch() {
           >
             {"<"}
           </button>
-          {Array.from({ length: totalPages }, (_, i) => i).map((i) => (
+          {Array.from(
+            { length: endPage - startPage },
+            (_, i) => startPage + i
+          ).map((i) => (
             <button
               key={i}
               className={`pageBtn${i === currentPage ? " current" : ""}`}

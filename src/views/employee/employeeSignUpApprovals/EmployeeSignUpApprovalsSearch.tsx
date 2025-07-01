@@ -1,6 +1,6 @@
 import { employeeSignUpApprovalSearchRequest } from "@/apis/employeeSignUpApprovals/employeeSignUpApprovals";
 import { EmployeeSignUpApprovalsResponseDto } from "@/dtos/employee/response/employee-sign-up-approvals.response.dto";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useCookies } from "react-cookie";
 import "@/styles/employee/employeeSelect.css";
 
@@ -24,10 +24,10 @@ function EmployeeSignUpApprovalsSearch() {
     startUpdatedAt: "",
     endUpdatedAt: "",
   });
-
   const [employeeApprovalList, setEmployeeApprovalList] = useState<
     EmployeeSignUpApprovalsResponseDto[]
   >([]);
+  const [message, setMessage] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const totalPages = Math.ceil(employeeApprovalList.length / ITEMS_PER_PAGE);
 
@@ -58,8 +58,10 @@ function EmployeeSignUpApprovalsSearch() {
 
     if (code === "SU" && data) {
       setEmployeeApprovalList(data);
+      setMessage("");
     } else {
       setEmployeeApprovalList([]);
+      setMessage(message);
     }
 
     setCurrentPage(0);
@@ -74,7 +76,7 @@ function EmployeeSignUpApprovalsSearch() {
       startUpdatedAt: "",
       endUpdatedAt: "",
     });
-
+    setMessage("");
     setEmployeeApprovalList([]);
     setCurrentPage(0);
   };
@@ -83,6 +85,11 @@ function EmployeeSignUpApprovalsSearch() {
     currentPage * ITEMS_PER_PAGE,
     (currentPage + 1) * ITEMS_PER_PAGE
   );
+
+  const pagesPerGroup = 5;
+  const currentGroup = Math.floor(currentPage / pagesPerGroup);
+  const startPage = currentGroup * pagesPerGroup;
+  const endPage = Math.min(startPage + pagesPerGroup, totalPages);
 
   const goToPage = (page: number) => {
     if (page >= 0 && page < totalPages) {
@@ -164,6 +171,7 @@ function EmployeeSignUpApprovalsSearch() {
           </div>
         </div>
       </div>
+      {message && <p>{message}</p>}
       <table>
         <thead>
           <tr>
@@ -223,7 +231,10 @@ function EmployeeSignUpApprovalsSearch() {
           >
             {"<"}
           </button>
-          {Array.from({ length: totalPages }, (_, i) => i).map((i) => (
+          {Array.from(
+            { length: endPage - startPage },
+            (_, i) => startPage + i
+          ).map((i) => (
             <button
               key={i}
               className={`pageBtn${i === currentPage ? " current" : ""}`}

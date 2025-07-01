@@ -32,11 +32,8 @@ function EmployeeChange() {
     authorityName: "",
     status: "",
   });
-
-  const [currentPage, setCurrentPage] = useState(0);
   const [cookies] = useCookies(["accessToken"]);
   const token = cookies.accessToken;
-
   const [employeeList, setEmployeeList] = useState<EmployeeListResponseDto[]>(
     []
   );
@@ -62,18 +59,16 @@ function EmployeeChange() {
     status: "EMPLOYED",
     createdAt: new Date(),
   });
-
   const [form, setForm] = useState({
     branchId: 0,
     positionId: 0,
     authorityId: 0,
   });
-
   const [exit, setExit] = useState({
     status: "EMPLOYED",
     exitReason: "",
   });
-
+  const [currentPage, setCurrentPage] = useState(0);
   const totalPages = Math.ceil(employeeList.length / ITEMS_PER_PAGE);
 
   useEffect(() => {
@@ -137,6 +132,7 @@ function EmployeeChange() {
 
     if (code === "SU" && data) {
       setEmployeeList(data);
+      setMessage("");
     } else {
       setEmployeeList([]);
       setMessage(message);
@@ -168,7 +164,7 @@ function EmployeeChange() {
         authorityId: data.authorityId,
       });
     } else {
-      setMessage(message);
+      alert(message);
       return;
     }
 
@@ -195,7 +191,7 @@ function EmployeeChange() {
       setEmployee(data);
       setExit({ status: data.status, exitReason: "" });
     } else {
-      setMessage(message);
+      alert(message);
       return;
     }
 
@@ -272,6 +268,11 @@ function EmployeeChange() {
     setEmployeeList([]);
     setCurrentPage(0);
   };
+
+  const pagesPerGroup = 5;
+  const currentGroup = Math.floor(currentPage / pagesPerGroup);
+  const startPage = currentGroup * pagesPerGroup;
+  const endPage = Math.min(startPage + pagesPerGroup, totalPages);
 
   const goToPage = (page: number) => {
     if (page >= 0 && page < totalPages) {
@@ -519,27 +520,6 @@ function EmployeeChange() {
             ))}
           </tbody>
         </table>
-        {totalPages > 1 && (
-          <div style={{ marginTop: "20px" }}>
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-            >
-              이전
-            </button>
-            <span style={{ margin: "0 10px" }}>
-              {currentPage} / {totalPages}
-            </span>
-            <button
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
-              disabled={currentPage === totalPages}
-            >
-              다음
-            </button>
-          </div>
-        )}
         {employeeList.length > 0 && (
           <div className="footer">
             <button
@@ -549,7 +529,10 @@ function EmployeeChange() {
             >
               {"<"}
             </button>
-            {Array.from({ length: totalPages }, (_, i) => i).map((i) => (
+            {Array.from(
+              { length: endPage - startPage },
+              (_, i) => startPage + i
+            ).map((i) => (
               <button
                 key={i}
                 className={`pageBtn${i === currentPage ? " current" : ""}`}

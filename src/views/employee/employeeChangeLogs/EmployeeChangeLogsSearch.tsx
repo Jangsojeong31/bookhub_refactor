@@ -20,12 +20,14 @@ function EmployeeChangeLogsSearch() {
     startUpdatedAt: "",
     endUpdatedAt: "",
   });
-  const [employeeChangeLogs, setEmployeeChangeLogs] = useState<
-    EmployeeChangeLogsResponseDto[]
-  >([]);
-
+  const [employeeChangeLogs, setEmployeeChangeLogs] = useState<EmployeeChangeLogsResponseDto[]>([]);
+  const [message, setMessage] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const totalPages = Math.ceil(employeeChangeLogs.length / ITEMS_PER_PAGE);
+  const pagesPerGroup = 5;
+  const currentGroup = Math.floor(currentPage / pagesPerGroup);
+  const startPage = currentGroup * pagesPerGroup;
+  const endPage = Math.min(startPage + pagesPerGroup, totalPages);
 
   const onInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -45,8 +47,10 @@ function EmployeeChangeLogsSearch() {
 
     if (code === "SU" && data) {
       setEmployeeChangeLogs(data);
+      setMessage("");
     } else {
       setEmployeeChangeLogs([]);
+      setMessage(message);
     }
     setCurrentPage(0);
   };
@@ -59,6 +63,7 @@ function EmployeeChangeLogsSearch() {
       startUpdatedAt: "",
       endUpdatedAt: "",
     });
+    setMessage("");
     setEmployeeChangeLogs([]);
     setCurrentPage(0);
   };
@@ -132,6 +137,7 @@ function EmployeeChangeLogsSearch() {
           </div>
         </div>
       </div>
+      {message && <p>{message}</p>}
       <table>
         <thead>
           <tr>
@@ -190,7 +196,7 @@ function EmployeeChangeLogsSearch() {
           >
             {"<"}
           </button>
-          {Array.from({ length: totalPages }, (_, i) => i).map((i) => (
+          {Array.from({ length: endPage - startPage }, (_, i) => startPage + i).map((i) => (
             <button
               key={i}
               className={`pageBtn${i === currentPage ? " current" : ""}`}

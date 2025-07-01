@@ -16,6 +16,9 @@ function CreateBranch() {
   const token = cookies.accessToken;
   const [searchForm, setSearchForm] = useState({ branchLocation: "" });
   const [branchList, setBranchList] = useState<BranchSearchResponseDto[]>([]);
+  const [message, setMessage] = useState("");
+  const [createErrorMessage, setCreateErrorMessage] = useState("");
+  const [updateErrorMessage, setUpdateErrorMessage] = useState("");
   const [branchDetail, setBranchDetail] = useState({
     branchId: 0,
     branchName: "",
@@ -61,17 +64,20 @@ function CreateBranch() {
     const response = await branchSearchRequest(searchForm, token);
     const { code, message, data } = response;
 
-    setCurrentPage(0);
     if (code === "SU" && data) {
       setBranchList(data);
+      setMessage("");
     } else {
       setBranchList([]);
+      setMessage(message);
     }
+    setCurrentPage(0);
   };
 
   const onResetClick = () => {
     setSearchForm({ branchLocation: "" });
     setBranchList([]);
+    setMessage("");
     setCurrentPage(0);
   };
 
@@ -106,11 +112,12 @@ function CreateBranch() {
     if (code === "SU") {
       alert("지점이 등록되었습니다.");
     } else {
-      alert(message);
+      setCreateErrorMessage(message);
       return;
     }
 
     setModalStatus(false);
+    onSearchClick();
   };
 
   const modalContent = (
@@ -133,6 +140,7 @@ function CreateBranch() {
           onChange={onCreateInputChange}
           className="de-input"
         />
+        {createErrorMessage && <p>{createErrorMessage}</p>}
         <button onClick={onCreateClick} className="de-button">
           등록
         </button>
@@ -178,6 +186,7 @@ function CreateBranch() {
           onChange={onUpdateInputChange}
           className="de-input"
         />
+        {updateErrorMessage && <p>{updateErrorMessage}</p>}
         <button
           onClick={() => onUpdateClick(branchDetail.branchId)}
           className="de-button"
@@ -200,13 +209,18 @@ function CreateBranch() {
     if (code === "SU") {
       alert("지점이 수정되었습니다.");
     } else {
-      alert(message);
+      setUpdateErrorMessage(message);
       return;
     }
 
     setModalUpdateStatus(false);
     onSearchClick();
   };
+
+  const pagesPerGroup = 5;
+  const currentGroup = Math.floor(currentPage / pagesPerGroup);
+  const startPage = currentGroup * pagesPerGroup;
+  const endPage = Math.min(startPage + pagesPerGroup, totalPages);
 
   const goToPage = (page: number) => {
     if (page >= 0 && page < totalPages) {
@@ -236,11 +250,10 @@ function CreateBranch() {
         <div className="search-button">
           <button onClick={onSearchClick}>검색</button>
           <button onClick={onResetClick}>최기화</button>
-          <button style={{ float: "right" }} onClick={onOpenCreateModal}>
-            등록
-          </button>
+          <button onClick={onOpenCreateModal}>등록</button>
         </div>
       </div>
+      {message && <p>{message}</p>}
       <table>
         <thead>
           <tr>
@@ -277,7 +290,10 @@ function CreateBranch() {
           >
             {"<"}
           </button>
-          {Array.from({ length: totalPages }, (_, i) => i).map((i) => (
+          {Array.from(
+            { length: endPage - startPage },
+            (_, i) => startPage + i
+          ).map((i) => (
             <button
               key={i}
               className={`pageBtn${i === currentPage ? " current" : ""}`}
