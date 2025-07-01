@@ -23,12 +23,14 @@ function EmployeeExitLogs() {
     endUpdatedAt: "",
   });
 
-  const [employeeExitLogs, setEmployeeExitLogs] = useState<
-    EmployeeExitLogsResponseDto[]
-  >([]);
-
+  const [employeeExitLogs, setEmployeeExitLogs] = useState<EmployeeExitLogsResponseDto[]>([]);
+  const [message, setMessage] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const totalPages = Math.ceil(employeeExitLogs.length / ITEMS_PAGE);
+  const pagesPerGroup = 5;
+  const currentGroup = Math.floor(currentPage / pagesPerGroup);
+  const startPage = currentGroup * pagesPerGroup;
+  const endPage = Math.min(startPage + pagesPerGroup, totalPages);
 
   const onInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -48,8 +50,10 @@ function EmployeeExitLogs() {
 
     if (code === "SU" && data) {
       setEmployeeExitLogs(data);
+      setMessage("");
     } else {
       setEmployeeExitLogs([]);
+      setMessage(message);
     }
 
     setCurrentPage(0);
@@ -140,6 +144,7 @@ function EmployeeExitLogs() {
           </div>
         </div>
       </div>
+      {message && <p>{message}</p>}
       <table>
         <thead>
           <tr>
@@ -186,7 +191,7 @@ function EmployeeExitLogs() {
           >
             {"<"}
           </button>
-          {Array.from({ length: totalPages }, (_, i) => i).map((i) => (
+          {Array.from({ length: endPage - startPage }, (_, i) => startPage + i).map((i) => (
             <button
               key={i}
               className={`pageBtn${i === currentPage ? " current" : ""}`}

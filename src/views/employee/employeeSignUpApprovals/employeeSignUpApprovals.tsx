@@ -13,11 +13,10 @@ import "@/styles/employee/employeeSelect.css";
 const ITEMS_PER_PAGE = 10;
 
 function EmployeeSignUpApprovals() {
-  const [employeeList, setEmployeeList] = useState<
-    EmployeeSignUpListResponseDto[]
-  >([]);
+  const [employeeList, setEmployeeList] = useState<EmployeeSignUpListResponseDto[]>([]);
   const [employee, setEmployee] = useState({ employeeId: 0, approvalId: 0 });
   const [message, setMessage] = useState("");
+  const [deniedErrorMessage, setDeniedErrorMessage] = useState("");
 
   const [cookies] = useCookies(["accessToken"]);
   const token = cookies.accessToken;
@@ -28,6 +27,10 @@ function EmployeeSignUpApprovals() {
 
   const [currentPage, setCurrentPage] = useState(0);
   const totalPages = Math.ceil(employeeList.length / ITEMS_PER_PAGE);
+  const pagesPerGroup = 5;
+  const currentGroup = Math.floor(currentPage / pagesPerGroup);
+  const startPage = currentGroup * pagesPerGroup;
+  const endPage = Math.min(startPage + pagesPerGroup, totalPages);
 
   const goToPage = (page: number) => {
     if (page >= 0 && page < totalPages) {
@@ -65,7 +68,7 @@ function EmployeeSignUpApprovals() {
 
     if (code === "SU" && data) {
       setEmployeeList(data);
-      setMessage(message);
+      setMessage("");
     } else {
       setEmployeeList([]);
       setMessage(message);
@@ -82,6 +85,11 @@ function EmployeeSignUpApprovals() {
   );
 
   const onOpenModalClick = async (employee: EmployeeSignUpListResponseDto) => {
+    if (!token) {
+      alert("인증 토큰이 없습니다.");
+      return;
+    }
+
     setEmployee({
       employeeId: employee.employeeId,
       approvalId: employee.approvalId,
@@ -92,6 +100,7 @@ function EmployeeSignUpApprovals() {
   const onApprovedClick = async (employee: EmployeeSignUpListResponseDto) => {
     if (!token) {
       setMessage("인증 토큰이 없습니다.");
+      return;
     }
 
     const response = await employeeSignUpApprovalRequest(
@@ -115,11 +124,11 @@ function EmployeeSignUpApprovals() {
 
   const onSubmitClick = async () => {
     if (!token) {
-      setMessage("인증 토큰이 없습니다.");
+      alert("인증 토큰이 없습니다.");
     }
 
     if (!deniedReason) {
-      setMessage("거절 사유를 선택하세요");
+      setDeniedErrorMessage("거절 사유를 선택하세요");
       return;
     }
 
@@ -160,6 +169,7 @@ function EmployeeSignUpApprovals() {
           </option>
           <option value="PENDING_RESIGNATION">퇴사 예정자</option>
         </select>
+        {deniedErrorMessage && <p>{deniedErrorMessage}</p>}
         <button onClick={onSubmitClick} className="de-button">
           확인
         </button>
@@ -170,6 +180,7 @@ function EmployeeSignUpApprovals() {
   return (
     <div>
       <h2>로그인 승인</h2>
+      {message && <p>{message}</p>}
       <table>
         <thead>
           <tr>
@@ -225,7 +236,7 @@ function EmployeeSignUpApprovals() {
           >
             {"<"}
           </button>
-          {Array.from({ length: totalPages }, (_, i) => i).map((i) => (
+          {Array.from({ length: endPage - startPage }, (_, i) => startPage + i).map((i) => (
             <button
               key={i}
               className={`pageBtn${i === currentPage ? " current" : ""}`}

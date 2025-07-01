@@ -1,4 +1,4 @@
-import { GET_BRANCH_URL } from "@/apis";
+import { GET_ALL_AUTHORITY_URL, GET_ALL_POSITION_URL, GET_BRANCH_URL } from "@/apis";
 import Modal from "@/apis/constants/Modal";
 import {
   employeeDetailRequest,
@@ -10,17 +10,12 @@ import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import "@/styles/employee/employeeSelect.css";
 import "@/styles/employee/employeemodal.css";
+import { Branch } from "@/dtos/branch/branch";
+import { Position } from "@/dtos/position/position";
+import { Authority } from "@/dtos/authority/authority";
 
-const positionOptions = ["사원", "대리", "과장", "부장", "점장"];
-const authorityOptions = ["STAFF", "MANAGER", "ADMIN"];
 const statusOptions = ["EMPLOYED", "EXITED"];
 const ITEMS_PER_PAGE = 10;
-
-interface Branch {
-  branchId: number;
-  branchName: string;
-  branchLocation: string;
-}
 
 function EmployeeSearch() {
   const [searchForm, setSearchForm] = useState({
@@ -33,15 +28,14 @@ function EmployeeSearch() {
 
   const [currentPage, setCurrentPage] = useState(0);
   const [cookies] = useCookies(["accessToken"]);
-  const [employeeList, setEmployeeList] = useState<EmployeeListResponseDto[]>(
-    []
-  );
+  const token = cookies.accessToken;
+  const [employeeList, setEmployeeList] = useState<EmployeeListResponseDto[]>([]);
   const [message, setMessage] = useState("");
   const [branches, setBranches] = useState<Branch[]>([]);
+  const [positions, setPositions] = useState<Position[]>([]);
+  const [authorities, setAuthorities] = useState<Authority[]>([]);
   const [modalStatus, setModalStatus] = useState(false);
   const [employee, setEmployee] = useState<EmployeeDetailResponseDto>();
-
-  const totalPages = Math.ceil(employeeList.length / ITEMS_PER_PAGE);
 
   useEffect(() => {
     fetch(`${GET_BRANCH_URL}?branchLocation`, {
@@ -50,6 +44,24 @@ function EmployeeSearch() {
       .then((res) => res.json())
       .then((data) => {
         setBranches(data.data);
+      })
+      .catch((e) => console.error(e));
+
+    fetch(`${GET_ALL_POSITION_URL}`, {
+      method: "GET",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setPositions(data.data);
+      })
+      .catch((e) => console.error(e));
+    
+    fetch(`${GET_ALL_AUTHORITY_URL}`, {
+      method: "GET",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setAuthorities(data.data);
       })
       .catch((e) => console.error(e));
   }, []);
@@ -62,8 +74,6 @@ function EmployeeSearch() {
   };
 
   const onSearchClick = async () => {
-    const token = cookies.accessToken;
-
     if (!token) {
       alert("인증 토큰이 없습니다.");
       return;
@@ -96,14 +106,12 @@ function EmployeeSearch() {
       authorityName: "",
       status: "",
     });
-
+    setMessage("");
     setEmployeeList([]);
     setCurrentPage(0);
   };
 
   const onOpenModalClick = async (employee: EmployeeListResponseDto) => {
-    const token = cookies.accessToken;
-
     if (!token) {
       alert("인증 토큰이 없습니다.");
       return;
@@ -115,12 +123,18 @@ function EmployeeSearch() {
     if (code === "SU") {
       setEmployee(data);
     } else {
-      setMessage(message);
+      alert(message);
       return;
     }
 
     setModalStatus(true);
   };
+  
+  const totalPages = Math.ceil(employeeList.length / ITEMS_PER_PAGE);
+  const pagesPerGroup = 5;
+  const currentGroup = Math.floor(currentPage / pagesPerGroup);
+  const startPage = currentGroup * pagesPerGroup;
+  const endPage = Math.min(startPage + pagesPerGroup, totalPages);
 
   const goToPage = (page: number) => {
     if (page >= 0 && page < totalPages) {
@@ -226,9 +240,9 @@ function EmployeeSearch() {
             onChange={onInputChange}
           >
             <option value="">직급 선택</option>
-            {positionOptions.map((p) => (
-              <option key={p} value={p}>
-                {p}
+            {positions.map((p) => (
+              <option key={p.positionName} value={p.positionName}>
+                {p.positionName}
               </option>
             ))}
           </select>
@@ -239,9 +253,9 @@ function EmployeeSearch() {
             onChange={onInputChange}
           >
             <option value="">권한 선택</option>
-            {authorityOptions.map((a) => (
-              <option key={a} value={a}>
-                {a}
+            {authorities.map((a) => (
+              <option key={a.authorityName} value={a.authorityName}>
+                {a.authorityName}
               </option>
             ))}
           </select>
@@ -316,7 +330,7 @@ function EmployeeSearch() {
           >
             {"<"}
           </button>
-          {Array.from({ length: totalPages }, (_, i) => i).map((i) => (
+          {Array.from({ length: endPage - startPage }, (_, i) => startPage + i).map((i) => (
             <button
               key={i}
               className={`pageBtn${i === currentPage ? " current" : ""}`}
