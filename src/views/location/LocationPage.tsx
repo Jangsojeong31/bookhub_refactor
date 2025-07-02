@@ -1,108 +1,190 @@
-import { getLocations, deleteLocation } from "@/apis/location/location";
-import { LocationResponseDto } from "@/dtos/location/location.dto";
+// 📁 src/views/location/LocationPage.tsx
+import { getLocations, deleteLocation, getLocationDetail } from "@/apis/location/location";
+import { LocationDetailResponseDto } from "@/dtos/location/location.dto";
+import { PageResponseDto } from "@/dtos/page-response.dto";
 import { useEmployeeStore } from "@/stores/employee.store";
 import { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { CreateLocation } from "./CreateLocation";
-import { LocationTable } from "./LocationTable";
 import { UpdateLocation } from "./UpdateLocation";
+
+const PAGE_SIZE = 10;
 
 export default function LocationPage() {
   const [cookies] = useCookies(["accessToken"]);
+  const accessToken = cookies.accessToken;
   const branchId = useEmployeeStore((state) => state.employee?.branchId);
-  const [data, setData] = useState<LocationResponseDto[]>([]);
-  const [keyword, setKeyword] = useState("");
-  const [createOpen, setCreateOpen] = useState(false);
-  const [updateOpen, setUpdateOpen] = useState(false);
-  const [detailOpen, setDetailOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  const employee = useEmployeeStore((state) => state.employee);
 
-  // 지점별 진열 위치 조회
-  const fetchData = async () => {
-    if (!branchId) return;
-    const res = await getLocations(cookies.accessToken, branchId, keyword);
-    if (res.data) setData(res.data);
+  const [bookTitle, setBookTitle] = useState<string>("");
+  const [isbn, setIsbn] = useState<string>("");
+
+  const [locations, setLocations] = useState<LocationDetailResponseDto[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+  const [selectedLocationId, setSelectedLocationId] = useState<number | null>(null);
+  const [selectedDetail, setSelectedDetail] = useState<LocationDetailResponseDto | null>(null);
+
+  const fetchPage = async (page: number) => {
+    if (!accessToken || branchId === undefined) return;
+    try {
+      const res = await getLocations(
+        accessToken,
+        page,
+        PAGE_SIZE,
+        bookTitle.trim() || undefined,
+        isbn?.trim() || undefined,
+        branchId
+      );
+      if (res.code === "SU" && res.data) {
+        setLocations(res.data.content);
+        setTotalPages(res.data.totalPages);
+        setCurrentPage(res.data.currentPage);
+      }
+    } catch (err) {
+      console.error("진열 위치 조회 오류:", err);
+    }
   };
 
   useEffect(() => {
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [branchId]);
+    fetchPage(0);
+  }, [bookTitle, isbn, accessToken, branchId]);
 
-  // 검색 핸들러
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    fetchData();
+  const goToPage = (page: number) => {
+    if (page < 0 || page >= totalPages) return;
+    fetchPage(page);
   };
 
-  // 삭제 핸들러
-  const handleDelete = async (id: number) => {
-    if (!branchId) return;
+  const handleDelete = async (locationId: number) => {
+    if (!accessToken || branchId === undefined) return;
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
-    await deleteLocation(id, cookies.accessToken, branchId);
-    fetchData();
+    try {
+      const res = await deleteLocation(locationId, accessToken, branchId);
+      if (res.code === "SU") {
+        const isLast = locations.length === 1 && currentPage > 0;
+        fetchPage(isLast ? currentPage - 1 : currentPage);
+      } else {
+        alert(res.message || "삭제 실패");
+      }
+    } catch (err) {
+      console.error("삭제 예외:", err);
+    }
+  };
+
+  const openUpdateModal = async (locationId: number) => {
+    if (!accessToken || branchId === undefined) return;
+    try {
+      const res = await getLocationDetail(accessToken, branchId, locationId);
+      if (res.code === "SU" && res.data) {
+        setSelectedLocationId(locationId);
+        setSelectedDetail(res.data);
+        setIsUpdateOpen(true);
+      } else {
+        alert(res.message || "상세 조회 실패");
+      }
+    } catch (err) {
+      console.error("상세 조회 오류:", err);
+    }
+  };
+
+  const handleUpdateClose = () => {
+    setIsUpdateOpen(false);
+    setSelectedLocationId(null);
+    setSelectedDetail(null);
+  };
+
+  const handleUpdated = () => {
+    handleUpdateClose();
+    fetchPage(currentPage);
   };
 
   return (
-    <section style={{ padding: "1rem" }}>
-      <h1>책 진열 위치 관리</h1>
+    <div className="location-page-container">
+      <div className="topBar">
+        <button onClick={() => setIsCreateOpen(true)} className="btn-primary">진열 위치 등록</button>
+      </div>
 
-      {/* 검색 + 등록 */}
-      <form onSubmit={handleSearch} style={{ marginBottom: "1rem" }}>
+      <div className="filters">
         <input
-          placeholder="책 제목 검색"
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-          style={{ marginRight: "0.5rem" }}
+          className="input-search"
+          type="text"
+          placeholder="도서 제목"
+          value={bookTitle}
+          onChange={(e) => setBookTitle(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && fetchPage(0)}
         />
-        <button type="submit" style={{ marginRight: "0.5rem" }}>
-          검색
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            if (
-              employee?.authorityName == "MANAGER" ||
-              employee?.authorityName == "ADMIN"
-            ) {
-              setCreateOpen(true);
-            } else {
-              alert("권한이 없습니다.");
-            }
-          }}
-        >
-          등록
-        </button>
-      </form>
+        <input
+          className="input-search"
+          type="text"
+          placeholder="ISBN"
+          value={isbn}
+          onChange={(e) => setIsbn(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && fetchPage(0)}
+        />
+        <button onClick={() => fetchPage(0)} className="btn-primary">검색</button>
+      </div>
 
-      {/* 목록 테이블 */}
-      <LocationTable
-        data={data}
-        onView={(id) => {
-          setSelectedId(id);
-          setDetailOpen(true);
-        }}
-        onEdit={(id) => {
-          setSelectedId(id);
-          setUpdateOpen(true);
-        }}
-        onDelete={handleDelete}
-      />
+      <table className="table-policy">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>도서 제목</th>
+            <th>ISBN</th>
+            <th>층</th>
+            <th>홀</th>
+            <th>섹션</th>
+            <th>진열 방식</th>
+    
+            <th>작업</th>
+          </tr>
+        </thead>
+        <tbody>
+          {locations.map((loc) => (
+            <tr key={loc.locationId}>
+              <td>{loc.locationId}</td>
+              <td>{loc.bookTitle}</td>
+              <td>{loc.floor} </td>
+              <td>{loc.hall} </td>
+              <td>{loc.section}</td>
+              <td>{loc.type}</td>
+    
+              <td>
+                <button onClick={() => openUpdateModal(loc.locationId)} className="modifyBtn">수정</button>
+                <button onClick={() => handleDelete(loc.locationId)} className="button">삭제</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
-      {/* 모달 컴포넌트들 */}
-      <CreateLocation
-        open={createOpen}
-        onClose={() => setCreateOpen(false)}
-        onSuccess={fetchData}
-      />
-      <UpdateLocation
-        locationId={selectedId}
-        open={updateOpen}
-        onClose={() => setUpdateOpen(false)}
-        onSuccess={fetchData}
-      />
- 
-    </section>
+      <div className="pagination">
+        <button className="btn-primary" disabled={currentPage === 0} onClick={() => goToPage(currentPage - 1)}>이전</button>
+        <span>{currentPage + 1} / {totalPages}</span>
+        <button className="btn-primary" disabled={currentPage + 1 >= totalPages} onClick={() => goToPage(currentPage + 1)}>다음</button>
+      </div>
+
+      {isCreateOpen && (
+        <CreateLocation
+          isOpen={isCreateOpen}
+          onClose={() => setIsCreateOpen(false)}
+          onSuccess={() => fetchPage(currentPage)}
+        />
+      )}
+
+      {isUpdateOpen && selectedLocationId != null && selectedDetail && (
+        <UpdateLocation
+          locationId={selectedLocationId}
+          open={isUpdateOpen}
+          onClose={handleUpdateClose}
+          onSuccess={async () => {
+  handleUpdateClose();
+  await fetchPage(currentPage);
+}}
+          //locationDetail={selectedDetail}
+        />
+      )}
+    </div>
   );
 }
