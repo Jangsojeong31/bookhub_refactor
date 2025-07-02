@@ -59,53 +59,55 @@ public class AlertServiceImpl implements AlertService {
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, responseDto);
     }
 
+//    @Override
+//    public ResponseDto<List<AlertResponseDto>> getAllAlert(Long employeeId, String token) {
+//        // 1. JWT에서 username 추출
+//        String tokenUsername = jwtProvider.getUsernameFromJwt(jwtProvider.removeBearer(token));
+//
+//        // 2. employeeId로 DB 조회
+//        Employee employee = employeeRepository.findById(employeeId)
+//                .orElseThrow(() -> new IllegalArgumentException(ResponseCode.NO_EXIST_USER_ID));
+//
+//        // 3. 해당 employee의 username과 비교
+//        if (!employee.getLoginId().equals(tokenUsername)) {
+//            return ResponseDto.fail(ResponseCode.NO_PERMISSION, "본인의 알림만 조회할 수 있습니다.");
+//        }
+//
+//        List<Alert> alerts = alertRepository.findByEmployeeId_EmployeeIdOrderByCreatedAtDesc(employeeId);
+//
+//        List<AlertResponseDto> result = alerts.stream()
+//                .map(alert -> AlertResponseDto.builder()
+//                        .alertId(alert.getAlertId())
+//                        .alertType(alert.getAlertType().name())
+//                        .message(alert.getMessage())
+//                        .alertTargetTable(alert.getAlertTargetTable().name())
+//                        .targetPk(alert.getTargetPk())
+//                        .targetIsbn(alert.getTargetIsbn())
+//                        .isRead(alert.getIsRead())
+//                        .createdAt(alert.getCreatedAt())
+//                        .build())
+//                .collect(Collectors.toList());
+//
+//        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, result);
+//    }
+
     @Override
-    public ResponseDto<List<AlertResponseDto>> getAllAlert(Long employeeId, String token) {
-        // 1. JWT에서 username 추출
-        String tokenUsername = jwtProvider.getUsernameFromJwt(jwtProvider.removeBearer(token));
+    public ResponseDto<List<AlertResponseDto>> getUnreadAlert(String loginId) {
+//        // 1. JWT에서 username 추출
+//        String tokenUsername = jwtProvider.getUsernameFromJwt(jwtProvider.removeBearer(token));
+//
+//        // 2. employeeId로 DB 조회
+//        Employee employee = employeeRepository.findById(employeeId)
+//                .orElseThrow(() -> new IllegalArgumentException(ResponseCode.NO_EXIST_USER_ID));
+//
+//        // 3. 해당 employee의 username과 비교
+//        if (!employee.getLoginId().equals(tokenUsername)) {
+//            return ResponseDto.fail(ResponseCode.NO_PERMISSION, "본인의 알림만 조회할 수 있습니다.");
+//        }
+        Employee employee = employeeRepository.findByLoginId(loginId)
+                .orElseThrow(IllegalArgumentException::new);
 
-        // 2. employeeId로 DB 조회
-        Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new IllegalArgumentException(ResponseCode.NO_EXIST_USER_ID));
-
-        // 3. 해당 employee의 username과 비교
-        if (!employee.getLoginId().equals(tokenUsername)) {
-            return ResponseDto.fail(ResponseCode.NO_PERMISSION, "본인의 알림만 조회할 수 있습니다.");
-        }
-
-        List<Alert> alerts = alertRepository.findByEmployeeId_EmployeeIdOrderByCreatedAtDesc(employeeId);
-
-        List<AlertResponseDto> result = alerts.stream()
-                .map(alert -> AlertResponseDto.builder()
-                        .alertId(alert.getAlertId())
-                        .alertType(alert.getAlertType().name())
-                        .message(alert.getMessage())
-                        .alertTargetTable(alert.getAlertTargetTable().name())
-                        .targetPk(alert.getTargetPk())
-                        .targetIsbn(alert.getTargetIsbn())
-                        .isRead(alert.getIsRead())
-                        .createdAt(alert.getCreatedAt())
-                        .build())
-                .collect(Collectors.toList());
-
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, result);
-    }
-
-    @Override
-    public ResponseDto<List<AlertResponseDto>> getUnreadAlert(Long employeeId, String token) {
-        // 1. JWT에서 username 추출
-        String tokenUsername = jwtProvider.getUsernameFromJwt(jwtProvider.removeBearer(token));
-
-        // 2. employeeId로 DB 조회
-        Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new IllegalArgumentException(ResponseCode.NO_EXIST_USER_ID));
-
-        // 3. 해당 employee의 username과 비교
-        if (!employee.getLoginId().equals(tokenUsername)) {
-            return ResponseDto.fail(ResponseCode.NO_PERMISSION, "본인의 알림만 조회할 수 있습니다.");
-        }
-
-        List<Alert> alerts = alertRepository.findByEmployeeId_EmployeeIdAndIsReadFalseOrderByCreatedAtDesc(employeeId);
+        List<Alert> alerts = alertRepository.findByEmployeeId_EmployeeIdAndIsReadFalseOrderByCreatedAtDesc(employee.getEmployeeId());
 
         List<AlertResponseDto> result = alerts.stream()
                 .map(alert -> AlertResponseDto.builder()

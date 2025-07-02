@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,9 +25,9 @@ public class BookReceptionApprovalController {
     @PostMapping(ApiMappingPattern.ADMIN_API+"/reception")
     public ResponseEntity<ResponseDto<ReceptionCreateResponseDto>> createReceptionApproval(
             @RequestBody ReceptionCreateRequestDto dto,
-            @RequestHeader("Authorization") String token
+            @AuthenticationPrincipal String loginId
             ) {
-        ResponseDto<ReceptionCreateResponseDto> reception = bookReceptionApprovalService.createReception(dto, token);
+        ResponseDto<ReceptionCreateResponseDto> reception = bookReceptionApprovalService.createReception(dto, loginId);
         return ResponseEntity.status(HttpStatus.CREATED).body(reception);
     }
 
@@ -34,27 +35,27 @@ public class BookReceptionApprovalController {
     @PutMapping(ApiMappingPattern.MANAGER_API+"/reception/approve/{id}")
     public ResponseEntity<ResponseDto<Void>> approveReception(
             @PathVariable Long id,
-            @RequestHeader("Authorization") String token
+            @AuthenticationPrincipal String loginId
         ) {
-        ResponseDto<Void> reception = bookReceptionApprovalService.approveReception(id, token);
+        ResponseDto<Void> reception = bookReceptionApprovalService.approveReception(id, loginId);
         return ResponseEntity.status(HttpStatus.OK).body(reception);
     }
 
     // 3) 수령 대기 목록 조회(지점 관리자 전용)
     @GetMapping(ApiMappingPattern.MANAGER_API+"/reception/pending")
     public ResponseEntity<ResponseDto<List<ReceptionListResponseDto>>> getPendingReceptions(
-            @RequestHeader("Authorization") String token
+            @AuthenticationPrincipal String loginId
     ) {
-        ResponseDto<List<ReceptionListResponseDto>> reception = bookReceptionApprovalService.getPendingList(token);
+        ResponseDto<List<ReceptionListResponseDto>> reception = bookReceptionApprovalService.getPendingList(loginId);
         return ResponseEntity.status(HttpStatus.OK).body(reception);
     }
 
     // 4) 수령 완료 목록 조회(지점 관리자)
     @GetMapping(ApiMappingPattern.MANAGER_API+"/reception/confirmed")
     public ResponseEntity<ResponseDto<List<ReceptionListResponseDto>>> getManagerConfirmedReceptions(
-            @RequestHeader("Authorization") String token
+            @AuthenticationPrincipal String loginId
     ) {
-        ResponseDto<List<ReceptionListResponseDto>> reception = bookReceptionApprovalService.getManagerConfirmedList(token);
+        ResponseDto<List<ReceptionListResponseDto>> reception = bookReceptionApprovalService.getManagerConfirmedList(loginId);
         return ResponseEntity.status(HttpStatus.OK).body(reception);
     }
 

@@ -12,10 +12,10 @@ import java.util.List;
 public interface AlertService {
     // 알림 생성
     ResponseDto<AlertResponseDto> createAlert(AlertCreateRequestDto dto);
-    // 전체 알림 조회
-    ResponseDto<List<AlertResponseDto>> getAllAlert(Long employeeId, String token);
+//    // 전체 알림 조회
+//    ResponseDto<List<AlertResponseDto>> getAllAlert(Long employeeId, String token);
     // 읽지 않은 알림 조회
-    ResponseDto<List<AlertResponseDto>> getUnreadAlert(Long employeeId, String token);
+    ResponseDto<List<AlertResponseDto>> getUnreadAlert(String loginId);
     // 여러 알림 읽음 처리
     ResponseDto<Void> readAlert(AlertReadRequestDto dto);
 }

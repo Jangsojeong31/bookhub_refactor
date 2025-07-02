@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import styles from "./Header.module.css";
 import { logoutRequest } from "@/apis/auth/auth";
 import { useNavigate } from "react-router-dom";

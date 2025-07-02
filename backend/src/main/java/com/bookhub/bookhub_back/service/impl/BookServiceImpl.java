@@ -45,9 +45,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public ResponseDto<BookResponseDto> createBook(BookCreateRequestDto dto, String token, MultipartFile coverImageFile) throws IOException{
-
-        String loginId = jwtProvider.getUsernameFromJwt(jwtProvider.removeBearer(token));
+    public ResponseDto<BookResponseDto> createBook(BookCreateRequestDto dto, String loginId, MultipartFile coverImageFile) throws IOException{
         Employee employee = employeeRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new IllegalArgumentException(ResponseCode.NO_EXIST_USER_ID));
 
@@ -81,9 +79,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public ResponseDto<BookResponseDto> updateBook(String isbn, BookUpdateRequestDto dto, String token, MultipartFile coverImageFile) throws IOException {
-
-        String loginId = jwtProvider.getUsernameFromJwt(jwtProvider.removeBearer(token));
+    public ResponseDto<BookResponseDto> updateBook(String isbn, BookUpdateRequestDto dto, String loginId, MultipartFile coverImageFile) throws IOException {
         Employee employee = employeeRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new IllegalArgumentException(ResponseCode.NO_EXIST_USER_ID));
 
@@ -161,9 +157,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public ResponseDto<Void> hideBook(String isbn, String token) {
-
-        String loginId = jwtProvider.getUsernameFromJwt(jwtProvider.removeBearer(token));
+    public ResponseDto<Void> hideBook(String isbn, String loginId) {
         Employee employee = employeeRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new IllegalArgumentException(ResponseCode.NO_EXIST_USER_ID));
 

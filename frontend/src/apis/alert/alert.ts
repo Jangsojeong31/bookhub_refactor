@@ -1,31 +1,15 @@
 import { ResponseDto } from "@/dtos";
 import { axiosInstance, bearerAuthorization, responseErrorHandler, responseSuccessHandler } from "../axiosConfig";
-import { GET_ALERT_URL, GET_UNREAD_ALERT_URL, PUT_ALERT_URL } from "../constants/sjw.constants";
+import { GET_UNREAD_ALERT_URL, PUT_ALERT_URL } from "../constants/sjw.constants";
 import axios, { AxiosError } from "axios";
 import { AlertResponseDto } from "@/dtos/alert/response/alert.response.dto";
 
 // 미확인 알림 목록 조회
 export const getUnreadAlerts = async (
-  employeeId: number,
   accessToken: string
 ): Promise<ResponseDto<any[]>> => {
   try {
-    const url = GET_UNREAD_ALERT_URL.replace("{employeeId}", String(employeeId));
-    const response = await axiosInstance.get(url, bearerAuthorization(accessToken));
-    return responseSuccessHandler(response);
-  } catch (error) {
-    return responseErrorHandler(error as AxiosError<ResponseDto>);
-  }
-};
-
-// 모든 알림 조회
-export const getAllAlerts = async (
-  employeeId: number,
-  accessToken: string
-): Promise<ResponseDto<AlertResponseDto[]>> => {
-  try {
-    const url = GET_ALERT_URL.replace("{employeeId}", String(employeeId));
-    const response = await axiosInstance.get(url, bearerAuthorization(accessToken));
+    const response = await axiosInstance.get(GET_UNREAD_ALERT_URL, bearerAuthorization(accessToken));
     return responseSuccessHandler(response);
   } catch (error) {
     return responseErrorHandler(error as AxiosError<ResponseDto>);
@@ -48,15 +32,28 @@ export const markAlertsAsRead = async (
   }
 };
 
-export async function getUnreadAlertCount(employeeId: number, token: string): Promise<ResponseDto<number>> {
-  const res = await axios.get(`/api/alerts/unread-count?employeeId=${employeeId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return res.data;
-}
+// export async function getUnreadAlertCount(employeeId: number, token: string): Promise<ResponseDto<number>> {
+//   const res = await axios.get(`/api/alerts/unread-count?employeeId=${employeeId}`, {
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//     },
+//   });
+//   return res.data;
+// }
 
+// 모든 알림 조회
+// export const getAllAlerts = async (
+//   employeeId: number,
+//   accessToken: string
+// ): Promise<ResponseDto<AlertResponseDto[]>> => {
+//   try {
+//     const url = GET_ALERT_URL.replace("{employeeId}", String(employeeId));
+//     const response = await axiosInstance.get(url, bearerAuthorization(accessToken));
+//     return responseSuccessHandler(response);
+//   } catch (error) {
+//     return responseErrorHandler(error as AxiosError<ResponseDto>);
+//   }
+// };
 export function getAlertTargetUrl(alert: AlertResponseDto): string | null {
   const { alertType } = alert;
 
