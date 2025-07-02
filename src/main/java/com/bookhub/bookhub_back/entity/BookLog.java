@@ -6,7 +6,7 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "book_logs")
@@ -33,7 +33,7 @@ public class BookLog {
 
     @Column(name = "changed_at")
     @CreatedDate
-    private LocalDate changedAt;
+    private LocalDateTime changedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")

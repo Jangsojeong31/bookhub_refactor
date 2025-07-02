@@ -15,7 +15,7 @@ import com.bookhub.bookhub_back.service.BookLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,7 +71,7 @@ public class BookLogServiceImpl implements BookLogService {
                 .previousPrice(prevPrice)
                 .previousDiscountRate(prevDiscount)
                 .policyId(policy)
-                .changedAt(LocalDate.now())
+                .changedAt(LocalDateTime.now())
                 .build();
 
         bookLogRepository.save(log);

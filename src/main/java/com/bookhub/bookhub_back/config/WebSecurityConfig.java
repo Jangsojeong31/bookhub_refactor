@@ -54,7 +54,7 @@ public class WebSecurityConfig {
             .cors(withDefaults())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/v1/auth/**").permitAll()
-                .requestMatchers("/files/**").permitAll() // 이미지 경로 허용
+                .requestMatchers("/files/**").permitAll()
                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/v1/manager/**").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers("/api/v1/common/**").hasAnyRole( "ADMIN", "MANAGER","STAFF")
