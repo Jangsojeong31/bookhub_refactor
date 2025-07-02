@@ -35,9 +35,8 @@ public class BookReceptionApprovalServiceImpl implements BookReceptionApprovalSe
 
     @Override
     @Transactional
-    public ResponseDto<ReceptionCreateResponseDto> createReception(ReceptionCreateRequestDto dto, String token) {
+    public ResponseDto<ReceptionCreateResponseDto> createReception(ReceptionCreateRequestDto dto, String loginId) {
         // 1. 로그인한 사용자 정보 추출
-        String loginId = jwtProvider.getUsernameFromJwt(jwtProvider.removeBearer(token));
         Employee employee = employeeRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new IllegalArgumentException(ResponseCode.NO_EXIST_USER_ID));
 
@@ -71,9 +70,8 @@ public class BookReceptionApprovalServiceImpl implements BookReceptionApprovalSe
 
     @Override
     @Transactional
-    public ResponseDto<Void> approveReception(Long id, String token) {
+    public ResponseDto<Void> approveReception(Long id, String loginId) {
         // 1. 로그인한 사용자 정보 추출
-        String loginId = jwtProvider.getUsernameFromJwt(jwtProvider.removeBearer(token));
         Employee employee = employeeRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new IllegalArgumentException(ResponseCode.NO_EXIST_USER_ID));
 
@@ -120,8 +118,7 @@ public class BookReceptionApprovalServiceImpl implements BookReceptionApprovalSe
     }
 
     @Override
-    public ResponseDto<List<ReceptionListResponseDto>> getPendingList(String token) {
-        String loginId = jwtProvider.getUsernameFromJwt(jwtProvider.removeBearer(token));
+    public ResponseDto<List<ReceptionListResponseDto>> getPendingList(String loginId) {
         List<BookReceptionApproval> pendingList = bookReceptionApprovalRepository.findPendingByLoginId(loginId);
 
         List<ReceptionListResponseDto> result = pendingList.stream()
@@ -140,8 +137,7 @@ public class BookReceptionApprovalServiceImpl implements BookReceptionApprovalSe
     }
 
     @Override
-    public ResponseDto<List<ReceptionListResponseDto>> getManagerConfirmedList(String token) {
-        String loginId = jwtProvider.getUsernameFromJwt(jwtProvider.removeBearer(token));
+    public ResponseDto<List<ReceptionListResponseDto>> getManagerConfirmedList(String loginId) {
         List<BookReceptionApproval> confirmedList = bookReceptionApprovalRepository.findAllConfirmedByLoginId(loginId);
 
         List<ReceptionListResponseDto> result = confirmedList.stream()

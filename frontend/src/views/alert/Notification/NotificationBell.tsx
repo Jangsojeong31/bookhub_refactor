@@ -1,22 +1,22 @@
-import { Bell } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import './NotificationBell.css';
+// import { Bell } from 'lucide-react';
+// import { useNavigate } from 'react-router-dom';
+// import './NotificationBell.css';
 
-interface Props {
-  unreadCount: number;
-}
+// interface Props {
+//   unreadCount: number;
+// }
 
-const NotificationBell: React.FC<Props> = ({ unreadCount }) => {
-  const navigate = useNavigate();
+// const NotificationBell: React.FC<Props> = ({ unreadCount }) => {
+//   const navigate = useNavigate();
 
-  return (
-    <div className="notification-bell" onClick={() => navigate('/alerts')}>
-      <Bell size={24} />
-      {unreadCount > 0 && (
-        <span className="badge">{unreadCount}</span>
-      )}
-    </div>
-  );
-};
+//   return (
+//     <div className="notification-bell" onClick={() => navigate('/alerts')}>
+//       <Bell size={24} />
+//       {unreadCount > 0 && (
+//         <span className="badge">{unreadCount}</span>
+//       )}
+//     </div>
+//   );
+// };
 
-export default NotificationBell;
+// export default NotificationBell;

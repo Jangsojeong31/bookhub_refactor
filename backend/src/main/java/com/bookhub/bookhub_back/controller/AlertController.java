@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,24 +31,25 @@ public class AlertController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
-    @GetMapping("/all/{employeeId}")
-    public ResponseEntity<ResponseDto<List<AlertResponseDto>>> getAllAlert(
-            @PathVariable Long employeeId,
-            @RequestHeader("Authorization") String token
-    ) {
-        ResponseDto<List<AlertResponseDto>> responseDto = alertService.getAllAlert(employeeId, token);
-        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
-    }
+//    @GetMapping("/all/{employeeId}")
+//    public ResponseEntity<ResponseDto<List<AlertResponseDto>>> getAllAlert(
+//            @PathVariable Long employeeId,
+//            @RequestHeader("Authorization") String token
+//    ) {
+//        ResponseDto<List<AlertResponseDto>> responseDto = alertService.getAllAlert(employeeId, token);
+//        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+//    }
 
-    @GetMapping("/unread/{employeeId}")
+    // 안읽은 알림 조회
+    @GetMapping("/unread")
     public ResponseEntity<ResponseDto<List<AlertResponseDto>>> getUnreadAlert(
-            @PathVariable Long employeeId,
-            @RequestHeader("Authorization") String token
+            @AuthenticationPrincipal String loginId
     ) {
-        ResponseDto<List<AlertResponseDto>> responseDto = alertService.getUnreadAlert(employeeId, token);
+        ResponseDto<List<AlertResponseDto>> responseDto = alertService.getUnreadAlert(loginId);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
+    // 알림 '읽음' 처리
     @PutMapping("/read")
     public ResponseEntity<ResponseDto<Void>> readAlert(@RequestBody AlertReadRequestDto dto) {
         ResponseDto<Void> responseDto = alertService.readAlert(dto);

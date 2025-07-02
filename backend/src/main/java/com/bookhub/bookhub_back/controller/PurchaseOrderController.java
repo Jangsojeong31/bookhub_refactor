@@ -33,7 +33,7 @@ public class PurchaseOrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // 4) 발주 요청서 조회 - 조회 조건 없을 시 전체 조회 기능, 사용자 소속 지점 해당 발주서만 필터링
+    // 발주 요청서 조회 - 조회 조건 없을 시 전체 조회 기능, 사용자 소속 지점 해당 발주서만 필터링
     @GetMapping(ApiMappingPattern.MANAGER_API + "/purchase-orders")
     public ResponseEntity<ResponseDto<List<PurchaseOrderResponseDto>>> searchPurchaseOrder(
             @AuthenticationPrincipal String loginId,
@@ -45,7 +45,7 @@ public class PurchaseOrderController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // 5) 발주 요청서 수정 - 발주량 수정
+    // 발주 요청서 수정 - 발주량 수정
     @PutMapping(ApiMappingPattern.MANAGER_API + "/purchase-orders/{purchaseOrderId}")
     public ResponseEntity<ResponseDto<PurchaseOrderResponseDto>> updatePurchaseOrder(
             @RequestBody PurchaseOrderRequestDto dto,
@@ -55,7 +55,7 @@ public class PurchaseOrderController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // 7) 발주 요청서 삭제
+    // 발주 요청서 삭제
     @DeleteMapping(ApiMappingPattern.MANAGER_API + "/purchase-orders/{purchaseOrderId}")
     public ResponseEntity<ResponseDto<Void>> deletePurchaseOrder(
             @PathVariable Long purchaseOrderId
