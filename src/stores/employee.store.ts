@@ -45,8 +45,10 @@ export const useEmployeeStore = create<EmployeeStore>()(
       setLogout: () => {
         if (logoutTimer) clearTimeout(logoutTimer);
         set({ isLogin: false, employee: null });
-        localStorage.removeItem("sidebarActiveIndex");
-        alert("로그아웃하였습니다.")
+        localStorage.clear();
+        useEmployeeStore.getState().clearEmployee();
+        alert("로그아웃하였습니다.");
+        window.location.href = "/auth/login";
       },
       setLogoutTimer: (milliseconds: number) => {
         if (logoutTimer) clearTimeout(logoutTimer);

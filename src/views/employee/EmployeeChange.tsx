@@ -20,6 +20,7 @@ import "@/styles/employee/employeeUpdateModal.css";
 import "@/styles/employee/employeemodal.css";
 import "@/styles/employee/employeeSelect.css";
 import { Branch } from "@/dtos/branch/branch";
+import { StatusType } from "@/apis/enums/StatusType";
 
 const statusOptions = ["EMPLOYED", "EXITED"];
 const ITEMS_PER_PAGE = 10;
@@ -30,7 +31,7 @@ function EmployeeChange() {
     branchName: "",
     positionName: "",
     authorityName: "",
-    status: "",
+    status: StatusType.NONE,
   });
   const [cookies] = useCookies(["accessToken"]);
   const token = cookies.accessToken;
@@ -56,7 +57,7 @@ function EmployeeChange() {
     email: "",
     phoneNumber: "",
     birthDate: new Date(),
-    status: "EMPLOYED",
+    status: StatusType.EMPLOYED,
     createdAt: new Date(),
   });
   const [form, setForm] = useState({
@@ -238,7 +239,7 @@ function EmployeeChange() {
     const response = await employeeExitUpdateRequest(
       employee.employeeId,
       {
-        status: "EXITED",
+        status: StatusType.EXITED,
         exitReason: exit.exitReason,
       },
       token
@@ -263,7 +264,7 @@ function EmployeeChange() {
       branchName: "",
       positionName: "",
       authorityName: "",
-      status: "",
+      status: StatusType.NONE,
     });
     setEmployeeList([]);
     setCurrentPage(0);

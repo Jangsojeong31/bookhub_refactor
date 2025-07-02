@@ -1,4 +1,6 @@
+import { StatusType } from "@/apis/enums/StatusType";
+
 export interface EmployeeExitUpdateRequestDto {
-  status: "EMPLOYED" | "EXITED";
+  status: StatusType;
   exitReason: string;
 }
