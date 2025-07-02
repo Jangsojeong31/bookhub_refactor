@@ -6,34 +6,36 @@ import {
   responseErrorHandler,
   bearerAuthorization,
 } from "@/apis/axiosConfig";
-import { AxiosError } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { ResponseDto } from "@/dtos";
-import { LocationResponseDto, LocationDetailResponseDto, LocationCreateRequestDto, LocationUpdateRequestDto } from "@/dtos/location/location.dto";
-import { GET_ALL_LOCATIONS_URL, GET_LOCATION_URL, POST_LOCATION_URL, PUT_LOCATION_URL, DELETE_LOCATION_URL } from "../constants/csy.constants";
+import { LocationDetailResponseDto, LocationCreateRequestDto, LocationUpdateRequestDto } from "@/dtos/location/location.dto";
+import { GET_LOCATION_URL, POST_LOCATION_URL, PUT_LOCATION_URL, DELETE_LOCATION_URL, GET_FILTERED_LOCATIONS_URL } from "../constants/csy.constants";
+import { PageResponseDto } from "@/dtos/page-response.dto";
 
 
 
 /**
- * 지점별 진열 위치 전체 조회
+ * 진열 위치 목록 조회 (페이징 + 검색)
  */
 export const getLocations = async (
-  accessToken: string,
-  branchId: number,
-  keyword?: string,
-): Promise<ResponseDto<LocationResponseDto[]>> => {
+  accessToken: string | null,
+  page: number,
+  size: number,
+  bookTitle?: string,
+  isbn?: string,
+  branchId?: number
+): Promise<ResponseDto<PageResponseDto<LocationDetailResponseDto>>> => {
   try {
-    let url = `${GET_ALL_LOCATIONS_URL}?branchId=${branchId}`;
-    if (keyword && keyword.trim() !== "") {
-      url += `&bookTitle=${encodeURIComponent(keyword.trim())}`;
-    }
-    const response = await axiosInstance.get(
-      url,
-      bearerAuthorization(accessToken),
-    );
-    return responseSuccessHandler<LocationResponseDto[]>(response);
+    const response: AxiosResponse<
+      ResponseDto<PageResponseDto<LocationDetailResponseDto>>
+    > = await axios.get(GET_FILTERED_LOCATIONS_URL, {
+      params: { page, size, bookTitle, isbn, branchId },
+      headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
+    });
+    return responseSuccessHandler(response);
   } catch (error) {
     return responseErrorHandler(
-      error as AxiosError<ResponseDto<LocationResponseDto[]>>,
+      error as AxiosError<ResponseDto<PageResponseDto<LocationDetailResponseDto>>>
     );
   }
 };

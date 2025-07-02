@@ -6,12 +6,12 @@ import { useRef, useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 
 interface Props {
-  open: boolean;
+  isOpen: boolean;
   onClose: () => void;
   onSuccess: () => Promise<void>;
 }
 
-export function CreateLocation({ open, onClose, onSuccess }: Props) {
+export function CreateLocation({ isOpen, onClose, onSuccess }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [cookies] = useCookies(["accessToken"]);
   // 로그인된 직원에서 branchId 꺼내기
@@ -27,9 +27,9 @@ export function CreateLocation({ open, onClose, onSuccess }: Props) {
   });
 
   useEffect(() => {
-    if (open) dialogRef.current?.showModal();
+    if (isOpen) dialogRef.current?.showModal();
     else dialogRef.current?.close();
-  }, [open]);
+  }, [isOpen]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;

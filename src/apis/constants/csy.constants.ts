@@ -28,16 +28,18 @@ export const PUT_PUBLISHER_URL = (publisherId: number) => `${PUBLISHER_MODULE_UR
 // 5) 출판사 삭제
 export const DELETE_PUBLISHER_URL = (publisherId: number) => `${PUBLISHER_MODULE_URL}/${publisherId}`;
 
+
+//&지점별 진열위치 등록
 // 공통·관리자 공통 도메인
 const LOCATION_BRANCH_MANAGER = `${API_DOMAIN}/api/v1/${MANAGER}/branch/locations`
-const LOCATION_BRANCH_COMMON  = `${API_DOMAIN}/api/v1/${COMMON}/branch/locations`
+const LOCATION_BRANCH_COMMON  = `${API_DOMAIN}/api/v1/${COMMON}/locations`
 
 // 1) 지점별 진열위치 등록 (POST)
 export const POST_LOCATION_URL = 
   `${LOCATION_BRANCH_MANAGER}`
 
 // 2) 지점별 진열위치 전체 조회 (GET 리스트)
-export const GET_ALL_LOCATIONS_URL = 
+export const GET_FILTERED_LOCATIONS_URL = 
   `${LOCATION_BRANCH_COMMON}`
 
 // 3) 지점별 진열위치 단건 조회 (GET 상세)
