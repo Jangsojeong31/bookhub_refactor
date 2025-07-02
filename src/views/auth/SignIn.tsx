@@ -1,5 +1,4 @@
 import { signInRequest } from "@/apis/auth/auth";
-import { SignInRequestDto } from "@/dtos/auth/request/sign-in.request.dto";
 import { useEmployeeStore } from "@/stores/employee.store";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
@@ -8,7 +7,7 @@ import "@/styles/auth/Auth.css";
 
 function SignIn() {
   const navigate = useNavigate();
-  const [cookies, setCookie] = useCookies(["accessToken", "tokenExpiresAt"]);
+  const [, setCookie] = useCookies(["accessToken"]);
   const setLogin = useEmployeeStore((store) => store.setLogin);
   const setEmployee = useEmployeeStore((state) => state.setEmployee);
   const setLogoutTimer = useEmployeeStore((state) => state.setLogoutTimer);
@@ -54,11 +53,6 @@ function SignIn() {
     setCookie("accessToken", token, {
       path: "/",
       expires: expireDate,
-      sameSite: "strict",
-    });
-
-    setCookie("tokenExpiresAt", expireDate.toISOString(), {
-      path: "/",
       sameSite: "strict",
     });
 

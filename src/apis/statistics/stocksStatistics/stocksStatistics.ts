@@ -11,28 +11,17 @@ import {
   STOCK_STATISTICS_ZERO_URL,
 } from "@/apis/constants/csy.constants";
 import { ResponseDto } from "@/dtos";
+import { BranchStockBarChartRequestDto } from "@/dtos/statistics/StocksStatistics/request/branchStockBarChart.request.dto";
+import { CategoryStockRequestDto } from "@/dtos/statistics/StocksStatistics/request/categoryStock.request.dto";
+import { TimeStockChartRequestDto } from "@/dtos/statistics/StocksStatistics/request/timeStockChart.request.dto";
 import { BranchStockBarChartResponseDto } from "@/dtos/statistics/StocksStatistics/response/branchStockBarChart.response.dto";
 import { CategoryStockResponseDto } from "@/dtos/statistics/StocksStatistics/response/categoryStock.response.dto";
 import { TimeStockChartResponseDto } from "@/dtos/statistics/StocksStatistics/response/timestockchart.response.dto";
 import { ZeroStockResponseDto } from "@/dtos/statistics/StocksStatistics/response/zeroStock.response.dto";
 import { AxiosError } from "axios";
-import { access } from "fs";
-
-interface searchDateParams {
-  year: number;
-  month: number;
-}
-
-interface searchBranchParams {
-  branchName: string;
-}
-
-interface searcYearParams {
-  year: number;
-}
 
 export const branchStockBarChartRequest = async (
-  params: searchDateParams,
+  params: BranchStockBarChartRequestDto,
   accessToken: string
 ): Promise<ResponseDto<BranchStockBarChartResponseDto[]>> => {
   try {
@@ -47,7 +36,7 @@ export const branchStockBarChartRequest = async (
 };
 
 export const categoryStockRequest = async (
-  params: searchBranchParams,
+  params: CategoryStockRequestDto,
   accessToken: string
 ): Promise<ResponseDto<CategoryStockResponseDto[]>> => {
   try {
@@ -76,7 +65,7 @@ export const zeroStockRequest = async (
 };
 
 export const timeStockChartrequest = async (
-  params: searcYearParams,
+  params: TimeStockChartRequestDto,
   accessToken: string
 ): Promise<ResponseDto<TimeStockChartResponseDto[]>> => {
   try {

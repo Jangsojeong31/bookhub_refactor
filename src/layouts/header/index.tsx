@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import styles from "./Header.module.css";
 import { logoutRequest } from "@/apis/auth/auth";
 import { useNavigate } from "react-router-dom";
@@ -7,19 +6,15 @@ import { useEmployeeStore } from "@/stores/employee.store";
 import AlertIcon from "@/apis/constants/AlertIcon";
 
 export default function Header() {
-  const [cookies, , removeCookie] = useCookies(["accessToken", "tokenExpiresAt"]);
+  const [cookies, , removeCookie] = useCookies(["accessToken"]);
   const logout = useEmployeeStore((state) => state.setLogout);
   const employee = useEmployeeStore((state) => state.employee);
-  const clearEmployee = useEmployeeStore((state) => state.clearEmployee);
 
   const navigate = useNavigate();
   const onLogoutClick = async () => {
     await logoutRequest();
     removeCookie("accessToken", { path: "/" });
-    removeCookie("tokenExpiresAt", { path: "/" });
-    clearEmployee();
     logout();
-    navigate("/auth/login");
   };
 
   const token = cookies.accessToken;

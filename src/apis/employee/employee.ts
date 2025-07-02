@@ -20,23 +20,16 @@ import { EmployeeDetailResponseDto } from "@/dtos/employee/response/employee-det
 import { EmployeeSignUpListResponseDto } from "@/dtos/employee/response/employee-sign-up-list.response.dto copy";
 import { EmployeeChangeRequestDto } from "@/dtos/employee/request/employee-change.request.dto";
 import { EmployeeExitUpdateRequestDto } from "@/dtos/employee/request/employee-exit-update.request.dto";
-
-interface SearchEmployeeParams {
-  name?: string;
-  branchName?: string;
-  positionName?: string;
-  authorityName?: string;
-  status?: string;
-}
+import { EmployeeSearchRequestDto } from "@/dtos/employee/request/employee-search.request.dto";
 
 export const employeeRequest = async (
-  params: SearchEmployeeParams,
+  params: EmployeeSearchRequestDto,
   accessToken: string
 ): Promise<ResponseDto<EmployeeListResponseDto[]>> => {
   try {
     const response = await axiosInstance.get(GET_ALL_EMPLOYEE_URL, {
       params,
-      ...bearerAuthorization(accessToken),
+      ...bearerAuthorization(accessToken)
     });
     return responseSuccessHandler(response);
   } catch (error) {

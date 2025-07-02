@@ -16,13 +16,10 @@ import { AxiosError } from "axios";
 import { BranchCreateRequestDto } from "@/dtos/branch/request/branch-create.request.dto";
 import { BranchDetailResponseDto } from "@/dtos/branch/response/branch-detail.response.dto";
 import { BranchUpdateRequestDto } from "@/dtos/branch/request/branch-update.request.dto";
-
-interface searchParams {
-  branchLocation: string;
-}
+import { BranchSearchRequestDto } from "@/dtos/branch/request/branch-search.request.dto";
 
 export const branchSearchRequest = async (
-  params: searchParams,
+  params: BranchSearchRequestDto,
   accessToken: string
 ): Promise<ResponseDto<BranchSearchResponseDto[]>> => {
   try {

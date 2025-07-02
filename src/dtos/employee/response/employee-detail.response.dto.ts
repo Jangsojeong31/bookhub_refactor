@@ -1,3 +1,5 @@
+import { StatusType } from "@/apis/enums/StatusType";
+
 export interface EmployeeDetailResponseDto {
   employeeId: number;
   employeeNumber: number;
@@ -11,6 +13,6 @@ export interface EmployeeDetailResponseDto {
   email: string;
   phoneNumber: string;
   birthDate: Date;
-  status: "EMPLOYED" | "EXITED";
+  status: StatusType;
   createdAt: Date;
 }

@@ -1,4 +1,8 @@
-import { GET_ALL_AUTHORITY_URL, GET_ALL_POSITION_URL, GET_BRANCH_URL } from "@/apis";
+import {
+  GET_ALL_AUTHORITY_URL,
+  GET_ALL_POSITION_URL,
+  GET_BRANCH_URL,
+} from "@/apis";
 import Modal from "@/apis/constants/Modal";
 import {
   employeeDetailRequest,
@@ -13,6 +17,7 @@ import "@/styles/employee/employeemodal.css";
 import { Branch } from "@/dtos/branch/branch";
 import { Position } from "@/dtos/position/position";
 import { Authority } from "@/dtos/authority/authority";
+import { StatusType } from "@/apis/enums/StatusType";
 
 const statusOptions = ["EMPLOYED", "EXITED"];
 const ITEMS_PER_PAGE = 10;
@@ -23,13 +28,15 @@ function EmployeeSearch() {
     branchName: "",
     positionName: "",
     authorityName: "",
-    status: "",
+    status: StatusType.NONE,
   });
 
   const [currentPage, setCurrentPage] = useState(0);
   const [cookies] = useCookies(["accessToken"]);
   const token = cookies.accessToken;
-  const [employeeList, setEmployeeList] = useState<EmployeeListResponseDto[]>([]);
+  const [employeeList, setEmployeeList] = useState<EmployeeListResponseDto[]>(
+    []
+  );
   const [message, setMessage] = useState("");
   const [branches, setBranches] = useState<Branch[]>([]);
   const [positions, setPositions] = useState<Position[]>([]);
@@ -55,7 +62,7 @@ function EmployeeSearch() {
         setPositions(data.data);
       })
       .catch((e) => console.error(e));
-    
+
     fetch(`${GET_ALL_AUTHORITY_URL}`, {
       method: "GET",
     })
@@ -104,7 +111,7 @@ function EmployeeSearch() {
       branchName: "",
       positionName: "",
       authorityName: "",
-      status: "",
+      status: StatusType.NONE,
     });
     setMessage("");
     setEmployeeList([]);
@@ -129,7 +136,7 @@ function EmployeeSearch() {
 
     setModalStatus(true);
   };
-  
+
   const totalPages = Math.ceil(employeeList.length / ITEMS_PER_PAGE);
   const pagesPerGroup = 5;
   const currentGroup = Math.floor(currentPage / pagesPerGroup);
@@ -330,7 +337,10 @@ function EmployeeSearch() {
           >
             {"<"}
           </button>
-          {Array.from({ length: endPage - startPage }, (_, i) => startPage + i).map((i) => (
+          {Array.from(
+            { length: endPage - startPage },
+            (_, i) => startPage + i
+          ).map((i) => (
             <button
               key={i}
               className={`pageBtn${i === currentPage ? " current" : ""}`}
