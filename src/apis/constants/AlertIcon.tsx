@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { getUnreadAlerts } from "@/apis/alert/alert";
 import { useNavigate } from "react-router-dom";

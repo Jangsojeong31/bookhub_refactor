@@ -7,7 +7,6 @@ import { GET_BOOK_URL, POST_BOOK_URL, HIDE_BOOK_URL, UPDATE_BOOK_URL } from "../
 import { BookUpdateRequestDto } from "@/dtos/book/request/book-update.request.dto";
 import { BookLogResponseDto } from "@/dtos/book/response/book-log-response.dto";
 
-// 책 등록
 export const createBook = async (
   dto: BookCreateRequestDto,
   accessToken: string,
@@ -34,7 +33,6 @@ export const createBook = async (
   }
 };
 
-// 책 수정
 export const updateBook = async (
   isbn: string,
   dto: BookUpdateRequestDto,
@@ -62,7 +60,6 @@ export const updateBook = async (
 };
 
 
-// 책 삭제(HIDDEN 처리)
 export const hideBook = async (
   isbn: string,
   accessToken: string
@@ -79,8 +76,6 @@ export const hideBook = async (
   }
 };
 
-
-
 export const searchBook = async (
   keyword: string,
   accessToken: string
@@ -95,7 +90,6 @@ export const searchBook = async (
     return responseErrorHandler(error as AxiosError<ResponseDto>);
   }
 };
-
 
 export const getBookByIsbn = async (
   isbn: string,
@@ -116,7 +110,6 @@ export const getBookByIsbn = async (
   return { code: "SU", message: "성공", data: found };
 };
 
-// 책 로그 조회
 export const getBookLogs = async (
   isbn: string,
   accessToken: string

@@ -9,8 +9,7 @@ function Book() {
   const navigate = useNavigate();
   return (
     <Routes>
-      <Route
-        path="create"
+      <Route path="create"
         element={
           <RequireAuth allowedRoles={["ADMIN"]}>
             <CreateBook onSuccess={async () => navigate("/books/search")} />

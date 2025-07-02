@@ -1,7 +1,6 @@
 // src/components/MainSearchBar.tsx
 import React, { useState } from 'react';
 import { BiSearchAlt } from 'react-icons/bi'
-import { GiWhiteBook } from "react-icons/gi";
 import { useNavigate } from 'react-router-dom';
 import './MainSearchBar.css';
 
@@ -53,7 +52,6 @@ function MainSearchBar() {
     const value = e.target.value;
     setQuery(value);
 
-    // 검색창이 비면 자동완성 목록 숨김
     if (value.trim() === "") {
       setSuggestions([]);
       return;

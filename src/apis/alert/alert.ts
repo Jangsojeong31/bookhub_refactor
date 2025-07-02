@@ -4,7 +4,6 @@ import { GET_ALERT_URL, GET_UNREAD_ALERT_URL, PUT_ALERT_URL } from "../constants
 import axios, { AxiosError } from "axios";
 import { AlertResponseDto } from "@/dtos/alert/response/alert.response.dto";
 
-// 미확인 알림 목록 조회
 export const getUnreadAlerts = async (
   employeeId: number,
   accessToken: string
@@ -18,7 +17,6 @@ export const getUnreadAlerts = async (
   }
 };
 
-// 모든 알림 조회
 export const getAllAlerts = async (
   employeeId: number,
   accessToken: string

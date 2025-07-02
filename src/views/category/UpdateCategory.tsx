@@ -78,7 +78,7 @@ function UpdateCategory({ category, onSuccess, mode }: UpdateCategoryProps) {
 
   return (
     <form onSubmit={handleUpdate} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-      <h3>✏️ 카테고리 수정</h3>
+      <h3>카테고리 수정</h3>
 
       <input
         type="text"
