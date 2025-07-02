@@ -181,7 +181,6 @@ public class BookCategoryServiceImpl implements BookCategoryService {
 
         DiscountPolicy policy = category.getDiscountPolicyId();
 
-        // 정책이 없는 경우 null 응답
         if (policy == null) {
             return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, null);
         }
@@ -199,8 +198,6 @@ public class BookCategoryServiceImpl implements BookCategoryService {
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, dto);
     }
 
-
-    // 단건 엔티티를 트리 응답 DTO로 변환
     private CategoryTreeResponseDto toDto(BookCategory bc) {
         return CategoryTreeResponseDto.builder()
                 .categoryId(bc.getCategoryId())
@@ -223,8 +220,6 @@ public class BookCategoryServiceImpl implements BookCategoryService {
                 .build();
     }
 
-
-    // 재귀적으로 하위 카테고리를 포함한 트리 구조로 변환
     private CategoryTreeResponseDto buildTree(BookCategory parent) {
         CategoryTreeResponseDto dto = toDto(parent);
         List<BookCategory> children = bookCategoryRepository.findByParentId(parent.getCategoryId());
