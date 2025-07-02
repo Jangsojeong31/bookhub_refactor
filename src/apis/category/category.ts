@@ -3,7 +3,7 @@ import { CategoryCreateRequestDto } from "@/dtos/category/request/category-creat
 import { CategoryCreateResponseDto } from "@/dtos/category/response/category-create.response.dto";
 import { axiosInstance, responseErrorHandler, responseSuccessHandler, bearerAuthorization } from "@/apis/axiosConfig"
 import { DELETE_CATEGORY_URL, GET_CATEGORY_TREE_URL, GET_POLICY_BY_CATEGORYID_URL, POST_CATEGORY_URL, PUT_CATEGORY_URL} from "../constants/sjw.constants";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { CategoryUpdateResponseDto } from "@/dtos/category/response/category-update.response.dto";
 import { CategoryTreeResponseDto } from "@/dtos/category/response/category-tree.response.dto";
 import { CategoryUpdateRequestDto } from "@/dtos/category/request/category-update.request.dto";

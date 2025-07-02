@@ -1,12 +1,6 @@
-// constants.ts
-// # URL 상수 정의
-
-//& variable: URL 상수 //
 const API_DOMAIN = 'http://localhost:8080';
-// const API_DOMAIN = process.env.REACT_APP_API_DOMAIN || "http://localhost:8080";
 
 const ADMIN = 'admin';
-const MANAGER = 'manager';
 const COMMON = 'common';
 
 
@@ -21,7 +15,6 @@ export const POST_BOOK_URL = `${BOOK_ADMIN_MODULE_URL}`;
 
 // 책 검색
 export const GET_BOOK_URL = `${BOOK_COMMON_MODULE_URL}/search`; 
-// /${(검색기준): bookTitle, authorId, publisherId, categoryId, locationId, publishedDate, printCount, bookPrice, language };
 
 // 책 수정
 export const UPDATE_BOOK_URL = (isbn : string) => `${BOOK_ADMIN_MODULE_URL}/${isbn}`;
@@ -29,26 +22,7 @@ export const UPDATE_BOOK_URL = (isbn : string) => `${BOOK_ADMIN_MODULE_URL}/${is
 // 책 숨김 처리
 export const HIDE_BOOK_URL = (isbn : string) => `${BOOK_ADMIN_MODULE_URL}/hidden/${isbn}`;
 
-//! 2. 재고 관련 요청 베이스 URL
-// const STOCK_ADMIN_MODULE_URL = `${BOOK_ADMIN_MODULE_URL}/stocks`;
-// const STOCK_MANAGER_MODULE_URL = `${BOOK_MANAGER_MODULE_URL}/stocks`;
-// const STOCK_COMMON_MODULE_URL = `${BOOK_COMMON_MODULE_URL}/stocks`;
-
-// //? 재고 관련 기능
-
-// // 재고 생성
-// export const POST_STOCK_URL = `${STOCK_ADMIN_MODULE_URL}`;
-
-// // 재고 전체 조회
-// export const GET_ALL_STOCK_URL = (branchId : number) => `${STOCK_COMMON_MODULE_URL}/${branchId}`;
-
-// // 재고 단건 조회
-// export const GET_STOCK_URL = (branchId : number, stockId : number) => `${STOCK_COMMON_MODULE_URL}/${branchId}/${stockId}`;
-
-// // 책 재고 수량 변경
-// export const PUT_STOCK_URL = (branchId : number, stockId : number) => `${STOCK_MANAGER_MODULE_URL}/${branchId}/${stockId}`;
-
-//! 3. 카테고리 관련 요청 베이스 URL
+//! 2. 카테고리 관련 요청 베이스 URL
 const CATEGORY_MODULE_URL = `${API_DOMAIN}/api/v1/${ADMIN}/categories`;
 
 //? 카테고리 관련 기능
@@ -69,7 +43,7 @@ export const DELETE_CATEGORY_URL = (categoryId : number) => `${CATEGORY_MODULE_U
 // 카테고리 ID로 연결된 할인정책 조회
 export const GET_POLICY_BY_CATEGORYID_URL = (categoryId : number) => `${API_DOMAIN}/api/v1/${COMMON}/categories/${categoryId}/policy`
 
-//! 4. 수령 승인 관련 요청 베이스 URL
+//! 3. 수령 승인 관련 요청 베이스 URL
 const RECEPTION_ADMIN_MODULE_URL = `${API_DOMAIN}/api/v1/admin/reception`;
 const RECEPTION_MANAGER_MODULE_URL = `${API_DOMAIN}/api/v1/manager/reception`;
 
@@ -87,7 +61,7 @@ export const GET_CONFIRMED_RECEPTION_URL = `${RECEPTION_MANAGER_MODULE_URL}/conf
 // 관리자가 수령 승인 내역 조회(모든 지점)
 export const GET_ADMIN_RECEPTION_URL = `${RECEPTION_ADMIN_MODULE_URL}/logs`;
 
-//! 5. 알람 관련 요청 베이스 URL
+//! 4. 알람 관련 요청 베이스 URL
 const ALERT_COMMON_MODULE_URL = `${API_DOMAIN}/api/v1/common/alerts`;
 
 //? 알람 관련 기능
