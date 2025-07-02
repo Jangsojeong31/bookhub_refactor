@@ -14,11 +14,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface DiscountPolicyRepository extends JpaRepository< DiscountPolicy,Long> {
-    //제목으로 할인정책 검색
-    List<DiscountPolicy> findByPolicyTitleContainingIgnoreCase(String keyword);
-
-    //PolicyType 로 할인정책 검색
-    List<DiscountPolicy> searchDiscountPoliciesByPolicyType(PolicyType type);
 
     //기간 설정하여 할인정책 검색
     @Query("SELECT p FROM DiscountPolicy p WHERE p.startDate <= :end AND p.endDate >= :start")
@@ -41,7 +36,5 @@ public interface DiscountPolicyRepository extends JpaRepository< DiscountPolicy,
             @Param("type")    PolicyType type,
             @Param("start")   LocalDate start,
             @Param("end")     LocalDate end,
-            Pageable pageable
-    );
-    //Page<DiscountPolicy> findFiltered(String s, PolicyType type, LocalDate start, LocalDate end, Pageable pageable);
+            Pageable pageable   );
 }

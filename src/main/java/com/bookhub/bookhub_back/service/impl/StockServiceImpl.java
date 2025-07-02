@@ -72,7 +72,6 @@ public class StockServiceImpl implements StockService {
                                     .build()
                     ));
         }
-
         switch (actionType) {
             case IN -> updatedAmount = stock.getBookAmount() + dto.getAmount();
             case OUT, LOSS -> {
@@ -83,17 +82,6 @@ public class StockServiceImpl implements StockService {
             }
             default -> throw new IllegalArgumentException("잘못된 type");
         }
-
-//        //만약 Book이랑 branch가 동시에 일치하는 Stock이 없을때
-//        Stock stock = stockRepository.findByBookIsbnAndBranchId(dto.getBookIsbn(), dto.getBranchId())
-//                .orElseGet(() -> {
-//                    Stock newStock = Stock.builder()
-//                            .bookIsbn(dto.getBookIsbn())
-//                            .branchId(dto.getBranchId())
-//                            .bookAmount(0L)
-//                            .build();
-//                    return stockRepository.save(newStock);
-//                });
 
         stock.setBookAmount(updatedAmount);
         stockRepository.save(stock);
